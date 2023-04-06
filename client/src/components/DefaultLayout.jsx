@@ -1,7 +1,7 @@
 import React from "react";
 import { Menubar } from "primereact/menubar";
 import { userStateContext } from "../contexts/StateProvider";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import route from "../constants/route";
 
 const items = [
@@ -128,13 +128,13 @@ const items = [
     },
 ];
 
-export default function DefaultLayout({ children }) {
+export default function DefaultLayout() {
     const { currentUser, userToken } = userStateContext();
     if (!userToken) return <Navigate to={route.SIGNIN} />;
     return (
         <div className="card">
             <Menubar model={items} />
-            {children}
+            <Outlet />
         </div>
     );
 }
