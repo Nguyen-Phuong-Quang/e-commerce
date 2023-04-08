@@ -4,6 +4,6 @@ import { userStateContext } from "../contexts/StateProvider";
 
 export default function Guest() {
     const { currentUser, userToken } = userStateContext();
-    if (userToken && currentUser) return <Navigate to={route.HOME} />;
+    // if (userToken && currentUser) return <Navigate to={route.HOME} />;
     return <Outlet />;
 }
