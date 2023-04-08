@@ -3,6 +3,7 @@ import { Menubar } from "primereact/menubar";
 import { userStateContext } from "../contexts/StateProvider";
 import { Navigate, Outlet } from "react-router-dom";
 import route from "../constants/route";
+import { Sidebar } from "primereact/sidebar";
 
 const items = [
     {
@@ -134,7 +135,12 @@ export default function DefaultLayout() {
     return (
         <div className="card">
             <Menubar model={items} />
-            <Outlet />
+            <div className="container mx-auto px-auto flex mt-4">
+                <div className="w-1/5 h-screen bg-gray-600 text-white">Side bar</div>
+                <div className="w-4/5">
+                    <Outlet />
+                </div>
+            </div>
         </div>
     );
 }
