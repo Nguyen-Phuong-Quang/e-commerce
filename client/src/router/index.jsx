@@ -6,6 +6,7 @@ import DefaultLayout from "../components/DefaultLayout";
 import Signup from "../pages/sign-up/Signup";
 import Product from "../pages/product/Product";
 import Guest from "../components/Guest";
+import Profile from "../pages/profile/Profile";
 
 const router = createBrowserRouter([
     {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
             {
                 path: "/demo-category",
                 element: <></>,
+            },
+            {
+                path: route.PROFILE,
+                element: <Profile />,
             },
         ],
     },
