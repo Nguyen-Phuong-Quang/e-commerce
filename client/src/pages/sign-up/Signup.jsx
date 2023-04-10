@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
+import { InputNumber } from 'primereact/inputnumber';
 import { Button } from "primereact/button";
 import { Link } from "react-router-dom";
 import { Dropdown } from "primereact/dropdown";
@@ -39,7 +40,7 @@ export default function Signup() {
     };
     return (
         <div className="h-screen w-screen flex items-center justify-center">
-            <div className="relative flex flex-col items-center shadow-2xl border-2 border-slate-300 rounded-xl w-2/3 h-4/5">
+            <div className="relative flex flex-col items-center shadow-2xl border-2 border-slate-300 rounded-xl w-2/3 h-4/5 bg-gradient-to-t from-cyan-50 to-sky-100">
                 <div className="py-2.5 border-b-2 border-slate-300 w-full text-center">
                     <span className="text-3xl font-bold">Sign up</span>
                 </div>
@@ -70,37 +71,37 @@ export default function Signup() {
                     </div>
                     <div className="flex flex-col gap-5 w-1/3">
                         <div className="flex flex-col">
-                            <label>Name</label>
+                            <label className="m-2 text-lg font-medium">Name</label>
                             <InputText />
                         </div>
                         <div className="flex flex-col">
-                            <label>Address</label>
+                            <label className="m-2 text-lg font-medium">Address</label>
                             <InputText />
                         </div>
                         <div className="flex flex-col">
-                            <label>Phone</label>
-                            <InputText />
+                            <label className="m-2 text-lg font-medium">Phone</label>
+                            <InputNumber />
                         </div>
                         <div className="flex flex-col">
-                            <label>Company Name</label>
+                            <label className="m-2 text-lg font-medium">Company Name</label>
                             <InputText />
                         </div>
                     </div>
                     <div className="flex flex-col gap-5 w-1/3">
                         <div className="flex flex-col">
-                            <label>Email</label>
+                            <label className="m-2 text-lg font-medium">Email</label>
                             <InputText type="email" />
                         </div>
                         <div className="flex flex-col">
-                            <label>Password</label>
+                            <label className="m-2 text-lg font-medium">Password</label>
                             <InputText type="password" />
                         </div>
                         <div className="flex flex-col">
-                            <label>Confim Password</label>
+                            <label className="m-2 text-lg font-medium">Confim Password</label>
                             <InputText type="password" />
                         </div>
                         <div className="flex flex-col">
-                            <label>Role</label>
+                            <label className="m-2 text-lg font-medium">Role</label>
                             <Dropdown
                                 options={roles}
                                 value={role}
@@ -111,7 +112,7 @@ export default function Signup() {
                     </div>
                 </div>
                 <div className="absolute bottom-0 flex flex-col justify-center items-center my-4 w-full">
-                    <Button label="Sign up" className="w-1/2" />
+                    <Button label="Sign up" className="w-1/4" />
                     <Link
                         to={route.SIGNIN}
                         className="text-sm text-blue-600 mt-2 hover:underline"
