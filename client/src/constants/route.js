@@ -3,7 +3,8 @@ const route = {
     SIGNIN: "/sign-in",
     SIGNUP: "/sign-up",
     PRODUCT: "/product",
-    PROFILE: "/profile"
+    PROFILE: "/profile",
+    CATEGORY: "/category"
 };
 
 export default route;

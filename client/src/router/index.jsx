@@ -7,6 +7,7 @@ import Signup from "../pages/sign-up/Signup";
 import Product from "../pages/product/Product";
 import Guest from "../components/Guest";
 import Profile from "../pages/profile/Profile";
+import Category from "../pages/category/Category";
 
 const router = createBrowserRouter([
     {
@@ -26,8 +27,8 @@ const router = createBrowserRouter([
                 element: <></>,
             },
             {
-                path: "/demo-category",
-                element: <></>,
+                path: route.CATEGORY,
+                element: <Category />,
             },
             {
                 path: route.PROFILE,
