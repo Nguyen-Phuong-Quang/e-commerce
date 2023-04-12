@@ -1,140 +1,106 @@
 import React from "react";
-import { Menubar } from "primereact/menubar";
 import { userStateContext } from "../contexts/StateProvider";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, Link } from "react-router-dom";
 import route from "../constants/route";
-
-const items = [
-    {
-        label: "File",
-        icon: "pi pi-fw pi-file",
-        items: [
-            {
-                label: "New",
-                icon: "pi pi-fw pi-plus",
-                items: [
-                    {
-                        label: "Bookmark",
-                        icon: "pi pi-fw pi-bookmark",
-                    },
-                    {
-                        label: "Video",
-                        icon: "pi pi-fw pi-video",
-                    },
-                ],
-            },
-            {
-                label: "Delete",
-                icon: "pi pi-fw pi-trash",
-            },
-            {
-                separator: true,
-            },
-            {
-                label: "Export",
-                icon: "pi pi-fw pi-external-link",
-            },
-        ],
-    },
-    {
-        label: "Edit",
-        icon: "pi pi-fw pi-pencil",
-        items: [
-            {
-                label: "Left",
-                icon: "pi pi-fw pi-align-left",
-            },
-            {
-                label: "Right",
-                icon: "pi pi-fw pi-align-right",
-            },
-            {
-                label: "Center",
-                icon: "pi pi-fw pi-align-center",
-            },
-            {
-                label: "Justify",
-                icon: "pi pi-fw pi-align-justify",
-            },
-        ],
-    },
-    {
-        label: "Users",
-        icon: "pi pi-fw pi-user",
-        items: [
-            {
-                label: "New",
-                icon: "pi pi-fw pi-user-plus",
-            },
-            {
-                label: "Delete",
-                icon: "pi pi-fw pi-user-minus",
-            },
-            {
-                label: "Search",
-                icon: "pi pi-fw pi-users",
-                items: [
-                    {
-                        label: "Filter",
-                        icon: "pi pi-fw pi-filter",
-                        items: [
-                            {
-                                label: "Print",
-                                icon: "pi pi-fw pi-print",
-                            },
-                        ],
-                    },
-                    {
-                        icon: "pi pi-fw pi-bars",
-                        label: "List",
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        label: "Events",
-        icon: "pi pi-fw pi-calendar",
-        items: [
-            {
-                label: "Edit",
-                icon: "pi pi-fw pi-pencil",
-                items: [
-                    {
-                        label: "Save",
-                        icon: "pi pi-fw pi-calendar-plus",
-                    },
-                    {
-                        label: "Delete",
-                        icon: "pi pi-fw pi-calendar-minus",
-                    },
-                ],
-            },
-            {
-                label: "Archive",
-                icon: "pi pi-fw pi-calendar-times",
-                items: [
-                    {
-                        label: "Remove",
-                        icon: "pi pi-fw pi-calendar-minus",
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        label: "Quit",
-        icon: "pi pi-fw pi-power-off",
-    },
-];
+import { InputText } from "primereact/inputtext";
+import { Avatar } from "primereact/avatar";
 
 export default function DefaultLayout() {
-    const { currentUser, userToken } = userStateContext();
-    if (!userToken) return <Navigate to={route.SIGNIN} />;
+    const { userToken } = userStateContext();
+    // if (!userToken) return <Navigate to={route.SIGNIN} />;
+
+    const start = (
+        <Link className="mr-2 h-16" to={route.HOME}>
+            <img
+                alt="logo"
+                src="https://primefaces.org/cdn/primereact/images/logo.png"
+                className="mr-2 h-16 hover:cursor-pointer p-2"
+            ></img>
+        </Link>
+    );
+    const search = (
+        <span className="p-input-icon-left p-input-icon-right w-1/3">
+            <i className="pi pi-search" />
+            <InputText
+                placeholder="Search"
+                type="text"
+                className="my-2 w-full rounded-full"
+            />
+            <i className="pi pi-spin pi-spinner" />
+        </span>
+    );
+
+    const end = () => {
+        if (!userToken)
+            return (
+                <div className="flex h-full items-center">
+                    <Link
+                        to={route.SIGNIN}
+                        className="font-bold hover:cursor-pointer hover:text-white hover:bg-blue-400 text-blue-400 h-2/3 flex justify-center px-4 items-center border-2 border-blue-400 rounded-lg mr-4"
+                    >
+                        Sign in
+                    </Link>
+                    <Link
+                        to={route.SIGNUP}
+                        className="font-bold hover:cursor-pointer hover:text-white hover:bg-red-400 text-red-400 h-2/3 flex justify-center px-4 items-center border-2 border-red-400 rounded-lg"
+                    >
+                        Sign up
+                    </Link>
+                </div>
+            );
+
+        if (userToken) {
+            return (
+                <div className="flex h-full items-center">
+                    <div className="px-6 hover:cursor-pointer hover:text-blue-400">
+                        <i className="pi pi-shopping-cart text-2xl"></i>
+                    </div>
+                    <div className="hover:cursor-pointer relative group px-4">
+                        <Avatar icon="pi pi-user" shape="circle" />
+                        <div className="absolute right-0 invisible group-hover:visible pt-2 shadow-md rounded-lg bg-transparent">
+                            <div className="border-b-2 border-x py-2 hover:bg-gray-200 border-t-2 rounded-t-lg overflow-hidden">
+                                <Link
+                                    className="w-32 flex items-center"
+                                    to={route.PROFILE}
+                                >
+                                    <span className="pi pi-user mx-2"></span>{" "}
+                                    Profile
+                                </Link>
+                            </div>
+                            <div className="border-b-2 border-x py-2 hover:bg-gray-200">
+                                <Link className="w-32" to={route.PROFILE}>
+                                    <span className="pi pi-user mx-2"></span>{" "}
+                                    Profile
+                                </Link>
+                            </div>
+                            <div className="border-b-2 border-x py-2 hover:bg-gray-200 rounded-b-lg overflow-hidden">
+                                <Link className="w-32" to={route.PROFILE}>
+                                    <span className="pi pi-user mx-2"></span>{" "}
+                                    Profile
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+    };
+
     return (
-        <div className="card">
-            <Menubar model={items} />
-            <Outlet />
+        <div className="card relative">
+            <div className="container fixed top-0 h-16 flex justify-between px-4">
+                {start}
+                {search}
+                {end()}
+            </div>
+            <div className="container mx-auto px-auto flex mt-16 pt-2">
+                <div className="w-1/5 h-screen bg-gray-600 text-white">
+                    Side bar
+                </div>
+                <div className="w-4/5">
+                    <Outlet />
+                </div>
+            </div>
         </div>
     );
 }

@@ -1,0 +1,7 @@
+
+{
+    "data": [
+        {"id": "1000","code": "f230fh0g3","name": "Watch","quantity": 24,"inventoryStatus": "INSTOCK"},
+        {"id": "1001","code": "nvklal433","name": "Clothes","quantity": 61,"inventoryStatus": "INSTOCK"}
+    ]
+}

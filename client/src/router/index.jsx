@@ -4,7 +4,11 @@ import Home from "../pages/home/home";
 import Signin from "../pages/sign-in/Signin";
 import DefaultLayout from "../components/DefaultLayout";
 import Signup from "../pages/sign-up/Signup";
-import Product from "../pages/product/Product"
+import Product from "../pages/product/Product";
+import Guest from "../components/Guest";
+import Profile from "../pages/profile/Profile";
+import Category from "../pages/category/Category";
+
 const router = createBrowserRouter([
     {
         path: "/",
@@ -15,18 +19,36 @@ const router = createBrowserRouter([
                 element: <Home />,
             },
             {
-                path: "/product",
+                path: route.PRODUCT,
                 element: <Product />,
+            },
+            {
+                path: "/demo-product",
+                element: <></>,
+            },
+            {
+                path: route.CATEGORY,
+                element: <Category />,
+            },
+            {
+                path: route.PROFILE,
+                element: <Profile />,
             },
         ],
     },
     {
-        path: route.SIGNIN,
-        element: <Signin />,
-    },
-    {
-        path: route.SIGNUP,
-        element: <Signup />,
+        path: "/",
+        element: <Guest />,
+        children: [
+            {
+                path: route.SIGNIN,
+                element: <Signin />,
+            },
+            {
+                path: route.SIGNUP,
+                element: <Signup />,
+            },
+        ],
     },
 ]);
 
