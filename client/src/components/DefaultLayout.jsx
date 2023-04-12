@@ -98,6 +98,11 @@ export default function DefaultLayout() {
                     Side bar
                 </div>
                 <div className="w-4/5">
+                <div className="border-b-2 border-x py-2 hover:bg-gray-200">
+                                <Link className="w-32" to={route.PRODUCTSELLER}>
+                                   <strong>Product seller page</strong>
+                                </Link>
+                </div>
                     <Outlet />
                 </div>
             </div>

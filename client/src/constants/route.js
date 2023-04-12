@@ -4,7 +4,8 @@ const route = {
     SIGNUP: "/sign-up",
     PRODUCT: "/product",
     PROFILE: "/profile",
-    CATEGORY: "/category"
+    CATEGORY: "/category",
+    PRODUCTSELLER: "/product/product-handle",
 };
 
 export default route;

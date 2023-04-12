@@ -8,6 +8,7 @@ import Product from "../pages/product/Product";
 import Guest from "../components/Guest";
 import Profile from "../pages/profile/Profile";
 import Category from "../pages/category/Category";
+import PRODUCT from "../pages/product/Product";
 
 const router = createBrowserRouter([
     {
@@ -29,6 +30,11 @@ const router = createBrowserRouter([
             {
                 path: route.CATEGORY,
                 element: <Category />,
+            },
+            
+            {
+                path: route.PRODUCTSELLER,
+                element: <PRODUCT/>,
             },
             {
                 path: route.PROFILE,
