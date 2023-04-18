@@ -6,12 +6,36 @@ import { Column } from 'primereact/column';
 import { CategoryService } from './CategoryService';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
-import { FileUpload } from 'primereact/fileupload';
 import { Toolbar } from 'primereact/toolbar';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import './DataTableDemo.css';
+
+var dataset = [
+    {"id": "1000","code": "f230fh0g3","name": "Watch","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1001","code": "f230fh0g4","name": "Hat","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1002","code": "f230fh123","name": "Clock","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1003","code": "f230fh0ad","name": "Pant","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1004","code": "f230fh0zx","name": "Shoes","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1005","code": "f230fhnbv","name": "Balo","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1006","code": "f230f253s","name": "Package","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1007","code": "f230fhgfd","name": "Short","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1008","code": "f230fdfgj","name": "Phone","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1009","code": "f230fhcvb","name": "Laptop","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1010","code": "f230fhfgh","name": "Pen","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1011","code": "f230fh657","name": "Fan","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1012","code": "f230fhiop","name": "Mouse","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1013","code": "f230fhjhg","name": "Paper","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1014","code": "f230fhida","name": "Book","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1015","code": "f230fhbcv","name": "Notebook","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1016","code": "f230fh458","name": "Cream","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1017","code": "f230fhjkl","name": "Lamp","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1018","code": "f230fhjqa","name": "Accessory","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1019","code": "f230fhree","name": "Houseware","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1020","code": "f230fhfdf","name": "Joinery","quantity": 24,"inventoryStatus": "INSTOCK"},
+    {"id": "1021","code": "nvklal433","name": "Clothes","quantity": 61,"inventoryStatus": "INSTOCK"}
+]
 
 export default function Category() {
 
@@ -108,7 +132,6 @@ export default function Category() {
                 break;
             }
         }
-
         return index;
     }
 
@@ -180,7 +203,7 @@ export default function Category() {
 
     const header = (
         <div className="table-header">
-            <h5 className="mx-0 my-1">Manage Products</h5>
+            <h5 className="mx-0 my-1">Manage Category</h5>
             <span className="p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
@@ -213,7 +236,8 @@ export default function Category() {
             <div className="card">
                 <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
 
-                <DataTable ref={dt} value={products} selection={selectedProducts} onSelectionChange={(e) => setSelectedProducts(e.value)}
+                {/* <DataTable ref={dt} value={products} selection={selectedProducts} onSelectionChange={(e) => setSelectedProducts(e.value)} */}
+                <DataTable ref={dt} value={dataset} selection={selectedProducts} onSelectionChange={(e) => setSelectedProducts(e.value)}
                     dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
