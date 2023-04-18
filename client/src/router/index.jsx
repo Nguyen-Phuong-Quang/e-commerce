@@ -4,11 +4,10 @@ import Home from "../pages/home/home";
 import Signin from "../pages/sign-in/Signin";
 import DefaultLayout from "../components/DefaultLayout";
 import Signup from "../pages/sign-up/Signup";
-import Product from "../pages/product/Product";
 import Guest from "../components/Guest";
 import Profile from "../pages/profile/Profile";
 import Category from "../pages/category/Category";
-import PRODUCT from "../pages/product/Product";
+import ProductSeller from "../pages/product/ProductSeller";
 
 const router = createBrowserRouter([
     {
@@ -18,10 +17,6 @@ const router = createBrowserRouter([
             {
                 path: route.HOME,
                 element: <Home />,
-            },
-            {
-                path: route.PRODUCT,
-                element: <Product />,
             },
             {
                 path: "/demo-product",
@@ -34,7 +29,7 @@ const router = createBrowserRouter([
             
             {
                 path: route.PRODUCTSELLER,
-                element: <PRODUCT/>,
+                element: <ProductSeller/>,
             },
             {
                 path: route.PROFILE,
