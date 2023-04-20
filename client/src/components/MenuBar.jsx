@@ -1,0 +1,122 @@
+import React from "react";
+import { userStateContext } from "../contexts/StateProvider";
+import { Link, useNavigate } from "react-router-dom";
+import route from "../constants/route";
+import { InputText } from "primereact/inputtext";
+import { Avatar } from "primereact/avatar";
+import authApi from "../api/authApi";
+
+export default function MenuBar() {
+    const navigate = useNavigate();
+    const { currentUser, userToken, setCurrentUser, setUserToken } =
+        userStateContext();
+    // if (!userToken) return <Navigate to={route.SIGNIN} />;
+
+    const handleSignOut = () => {
+        const signOut = async () => {
+            try {
+                const response = await authApi.signout();
+                if (response.data.type === "SUCCESS") {
+                    setCurrentUser({});
+                    setUserToken(null);
+                    localStorage.removeItem("REFRESH_TOKEN");
+                    localStorage.removeItem("userId");
+                    navigate(route.HOME);
+                }
+            } catch (err) {
+                console.log(err);
+                setCurrentUser({});
+                setUserToken(null);
+                localStorage.removeItem("REFRESH_TOKEN");
+                localStorage.removeItem("userId");
+                navigate(route.HOME);
+            }
+        };
+
+        signOut();
+    };
+
+    const start = (
+        <Link className="mr-2 h-16" to={route.HOME}>
+            <img
+                alt="logo"
+                src="https://primefaces.org/cdn/primereact/images/logo.png"
+                className="mr-2 h-16 hover:cursor-pointer p-2"
+            ></img>
+        </Link>
+    );
+    const search = (
+        <span className="p-input-icon-left p-input-icon-right w-1/3">
+            <i className="pi pi-search" />
+            <InputText
+                placeholder="Search"
+                type="text"
+                className="my-2 w-full rounded-full"
+            />
+            <i className="pi pi-spin pi-spinner" />
+        </span>
+    );
+
+    const end = () => {
+        if (!userToken)
+            return (
+                <div className="flex h-full items-center">
+                    <Link
+                        to={route.SIGNIN}
+                        className="font-bold hover:cursor-pointer hover:text-white hover:bg-blue-400 text-blue-400 h-2/3 flex justify-center px-4 items-center border-2 border-blue-400 rounded-lg mr-4"
+                    >
+                        Sign in
+                    </Link>
+                    <Link
+                        to={route.SIGNUP}
+                        className="font-bold hover:cursor-pointer hover:text-white hover:bg-red-400 text-red-400 h-2/3 flex justify-center px-4 items-center border-2 border-red-400 rounded-lg"
+                    >
+                        Sign up
+                    </Link>
+                </div>
+            );
+
+        if (userToken) {
+            return (
+                <div className="flex h-full items-center">
+                    <div className="px-4 hover:cursor-pointer hover:text-blue-400">
+                        <i className="pi pi-shopping-cart text-2xl"></i>
+                    </div>
+                    <div className="hover:cursor-pointer relative group px-4">
+                        <Avatar
+                            image={currentUser.profileImage}
+                            shape="circle"
+                        />
+                        <div className="absolute right-0 invisible group-hover:visible pt-2 shadow-md rounded-lg bg-transparent">
+                            <div className="border-b-2 border-x py-2 hover:bg-gray-200 border-t-2 rounded-t-lg overflow-hidden border-transparent">
+                                <Link
+                                    className="w-32 flex items-center"
+                                    to={route.PROFILE}
+                                >
+                                    <span className="pi pi-user mx-2"></span>{" "}
+                                    Profile
+                                </Link>
+                            </div>
+                            <div
+                                className="border-b-2 border-x py-2 hover:bg-gray-200 rounded-b-lg overflow-hidden"
+                                onClick={() => handleSignOut()}
+                            >
+                                <div className="w-32">
+                                    <span className="pi pi-sign-out mx-2"></span>{" "}
+                                    Sign out
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+    };
+    return (
+        <div className="container fixed top-0 h-16 flex justify-between px-4 bg-white z-20">
+            {start}
+            {search}
+            {end()}
+        </div>
+    );
+}

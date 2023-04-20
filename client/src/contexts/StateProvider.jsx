@@ -26,9 +26,7 @@ export const StateProvider = ({ children }) => {
         if (localStorage.getItem("TOKEN")) {
             const fetch = async () => {
                 try {
-                    const response = await userApi.getUserById(
-                        localStorage.getItem("userId")
-                    );
+                    const response = await userApi.getUserByToken();
                     if (response.data.type === "SUCCESS") {
                         setCurrentUser(response.data.user);
                     }
