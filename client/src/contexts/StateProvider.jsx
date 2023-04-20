@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import userApi from "../api/userApi";
 
 const StateContext = createContext({
     currentUser: {},
@@ -9,8 +10,7 @@ const StateContext = createContext({
 
 export const StateProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState({});
-    // const [userToken, _setUserToken] = useState(localStorage.getItem("TOKEN"));
-    const [userToken, _setUserToken] = useState('121');
+    const [userToken, _setUserToken] = useState(localStorage.getItem("TOKEN"));
 
     const setUserToken = (token) => {
         if (token) {
@@ -21,6 +21,25 @@ export const StateProvider = ({ children }) => {
 
         _setUserToken(token);
     };
+
+    useEffect(() => {
+        if (localStorage.getItem("TOKEN")) {
+            const fetch = async () => {
+                try {
+                    const response = await userApi.getUserById(
+                        localStorage.getItem("userId")
+                    );
+                    if (response.data.type === "SUCCESS") {
+                        setCurrentUser(response.data.user);
+                    }
+                } catch (err) {
+                    console.log(err);
+                }
+            };
+
+            fetch();
+        }
+    }, []);
 
     return (
         <StateContext.Provider
