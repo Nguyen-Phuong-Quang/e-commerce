@@ -1,6 +1,6 @@
 import React from "react";
 import { userStateContext } from "../contexts/StateProvider";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import route from "../constants/route";
 import { InputText } from "primereact/inputtext";
 import { Avatar } from "primereact/avatar";
@@ -8,9 +8,8 @@ import authApi from "../api/authApi";
 
 export default function MenuBar() {
     const navigate = useNavigate();
-    const { currentUser, userToken, setCurrentUser, setUserToken } =
+    const { currentUser, setCurrentUser } =
         userStateContext();
-    // if (!userToken) return <Navigate to={route.SIGNIN} />;
 
     const handleSignOut = () => {
         const signOut = async () => {
@@ -18,7 +17,7 @@ export default function MenuBar() {
                 const response = await authApi.signout();
                 if (response.data.type === "SUCCESS") {
                     setCurrentUser({});
-                    setUserToken(null);
+                    localStorage.removeItem("TOKEN");
                     localStorage.removeItem("REFRESH_TOKEN");
                     localStorage.removeItem("userId");
                     navigate(route.HOME);
@@ -26,7 +25,7 @@ export default function MenuBar() {
             } catch (err) {
                 console.log(err);
                 setCurrentUser({});
-                setUserToken(null);
+                localStorage.removeItem("TOKEN");
                 localStorage.removeItem("REFRESH_TOKEN");
                 localStorage.removeItem("userId");
                 navigate(route.HOME);
@@ -58,7 +57,7 @@ export default function MenuBar() {
     );
 
     const end = () => {
-        if (!userToken)
+        if (!localStorage.getItem("TOKEN"))
             return (
                 <div className="flex h-full items-center">
                     <Link
@@ -76,18 +75,18 @@ export default function MenuBar() {
                 </div>
             );
 
-        if (userToken) {
+        if (localStorage.getItem("TOKEN")) {
             return (
                 <div className="flex h-full items-center">
-                    <div className="px-4 hover:cursor-pointer hover:text-blue-400">
+                    {/* <div className="px-4 hover:cursor-pointer hover:text-blue-400">
                         <i className="pi pi-shopping-cart text-2xl"></i>
-                    </div>
+                    </div> */}
                     <div className="hover:cursor-pointer relative group px-4">
                         <Avatar
                             image={currentUser.profileImage}
                             shape="circle"
                         />
-                        <div className="absolute right-0 invisible group-hover:visible pt-2 shadow-md rounded-lg bg-transparent">
+                        <div className="absolute right-0 invisible group-hover:visible pt-2 shadow-md rounded-lg bg-transparent bg-white">
                             <div className="border-b-2 border-x py-2 hover:bg-gray-200 border-t-2 rounded-t-lg overflow-hidden border-transparent">
                                 <Link
                                     className="w-32 flex items-center"
@@ -113,7 +112,7 @@ export default function MenuBar() {
         }
     };
     return (
-        <div className="container fixed top-0 h-16 flex justify-between px-4 bg-white z-20">
+        <div className="w-full fixed top-0 h-16 flex justify-between px-4 bg-white z-20 border-b border-slate-200 shadow-sm">
             {start}
             {search}
             {end()}

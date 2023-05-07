@@ -1,5 +1,4 @@
 import axios from "axios";
-import { userStateContext } from "../contexts/StateProvider";
 
 const axiosClient = axios.create({
     baseURL: import.meta.env.VITE_REACT_BASE_URL,
@@ -30,33 +29,40 @@ axiosClient.interceptors.response.use(
 
                 const refreshToken = localStorage.getItem("REFRESH_TOKEN");
                 try {
+                    console.log("Send refresh token");
                     const response = await axiosClient.post(
                         "/auth/refresh-token",
                         {
                             refreshToken,
                         }
                     );
-                    const { setUserToken } = userStateContext();
+                    localStorage.setItem(
+                        "TOKEN",
+                        response.data.tokens.accessToken
+                    );
 
-                    setUserToken(response.data.tokens.accessToken);
                     localStorage.setItem(
                         "REFRESH_TOKEN",
                         response.data.tokens.refreshToken
                     );
+                    console.log("Receive new refresh token");
 
                     return axiosClient(originalConfig);
                 } catch (err) {
+                    localStorage.removeItem("TOKEN");
+                    localStorage.removeItem("REFRESH_TOKEN");
                     throw err;
                 }
             }
         } else {
             throw error;
         }
-        if (error.response && error.response.status === 401) {
-            localStorage.removeItem("TOKEN");
-            window.location.reload();
-            return error;
-        }
+
+        // if (error.response && error.response.status === 401) {
+        //     localStorage.removeItem("TOKEN");
+        //     window.location.reload();
+        //     return error;
+        // }
 
         throw error;
     }

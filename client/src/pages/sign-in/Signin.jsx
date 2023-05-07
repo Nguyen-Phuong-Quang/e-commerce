@@ -8,7 +8,7 @@ import { userStateContext } from "../../contexts/StateProvider";
 
 export default function Signin() {
     const navigate = useNavigate();
-    const { setCurrentUser, setUserToken } = userStateContext();
+    const { setCurrentUser } = userStateContext();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -23,11 +23,14 @@ export default function Signin() {
 
                 if (response.data.type === "SUCCESS") {
                     setCurrentUser(response.data.user);
-                    setUserToken(response.data.tokens.accessToken);
                     localStorage.setItem("userId", response.data.user._id);
                     localStorage.setItem(
                         "REFRESH_TOKEN",
                         response.data.tokens.refreshToken
+                    );
+                    localStorage.setItem(
+                        "TOKEN",
+                        response.data.tokens.accessToken
                     );
                     return navigate(route.HOME);
                 }
