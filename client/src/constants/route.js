@@ -5,6 +5,7 @@ const route = {
     PROFILE: "/profile",
     CATEGORY: "/category",
     PRODUCT: "/product",
+    CART: "/cart",
 };
 
 export default route;
