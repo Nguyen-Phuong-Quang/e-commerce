@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
@@ -39,19 +38,19 @@ var dataset = [
 
 export default function Category() {
 
-    let emptyProduct = {
+    let emptyCategory = {
         id: null,
         name: '',
         quantity: 0,
         inventoryStatus: 'INSTOCK'
     };
 
-    const [products, setProducts] = useState(null);
-    const [productDialog, setProductDialog] = useState(false);
-    const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-    const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-    const [product, setProduct] = useState(emptyProduct);
-    const [selectedProducts, setSelectedProducts] = useState(null);
+    const [categories, setCategories] = useState(null);
+    const [categoryDialog, setCategoryDialog] = useState(false);
+    const [deleteCategoryDialog, setDeleteCategoryDialog] = useState(false);
+    const [deleteCategoriesDialog, setDeleteCategoriesDialog] = useState(false);
+    const [category, setCategory] = useState(emptyCategory);
+    const [selectedCategories, setSelectedCategories] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
@@ -59,75 +58,75 @@ export default function Category() {
     const categoryService = new CategoryService();
 
     useEffect(() => {
-        categoryService.getCategories().then(data => setProducts(data));
+        categoryService.getCategories().then(data => setCategories(data));
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const openNew = () => {
-        setProduct(emptyProduct);
+        setCategory(emptyCategory);
         setSubmitted(false);
-        setProductDialog(true);
+        setCategoryDialog(true);
     }
 
     const hideDialog = () => {
         setSubmitted(false);
-        setProductDialog(false);
+        setCategoryDialog(false);
     }
 
-    const hideDeleteProductDialog = () => {
-        setDeleteProductDialog(false);
+    const hideDeleteCategoryDialog = () => {
+        setDeleteCategoryDialog(false);
     }
 
-    const hideDeleteProductsDialog = () => {
-        setDeleteProductsDialog(false);
+    const hideDeleteCategoriesDialog = () => {
+        setDeleteCategoriesDialog(false);
     }
 
-    const saveProduct = () => {
+    const saveCategory = () => {
         setSubmitted(true);
 
-        if (product.name.trim()) {
-            let _products = [...products];
-            let _product = {...product};
-            if (product.id) {
-                const index = findIndexById(product.id);
+        if (category.name.trim()) {
+            let _categories = [...categories];
+            let _category = {...category};
+            if (category.id) {
+                const index = findIndexById(category.id);
 
-                _products[index] = _product;
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
+                _categories[index] = _category;
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Category Updated', life: 3000 });
             }
             else {
-                _product.id = createId();
-                _product.image = 'product-placeholder.svg';
-                _products.push(_product);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
+                _category.id = createId();
+                _category.image = 'product-placeholder.svg';
+                _categories.push(_category);
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Category Created', life: 3000 });
             }
 
-            setProducts(_products);
-            setProductDialog(false);
-            setProduct(emptyProduct);
+            setCategories(_categories);
+            setCategoryDialog(false);
+            setCategory(emptyCategory);
         }
     }
 
-    const editProduct = (product) => {
-        setProduct({...product});
-        setProductDialog(true);
+    const editCategory = (category) => {
+        setCategory({...category});
+        setCategoryDialog(true);
     }
 
-    const confirmDeleteProduct = (product) => {
-        setProduct(product);
-        setDeleteProductDialog(true);
+    const confirmDeleteCategory = (category) => {
+        setCategory(category);
+        setDeleteCategoryDialog(true);
     }
 
-    const deleteProduct = () => {
-        let _products = products.filter(val => val.id !== product.id);
-        setProducts(_products);
-        setDeleteProductDialog(false);
-        setProduct(emptyProduct);
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+    const deleteCategory = () => {
+        let _categories = categories.filter(val => val.id !== category.id);
+        setCategories(_categories);
+        setDeleteCategoryDialog(false);
+        setCategory(emptyCategory);
+        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Category Deleted', life: 3000 });
     }
 
     const findIndexById = (id) => {
         let index = -1;
-        for (let i = 0; i < products.length; i++) {
-            if (products[i].id === id) {
+        for (let i = 0; i < categories.length; i++) {
+            if (categories[i].id === id) {
                 index = i;
                 break;
             }
@@ -145,38 +144,38 @@ export default function Category() {
     }
 
     const confirmDeleteSelected = () => {
-        setDeleteProductsDialog(true);
+        setDeleteCategoriesDialog(true);
     }
 
-    const deleteSelectedProducts = () => {
-        let _products = products.filter(val => !selectedProducts.includes(val));
-        setProducts(_products);
-        setDeleteProductsDialog(false);
-        setSelectedProducts(null);
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
+    const deleteSelectedCategories = () => {
+        let _categories = categories.filter(val => !selectedCategories.includes(val));
+        setCategories(_categories);
+        setDeleteCategoriesDialog(false);
+        setSelectedCategories(null);
+        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Categories Deleted', life: 3000 });
     }
 
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
-        let _product = {...product};
-        _product[`${name}`] = val;
+        let _category = {...category};
+        _category[`${name}`] = val;
 
-        setProduct(_product);
+        setCategory(_category);
     }
 
     const onInputNumberChange = (e, name) => {
         const val = e.value || 0;
-        let _product = {...product};
-        _product[`${name}`] = val;
+        let _category = {...category};
+        _category[`${name}`] = val;
 
-        setProduct(_product);
+        setCategory(_category);
     }
 
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <Button label="New" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                <Button label="Delete" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedProducts || !selectedProducts.length} />
+                <Button label="Delete" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedCategories || !selectedCategories.length} />
             </React.Fragment>
         )
     }
@@ -195,8 +194,8 @@ export default function Category() {
     const actionBodyTemplate = (rowData) => {
         return (
             <React.Fragment>
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => editProduct(rowData)} />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteProduct(rowData)} />
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => editCategory(rowData)} />
+                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteCategory(rowData)} />
             </React.Fragment>
         );
     }
@@ -210,22 +209,22 @@ export default function Category() {
             </span>
         </div>
     );
-    const productDialogFooter = (
+    const categoryDialogFooter = (
         <React.Fragment>
             <Button label="Cancel" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
-            <Button label="Save" icon="pi pi-check" className="p-button-text" onClick={saveProduct} />
+            <Button label="Save" icon="pi pi-check" className="p-button-text" onClick={saveCategory} />
         </React.Fragment>
     );
-    const deleteProductDialogFooter = (
+    const deleteCategoryDialogFooter = (
         <React.Fragment>
-            <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteProductDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteProduct} />
+            <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteCategoryDialog} />
+            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteCategory} />
         </React.Fragment>
     );
-    const deleteProductsDialogFooter = (
+    const deleteCategoriesDialogFooter = (
         <React.Fragment>
-            <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteProductsDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedProducts} />
+            <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteCategoriesDialog} />
+            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedCategories} />
         </React.Fragment>
     );
 
@@ -236,8 +235,8 @@ export default function Category() {
             <div className="card">
                 <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
 
-                {/* <DataTable ref={dt} value={products} selection={selectedProducts} onSelectionChange={(e) => setSelectedProducts(e.value)} */}
-                <DataTable ref={dt} value={dataset} selection={selectedProducts} onSelectionChange={(e) => setSelectedProducts(e.value)}
+                {/* <DataTable ref={dt} value={products} selection={selectedCategories} onSelectionChange={(e) => setSelectedCategories(e.value)} */}
+                <DataTable ref={dt} value={dataset} selection={selectedCategories} onSelectionChange={(e) => setSelectedCategories(e.value)}
                     dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
@@ -250,32 +249,32 @@ export default function Category() {
                 </DataTable>
             </div>
 
-            <Dialog visible={productDialog} style={{ width: '450px' }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
+            <Dialog visible={categoryDialog} style={{ width: '450px' }} header="Category Details" modal className="p-fluid" footer={categoryDialogFooter} onHide={hideDialog}>
                 <div className="field">
                     <label htmlFor="name">Name</label>
-                    <InputText id="name" value={product.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
-                    {submitted && !product.name && <small className="p-error">Name is required.</small>}
+                    <InputText id="name" value={category.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !category.name })} />
+                    {submitted && !category.name && <small className="p-error">Name is required.</small>}
                 </div>
 
                 <div className="formgrid grid">
                     <div className="field col">
                         <label htmlFor="quantity">Quantity</label>
-                        <InputNumber id="quantity" value={product.quantity} onValueChange={(e) => onInputNumberChange(e, 'quantity')} integeronly />
+                        <InputNumber id="quantity" value={category.quantity} onValueChange={(e) => onInputNumberChange(e, 'quantity')} integeronly />
                     </div>
                 </div>
             </Dialog>
 
-            <Dialog visible={deleteProductDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
+            <Dialog visible={deleteCategoryDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteCategoryDialogFooter} onHide={hideDeleteCategoryDialog}>
                 <div className="confirmation-content">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
-                    {product && <span>Are you sure you want to delete <b>{product.name}</b>?</span>}
+                    {category && <span>Are you sure you want to delete <b>{category.name}</b>?</span>}
                 </div>
             </Dialog>
 
-            <Dialog visible={deleteProductsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
+            <Dialog visible={deleteCategoriesDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteCategoriesDialogFooter} onHide={hideDeleteCategoriesDialog}>
                 <div className="confirmation-content">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
-                    {product && <span>Are you sure you want to delete the selected products?</span>}
+                    {category && <span>Are you sure you want to delete the selected Categories?</span>}
                 </div>
             </Dialog>
         </div>
