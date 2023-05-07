@@ -12,13 +12,14 @@ import { Toolbar } from "primereact/toolbar";
 import { InputNumber } from "primereact/inputnumber";
 import ProductDialogFooter from "./Components/ProductDialogFooter";
 import LeftToolbarTemplate from "./Components/LeftToolbarTemplate";
+import hermet from "./image/hermet.jpg";
 
 const dataTrain = [
   {
     name: "gucci",
     category: "clothes",
-    mainImage: "",
-    Image: "./hermet.jpg",
+    mainImage: hermet,
+    Image: hermet,
     description: "no thing",
     price: "232",
     discountPrice: "111",
@@ -29,8 +30,8 @@ const dataTrain = [
   {
     name: "hermes",
     category: "helmet",
-    mainImage: "hermet.jpg",
-    Image: "hermet.jpg",
+    mainImage: hermet,
+    Image: hermet,
     description: "no thing to say",
     price: "343",
     discountPrice: "98",
@@ -99,11 +100,6 @@ const ProductSeller = () => {
         setLoading(false);
       });
   };
-
-  // const handleAddProduct = (product) => {
-  //   setProducts([...products, ...dataTrain]);
-  //   showToast("Success", "Product added succsessfully");
-  // };
 
   //putapi
   const handleUpdateProduct = (product) => {
@@ -265,7 +261,8 @@ const ProductSeller = () => {
 
         <DataTable
           ref={dt}
-          value={products}
+          //value={products}
+          value={dataTrain}
           selection={selectedProduct}
           onSelectionChange={(e) => setSelectedProduct(e.value)}
           dataKey="id"
@@ -297,11 +294,12 @@ const ProductSeller = () => {
               <>
                 <Button
                   icon="pi pi-pencil"
-                  className="mr-2"
+                  className="p-button-rounded p-button-success mr-2"
                   onClick={() => handleEditClick(rowData)}
                 />
                 <Button
                   icon="pi pi-trash"
+                  className="p-button-rounded p-button-warning"
                   onClick={() => handleDeleteClick(rowData)}
                 />
               </>
