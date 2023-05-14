@@ -8,6 +8,9 @@ import Guest from "../components/Guest";
 import Profile from "../pages/profile/Profile";
 import Category from "../pages/category/Category";
 import HomeProductSeller from "../pages/product/HomeProductSeller";
+import ProductSeller from "../pages/product/ProductSeller";
+import Cart from "../pages/cart/Cart";
+
 const router = createBrowserRouter([
     {
         path: "/",
@@ -28,6 +31,10 @@ const router = createBrowserRouter([
             {
                 path: route.PROFILE,
                 element: <Profile />,
+            },
+            {
+                path: route.CART,
+                element: <Cart />,
             },
         ],
     },
