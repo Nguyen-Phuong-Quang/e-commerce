@@ -111,6 +111,18 @@ export default function Profile() {
                         )}
                     </div>
                     <div className="w-2/3 text-xl">
+                        <div className="mb-2 flex justify-between w-3/4 items-center">
+                            <span className="font-semibold text-3xl">
+                                PROFILE
+                            </span>
+                            <Button
+                                onClick={() => setVisibleEdit(true)}
+                                className="h-1/2"
+                                size="small"
+                                icon="pi pi-pencil"
+                                label="Edit"
+                            />
+                        </div>
                         <div className="mb-2">
                             <span>Name: </span>
                             <span className="font-bold">{user.name}</span>

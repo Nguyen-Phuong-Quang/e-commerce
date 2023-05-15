@@ -15,6 +15,10 @@ const authApi = {
             },
         });
     },
+    verifyEmail: (data) => {
+        const url = `${PREFIX}/verify-email`;
+        return axiosClient.post(url, data);
+    },
     signout: () => {
         const url = `${PREFIX}/sign-out`;
         return axiosClient.post(url);

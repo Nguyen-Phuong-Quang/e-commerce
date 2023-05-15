@@ -1,4 +1,5 @@
 const route = {
+    ADMIN: "/admin",
     HOME: "/",
     SIGNIN: "/sign-in",
     SIGNUP: "/sign-up",
