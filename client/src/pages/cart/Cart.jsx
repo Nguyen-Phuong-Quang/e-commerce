@@ -3,6 +3,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputNumber } from "primereact/inputnumber";
+import { InputText } from 'primereact/inputtext';
 import { Toast } from "primereact/toast";
 import "./Cart.css";
 
@@ -29,11 +30,48 @@ export default function Cart()  {
             price: 30,
             image: "https://via.placeholder.com/150",
         },
+        {
+            id: 4,
+            name: "Product 4",
+            quantity: 3,
+            price: 30,
+            image: "https://via.placeholder.com/150",
+        },
+        {
+            id: 5,
+            name: "Product 5",
+            quantity: 1,
+            price: 10,
+            image: "https://via.placeholder.com/150",
+        },
+        {
+            id: 6,
+            name: "Product 6",
+            quantity: 2,
+            price: 20,
+            image: "https://via.placeholder.com/150",
+        },
+        {
+            id: 7,
+            name: "Product 7",
+            quantity: 3,
+            price: 30,
+            image: "https://via.placeholder.com/150",
+        },
+        {
+            id: 8,
+            name: "Product 8",
+            quantity: 3,
+            price: 30,
+            image: "https://via.placeholder.com/150",
+        },
     ]);
     const [selectedCartItem, setSelectedCartItem] = useState(null);
     const [totalPrice, setTotalPrice] = useState(
         cartItems.reduce((total, item) => total + item.price * item.quantity, 0)
     );
+    const [globalFilter, setGlobalFilter] = useState(null);
+
     const toast = useRef(null);
 
     const onQuantityChange = (event, rowData) => {
@@ -80,11 +118,28 @@ export default function Cart()  {
         return <img src={rowData.image} alt={rowData.name} />;
     };
 
+    const header = (
+        <div className="table-header">
+            <span className="p-input-icon-left">
+                <i className="pi pi-search" />
+                <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
+            </span>
+        </div>
+    );
+
+    const handlePayment = () => {
+        console.log("Button Payment");
+    };
+
+    
+
     return (
         <div>
-            <Toast ref={toast} />
+            {/* <Toast ref={toast} /> */}
             <h1>Shopping Cart</h1>
-            <DataTable value={cartItems} selectionMode="single" selection={selectedCartItem} onSelectionChange={(e) => setSelectedCartItem(e.value)}>
+            <DataTable value={cartItems} selectionMode="single" selection={selectedCartItem} onSelectionChange={(e) => setSelectedCartItem(e.value)}
+            dataKey="id" globalFilter={globalFilter} header={header} responsiveLayout="scroll">
+                {/* <Column selectionMode="multiple" headerStyle={{ width: '3rem' }} exportable={false}></Column> */}
                 <Column field="name" header="Name"></Column>
                 <Column field="image" header="Image" body={imageBodyTemplate} />
                 <Column field="quantity" header="Quantity" 
@@ -95,7 +150,12 @@ export default function Cart()  {
                 <Column field="price" header="Price"></Column>
                 <Column body={actionBodyTemplate}></Column>
             </DataTable>
-            <h2>Total Price: ${totalPrice.toFixed(2)}</h2>
+            
+            <div className="p-d-flex p-jc-between p-ai-center">
+                <h2>Total Price: ${totalPrice} {" "}
+                    <Button label="Payment" icon="pi pi-credit-card" onClick={handlePayment} />
+                </h2>
+            </div>
         </div>
     );
 };

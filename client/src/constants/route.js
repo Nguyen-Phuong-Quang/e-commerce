@@ -7,6 +7,7 @@ const route = {
     CATEGORY: "/category",
     PRODUCT: "/product",
     CART: "/cart",
+    ORDER: "/order",
 };
 
 export default route;
