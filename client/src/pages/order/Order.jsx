@@ -41,6 +41,7 @@ const Order = () => {
                 <InputText
                 id="address"
                 value={shippingAddress.address}
+                required
                 onChange={(e) =>
                     setShippingAddress((prevState) => ({
                     ...prevState,
@@ -54,6 +55,7 @@ const Order = () => {
                 <InputText
                 id="city"
                 value={shippingAddress.city}
+                required
                 onChange={(e) =>
                     setShippingAddress((prevState) => ({
                     ...prevState,
@@ -67,6 +69,7 @@ const Order = () => {
                 <InputText
                 id="postalCode"
                 value={shippingAddress.postalCode}
+                required
                 onChange={(e) =>
                     setShippingAddress((prevState) => ({
                     ...prevState,
@@ -80,6 +83,7 @@ const Order = () => {
                 <InputText
                 id="country"
                 value={shippingAddress.country}
+                required
                 onChange={(e) =>
                     setShippingAddress((prevState) => ({
                     ...prevState,
@@ -113,13 +117,14 @@ const Order = () => {
                 <InputText
                     id="phone"
                     value={phone}
+                    required
                     onChange={(e) => setPhone(e.target.value)}
                 />
                 {" "}
                 <Button
-                label="Place Order"
-                onClick={handlePlaceOrder}
-                className="p-button-success"
+                    label="Place Order"
+                    onClick={handlePlaceOrder}
+                    className="p-button-success ml-10"
                 />
             </div>
 
