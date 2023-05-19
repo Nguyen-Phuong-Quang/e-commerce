@@ -1,0 +1,39 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.order-form {
+    margin:0 0 20px 20px;
+}
+
+.content{
+    margin: 10px !important;
+    text-align: left;
+}
+
+.p-field {
+    margin: 20px;
+}
+
+.p-fluid {
+    margin-right: 20px;
+}
+
+.p-button-success {
+    width: 20%;
+    margin-left : 50% !important;
+}
+
+.toast-message {
+    font-weight: bold;
+}
+
+.toast-success {
+    background-color: #4caf50;
+    color: #ffffff;
+}
+    

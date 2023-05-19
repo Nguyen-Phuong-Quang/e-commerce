@@ -40,7 +40,6 @@ const router = createBrowserRouter([
                 path: route.ORDER,
                 element: <Order />,
             },
-           
         ],
     },
     {
