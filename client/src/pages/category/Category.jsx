@@ -9,7 +9,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import './DataTableDemo.css';
+import './Category.css';
 
 var dataset = [
     {"id": "1000","code": "f230fh0g3","name": "Watch","quantity": 24,"inventoryStatus": "INSTOCK"},
