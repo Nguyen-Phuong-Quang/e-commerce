@@ -24,13 +24,14 @@ const productApi = {
         });
     },
 
+    // Fix
     updateProductById: async (id, product) => {
         const response = await axiosClient.put(
             `${baseUrl}/products/${id}`,
             product,
             {
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "multipart/form-data",
                 },
             }
         );
@@ -42,6 +43,8 @@ const productApi = {
         return axiosClient.delete(url);
     },
 
+
+    // Fix
     getEvaluation: async () => {
         const response = await axiosClient.get(`${baseUrl}/products/reivews`);
         return response;
