@@ -12,6 +12,9 @@ export default function Profile() {
     const [preview, setPreview] = useState();
     const [imageUpdated, setImageUpdated] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const { toastError } = toastContext();
+
     const fetch = async () => {
         setLoading(true);
         try {
@@ -21,7 +24,7 @@ export default function Profile() {
                 setPreview(response.data.user.profileImage);
             }
         } catch (err) {
-            alert(err);
+            toastError(err.response.data.message);
         }
         setLoading(false);
     };
