@@ -52,7 +52,7 @@ const dataTrain = [
       description: "no thing",
       price: "232.000",
       discountPrice: "111.000",
-      colors: ["blue", "red", "green", "gray"],
+      colors: ["blue", "red", "green", "orange"],
       sizes: ["38", "39", "40", "41", "42"],
       quantity: 23,
     },
@@ -214,8 +214,8 @@ const rightToolbarTemplate = () => {
           <ProgressSpinner className=" w-full" />
         </div>
       )}
-      <div className="grid min-[1200px]:grid-cols-3 min-[1440px]:grid-cols-4 min-[1700px]:grid-cols-4  gap-4">
-        {!loading && (
+      <div className="grid min-[1200px]:grid-cols-3 min-[1440px]:grid-cols-4 min-[1700px]:grid-cols-4  gap-4 mr-2 ml-2">
+        {!loading && ( 
           <>
             {products.length > 0 ? (
               products.map((product, index) => (

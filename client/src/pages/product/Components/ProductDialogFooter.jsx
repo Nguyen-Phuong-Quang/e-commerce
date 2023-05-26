@@ -17,19 +17,21 @@ const  ProductDialogFooter = (props) => {
       //     onClick={props.Save}
       //   />
       // </React.Fragment>
-      <div className="w-3/5 flex justify-end mt-8">
+      // bg-blue-300 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline
+      <div className="w-full flex justify-center mt-4 mb-4">
         <Button
           icon="pi pi-check"
           label="Save"
+          severity="success" 
           onClick={props.Save}
-          className="mr-2"
+          className=" text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2 "
         />
         <Button
           icon="pi pi-times"
           label="Cancel"
-          severity="danger"
-          outlined
+          severity="secondary"
           onClick={props.Cancel}
+          className="text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2 "
         />
       </div>
     );
