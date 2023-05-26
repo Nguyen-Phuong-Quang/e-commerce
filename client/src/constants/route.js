@@ -1,4 +1,5 @@
 const route = {
+    ADMIN: "/admin",
     HOME: "/",
     SIGNIN: "/sign-in",
     SIGNUP: "/sign-up",
@@ -6,7 +7,7 @@ const route = {
     CATEGORY: "/category",
     PRODUCT: "/product",
     CART: "/cart",
-    DISCOUNT: "/discount",
+    ORDER: "/order",
 };
 
 export default route;

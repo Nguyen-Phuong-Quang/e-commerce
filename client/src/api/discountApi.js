@@ -30,5 +30,15 @@ const discountApi = {
   }
 
 }
+// import axiosClient from "./axiosClient";
 
-export default discountApi;
+// const PREFIX = "/discount";
+
+// const discountApi = {
+//     generate: (data) => {
+//         const url = `${PREFIX}/generate`;
+//         return axiosClient.post(url, data);
+//     },
+// };
+
+// export default discountApi;

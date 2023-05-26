@@ -8,8 +8,9 @@ import authApi from "../api/authApi";
 
 export default function MenuBar() {
     const navigate = useNavigate();
-    const { currentUser, setCurrentUser } =
-        userStateContext();
+    const { currentUser, setCurrentUser } = userStateContext();
+
+    // if (!localStorage.getItem("TOKEN")) return <Navigate to={route.HOME} />;
 
     const handleSignOut = () => {
         const signOut = async () => {

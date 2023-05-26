@@ -11,6 +11,7 @@ import HomeProductSeller from "../pages/product/HomeProductSeller";
 import Cart from "../pages/cart/Cart";
 import DISCOUNT from "../pages/discount/DiscountPage";
 import Discountpage from "../pages/discount/DiscountPage";
+import Order from "../pages/order/Order";
 
 const router = createBrowserRouter([
     {
@@ -40,7 +41,11 @@ const router = createBrowserRouter([
             {
                 path: route.DISCOUNT,
                 element: <Discountpage/>,
-            }
+            },
+            {
+                path: route.ORDER,
+                element: <Order />,
+            },
         ],
     },
     {

@@ -9,7 +9,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import './DataTableDemo.css';
+import './Category.css';
 
 var dataset = [
     {"id": "1000","code": "f230fh0g3","name": "Watch","quantity": 24,"inventoryStatus": "INSTOCK"},
@@ -194,7 +194,7 @@ export default function Category() {
     const actionBodyTemplate = (rowData) => {
         return (
             <React.Fragment>
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => editCategory(rowData)} />
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => editCategory(rowData)} /> {" "}
                 <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteCategory(rowData)} />
             </React.Fragment>
         );

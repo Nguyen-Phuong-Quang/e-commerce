@@ -1,44 +1,54 @@
-import axios from 'axios';
+import axiosClient from "./axiosClient";
 
-const baseUrl = 'http://localhost:5001/api/v1';
+const baseUrl = "http://localhost:5001/api/v1";
+
+const PREFIX = "/product";
 
 const productApi = {
-   getAllProduct :  async () => {
-    return await axios.get(`${baseUrl}/products`);
-  },
-  
-  getProductById : async (id) => {
-     return await axios.get(`${baseUrl}/products/${id}`);
-  },
-  
-  addProduct : async (product) => {
-    const response = await axios.post(`${baseUrl}/products`, product, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    return response;
-  },
-   updateProductById:  async (id, product) => {
-    const response = await axios.put(`${baseUrl}/products/${id}`, product, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    return response;
-  },
-  
- deleteProduct : async (id) => {
-    const response = await axios.delete(`${baseUrl}/products/${id}`);
-    return response;
-  },
+    getAllProduct: () => {
+        const url = `${PREFIX}`;
+        return axiosClient.get(url);
+    },
 
-  getEvaluation: async() => {
-    const response = await axios.get(`${baseUrl}/products/reivews`);
-    return response;
-  }
+    getProductById: (id) => {
+        const url = `${PREFIX}/${id}`;
+        return axiosClient.get(url);
+    },
+
+    addProduct: (data) => {
+        const url = `${PREFIX}`;
+        return axiosClient.post(url, data, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+    },
+
+    // Fix
+    updateProductById: async (id, product) => {
+        const response = await axiosClient.put(
+            `${baseUrl}/products/${id}`,
+            product,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
+        return response;
+    },
+
+    deleteProduct: (id) => {
+        const url = `${PREFIX}/${id}`;
+        return axiosClient.delete(url);
+    },
 
 
-}
+    // Fix
+    getEvaluation: async () => {
+        const response = await axiosClient.get(`${baseUrl}/products/reivews`);
+        return response;
+    },
+};
 
 export default productApi;

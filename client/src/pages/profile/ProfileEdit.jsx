@@ -46,12 +46,14 @@ export default function ProfileEdit({ visible, setVisible, user }) {
                 icon="pi pi-times"
                 onClick={() => setVisible(false)}
                 className="p-button-text"
+                severity="danger"
+                autoFocus
+                outlined
             />
             <Button
                 label="Apply"
                 icon="pi pi-check"
                 onClick={() => handleSubmit()}
-                autoFocus
             />
         </div>
     );
