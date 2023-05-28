@@ -9,11 +9,15 @@ import { Dialog } from "primereact/dialog";
 import { useNavigate } from "react-router-dom";
 import productApi from "./../../api/productApi";
 import { toastContext } from "./../../contexts/ToastProvider";
+import { Button } from "primereact/button";
+import jacket1 from "./image/jacket-1.jpeg";
 
 const DialogEditProduct = ({visible, setVisible}) => {
   const { toastSuccess, toastError } = toastContext();
   const [loading, setLoading] = useState(false);
   const [mainImage, setMainImage] = useState(null);
+  const [mainImageUpdated, setMainImageUpdated] = useState(false);
+  const [preview, setPreview] = useState(undefined);
   const [subImages, setSubImages] = useState([]);
   const [products, setProducts] = useState({
     name: "",
@@ -30,34 +34,109 @@ const DialogEditProduct = ({visible, setVisible}) => {
   const colorOptions = ["red", "blue", "green", "yellow"];
   const sizeOptions = ["S", "M", "L", "XL"];
 
-  // const showToast = (severity, summary, detail) => {
-  //   toast.current.showToast({ severity, summary, detail, life: 3000 });
-  // };
+  const dataTrain = [
+    {
+      name: "Mercurial 9",
+      category: "Soccer boots",
+      description: "no thing",
+      price: "232.000",
+      discountPrice: "111.000",
+      colors: ["blue", "red", "green", "orange"],
+      sizes: ["38", "39", "40", "41", "42"],
+      quantity: 23,
+    },
+    {
+      name: "Mercurial pro",
+      category: "Soccer boot",
+      description: "no thing to say no thing to say no thing to say no thing to say no thing to say",
+      price: "343.000",
+      discountPrice: "98.000",
+      colors: ["red", "blue", "green"],
+      sizes: ["S", "M", "L"],
+      quantity: 12,
+    },
+    {
+      name: "Gucci shoes",
+      category: "Shoes",
+      description: "no thing",
+      price: "232.000",
+      discountPrice: "111.000",
+      colors: ["red", "blue", "green"],
+      sizes: ["S", "M", "L"],
+      quantity: 23,
+    },
+    {
+      name: "Hermes shoes",
+      description: "no thing to say",
+      price: "343.000",
+      discountPrice: "98.000",
+      colors: ["red", "blue", "green"],
+      sizes: ["S", "M", "L"],
+      quantity: 12,
+    },
+    {
+      name: "Gucci short",
+      category: "Clothes",
+      description: "no thing",
+      price: "232.000",
+      discountPrice: "111.000",
+      colors: ["red", "blue", "green"],
+      sizes: ["S", "M", "L"],
+      quantity: 23,
+    },
+    {
+      name: "Hermes short",
+      category: "Hermet",
+      description: "no thing to say",
+      price: "343.000",
+      discountPrice: "98.000",
+      colors: ["red", "blue", "green"],
+      sizes: ["S", "M", "L"],
+      quantity: 12,
+    },
+  ];
 
-  useEffect(() => {
-    const fetchData = async () => {
-        setLoading(true);
-        try {
-            const response = await productApi.getProductById(id);
-            if (response.data.type === "Success") {
-                setProducts(response.data.products);
-            }
-        } catch (err) {
-          toastError("Error", "Failed to fetch products");
-        }
-        setLoading(false);
-    };
+//   useEffect(() => {
+//     const fetchData = async () => {
+//         setLoading(true);
+//         try {
+//             const response = await productApi.getProductById(id);
+//             if (response.data.type === "Success") {
+//                 setProducts(response.data.products);
+//                 setPreview(response.data.products.mainImage);
+//             }
+//         } catch (err) {
+//           toastError("Error", "Failed to fetch products");
+//         }
+//         setLoading(false);
+//     };
 
-    fetchData();
-}, []);
+//     fetchData();
+// }, []);
 
+useEffect(() => {
+  const fetchData = async () => {
+    setLoading(true);
+    try{
+      setProducts(dataTrain);
+      setPreview(jacket1);
+      setSubImages([{url:jacket1},{url:jacket1}, {url:jacket1}, {url:jacket1}  ]);
+    }
+    catch(err){
+      console.log(err);
+    }
+    setLoading(false);
+  };
+  fetchData();
+}, [visible]);
+
+//update another fields of products
   const handleUpdateProduct = async () => {
     setLoading(true);
     try {
         const data = products;
-        const response = await productApi.updateProductById(id, data, mainImage, subImages);
+        const response = await productApi.updateProductById(id, data);
         if (response.data.type === "Success") {
-            navigate("/");
             toastSuccess("success", "Product updated successfully");
         }
     } catch (err) {
@@ -65,6 +144,22 @@ const DialogEditProduct = ({visible, setVisible}) => {
     }
     setLoading(false);
 };
+
+//update main image
+const handleUpdateMainImage = async () => {
+  setLoading(true);
+  try{
+    const response = await productApi.updateMainImage({mainImage});
+    if(response.data.type == "Success"){
+      setMainImageUpdated(false);
+      toastSuccess(response.data.message);
+    }
+  }
+  catch(err){
+    console.log(err);
+  }
+  setLoading(false);
+}
 
 const handleChange = (event) => {
     const name = event.target.name;
@@ -79,20 +174,323 @@ const handleChange = (event) => {
 
   const handleCancelClick = () => {
     setVisible(false);
-    setMainImage(null);
-    setSubImages([]);
   }
+
+  useEffect(() => {
+    if (!mainImage) {
+        setPreview(undefined);
+        return;
+    }
+
+    const objectUrl = URL.createObjectURL(mainImage);
+    setPreview(objectUrl);
+
+    // free memory when ever this component is unmounted
+    return () => URL.revokeObjectURL(objectUrl);
+}, [mainImage]);
+
+const onSelectFile = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+        setMainImage(undefined);
+        return;
+    }
+    // I've kept this example simple by using the first image instead of multiple
+    setMainImage(e.target.files[0]);
+
+    setMainImageUpdated(true);
+};
+
+  const handleRemoveSubimage = (index) => {
+    const updatedSubimages = [...subImages];
+    updatedSubimages.splice(index, 1);
+    setSubImages(updatedSubimages);
+  };
+
+  const handleFileUpload = (event) => {
+    const uploadedFiles = event.files.map((file) => {
+      return {
+        name: file.name,
+        url: URL.createObjectURL(file),
+      };
+    });
+
+    setSubImages([...subImages, ...uploadedFiles]);
+  };
 
   return (
     <>
       <Dialog
-        visible={visible}///
-        style={{ width: "50%" }}
-        footer={<ProductDialogFooter Cancel={(handleCancelClick)} Save={handleSaveClick}/>}
-        onHide={() => {setVisible(false)}}
+        visible={visible} ///
+        style={{ width: "60%" }}
+        footer={
+          <ProductDialogFooter
+            Cancel={handleCancelClick}
+            Save={handleSaveClick}
+          />
+        }
+        onHide={() => {
+          setVisible(false);
+        }}
         header="Edit Product"
       >
-        <div className="p-fluid">
+        <div className="flex flex-row ">
+          <div className="w-1/2 text-center mt-4">
+            <div className="mb-4 flex-col items-center ">
+              <label
+                htmlFor="mainImage"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-left mr-4"
+              >
+                Main Image
+              </label>
+
+              <div className="shadow-xl  w-full mr-8 mt-4 pb-4">
+                <img
+                  src={preview}
+                  alt="mainImage"
+                  className="mt-4 mb-4 rounded-xl border h-52 w-52 object-cover mx-auto shadow-xl"
+                />
+
+                <input
+                  id="profile-image-sign-up"
+                  type="file"
+                  hidden
+                  onChange={onSelectFile}
+                />
+                {mainImageUpdated ? (
+                  <Button
+                    className="font-bold flex justify-center items-center h-12 w-1/4 mx-auto mt-6 mb-2 bg-blue-600 text-white hover:cursor-pointer rounded-md"
+                    label="Submit"
+                    icon="pi pi-check"
+                    onClick={() => handleUpdateMainImage()}
+                  />
+                ) : (
+                  <label
+                    htmlFor="profile-image-sign-up"
+                    className="font-bold flex justify-center items-center h-12 w-1/4 mx-auto mt-6 mb-2 bg-white text-blue-500 border-radius border border-blue-600 hover:cursor-pointer hover:bg-blue-500 hover:text-white rounded-md"
+                  >
+                    <div className="flex items-center my-2">
+                      <i className="pi pi-image mr-2" /> <span>Update</span>
+                    </div>
+                  </label>
+                )}
+              </div>
+            </div>
+
+            <div className="mb-4 flex-col items-center shadow-xl ">
+              <label
+                htmlFor="subImage"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-left mr-4"
+              >
+                Sub Images
+              </label>
+              {/* <div className="card">
+                <FileUpload
+                  className="mr-8"
+                  chooseLabel="New"
+                  uploadLabel="Upload"
+                  cancelLabel="Cancel"
+                  uploadOptions={{ className: "text-blue-700" }}
+                  cancelOptions={{ className: "text-blue-700" }}
+                  name="subImages[]"
+                  multiple="true"
+                  accept="image/*"
+                  maxFileSize={1000000}
+                  emptyTemplate={
+                    <p className="m-0 p-2">
+                      Drag and drop files to here to upload.
+                    </p>
+                  }
+                  uploadHandler={handleFileUpload}
+                />
+
+                {/* handle edit sub image  */}
+              {/* <div className="sub-images">
+                  {subImages.map((subImage, index) => (
+                    <div key={index} className="sub-image">
+                      <img src={subImage} alt="Sub Image" />
+                      <Button onChange={() => handleEditSubImage(index)} label="Edit"  className="bg-red-500 text-white-700"/>
+                    </div>
+                  ))}
+                </div>
+                
+              </div> */}
+              <FileUpload
+
+                accept="image/*"
+                maxFileSize={1000000}
+                multiple={true}
+                customUpload
+                chooseLabel="New"
+
+                uploadOptions={{ className: "text-blue-500" }}
+                cancelOptions={{ className: "text-blue-500" }}
+                chooseOptions={{className: "bg-white text-blue-500"}}
+                uploadHandler={handleFileUpload}
+              />
+
+              <div className="grid grid-cols-4 gap-4  pb-2 mx-2 my-2 ">
+                {subImages.map((subimage, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={subimage.url}
+                      alt="subimage"
+                      className="w-full h-32 object-cover rounded"
+                    />
+                      <div className="absolute top-1 right-1 overflow-hidden text-red-500 font-bold cursor-pointer inline-block" onClick={() => handleRemoveSubimage(index)}>
+                        <i className="pi pi-times-circle  bg-white-500  hover:bg-white-500 hover:text-red-700 hover:cursor-pointer "></i>
+                      </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="w-1/2  shadow-xl mt-4 mb-4 ml-4">
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="name"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+              >
+                Name
+              </label>
+              <InputText
+                id="name"
+                name="name"
+                placeholder="Enter name"
+                value={products.name}
+                onChange={handleChange}
+                className="basis-2/3 mr-4"
+              />
+            </div>
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="category"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+              >
+                Category
+              </label>
+              <InputText
+                id="category"
+                name="category"
+                placeholder="Enter category"
+                value={products.category}
+                onChange={handleChange}
+                className="basis-2/3 mr-4"
+              />
+            </div>
+
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="description"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+              >
+                Description
+              </label>
+              <InputTextarea
+                id="description"
+                name="description"
+                placeholder="Enter description"
+                value={products.description}
+                onChange={handleChange}
+                className="basis-2/3 mr-4"
+                rows={3}
+                cols={30}
+              />
+            </div>
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="price"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+              >
+                Price
+              </label>
+              <InputText
+                id="price"
+                name="price"
+                placeholder="Enter price"
+                value={products.price}
+                onChange={handleChange}
+                className="basis-2/3 mr-4"
+              />
+            </div>
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="discountPrice"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+              >
+                Price After Discount
+              </label>
+              <InputText
+                id="discountPrice"
+                name="discountPrice"
+                placeholder="Enter price after discount"
+                value={products.price}
+                onChange={handleChange}
+                className="basis-2/3 mr-4"
+              />
+            </div>
+
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="colors"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
+              >
+                Colors
+              </label>
+              <MultiSelect
+                filter
+                id="colors"
+                name="colors"
+                options={colorOptions}
+                value={products.colors}
+                onChange={handleChange}
+                placeholder="Select Colors"
+                display="chip"
+                className="w-2/3 md:w-20rem  mr-4"
+              />
+            </div>
+
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="sizes"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
+              >
+                Sizes
+              </label>
+              <MultiSelect
+                filter
+                id="sizes"
+                name="sizes"
+                options={sizeOptions}
+                value={products.sizes}
+                onChange={handleChange}
+                //optionLabel="name"
+                placeholder="Select Sizes"
+                display="chip"
+                className="basis-2/3 mr-4"
+              />
+            </div>
+
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="quantities"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
+              >
+                Quantities
+              </label>
+              <InputNumber
+                id="quantities"
+                name="quantities"
+                placeholder="Enter quantity"
+                value={products.quantities}
+                onValueChange={handleChange}
+                integeronly
+                className="basis-2/3 mr-4"
+              />
+            </div>
+          </div>
+        </div>
+        {/* <div className="p-fluid">
           <div className="p-field">
             <label htmlFor="name">Name</label>
             <InputText
@@ -219,7 +617,7 @@ const handleChange = (event) => {
             />
           </div>
           
-        </div>
+        </div> */}
       </Dialog>
     </>
   );

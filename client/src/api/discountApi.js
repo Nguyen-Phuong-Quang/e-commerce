@@ -41,4 +41,4 @@ const discountApi = {
 //     },
 // };
 
-// export default discountApi;
+export default discountApi;

@@ -24,7 +24,7 @@ export default function Profile() {
                 setPreview(response.data.user.profileImage);
             }
         } catch (err) {
-            toastError(err.response.data.message);
+            // toastError(err.response.data.message);
         }
         setLoading(false);
     };

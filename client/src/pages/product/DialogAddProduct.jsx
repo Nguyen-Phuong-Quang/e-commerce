@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Dialog } from "primereact/dialog";
 import productApi from "./../../api/productApi";
 import { toastContext } from "./../../contexts/ToastProvider";
+import { classNames } from "primereact/utils";
 
 
 const DialogAddProduct = ({visible, setVisible}) => {
@@ -20,25 +21,22 @@ const DialogAddProduct = ({visible, setVisible}) => {
     name: "",
     category: "",
     description: "",
-    price: 0,
-    discountPrice: 0,
+    price: null,
+    discountPrice: null,
     colors: [],
     sizes: [],
-    quantities: 0,
+    quantities: null,
   });
   const navigate = useNavigate();
 
   const colorOptions = ["red", "blue", "green", "yellow"];
   const sizeOptions = ["S", "M", "L", "XL"];
 
-//   const showToast = (severity, summary, detail) => {
-//     toast.current.show({ severity, summary, detail, life: 3000 });
-//   };
 
   const handelAddProduct = async () => {
     setLoading(true);
     try {
-        const response = await productApi.createProduct({ ...inputs, mainImage, subImages });
+        const response = await productApi.createProduct({ ...products, mainImage, subImages });
         if (response.data.type === "Success") {
             navigate("/");
             toastSuccess(response.data.message);
@@ -70,147 +68,235 @@ const handleChange = (event) => {
   return (
     <>
       <Dialog
-        visible={visible}//pass params as addVisible.
-        style={{ width: "50%" }}
-        footer={<ProductDialogFooter Cancel={handleCancelClick} Save={handleSaveClick}/>}
-        onHide={() => {setVisible(false)}}
+        visible={visible} //pass params as addVisible.
+        style={{ width: "60%" }}
+        footer={
+          <ProductDialogFooter
+            Cancel={handleCancelClick}
+            Save={handleSaveClick}
+          />
+        }
+        onHide={() => {
+          setVisible(false);
+        }}
         header="Add Product"
       >
-        <div className="p-fluid">
-          <div className="p-field">
-            <label htmlFor="name">Name</label>
-            <InputText
-              id="name"
-              name="name"
-              value={products.name}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="p-field">
-            <label htmlFor="category">Category</label>
-            <InputText
-              id="category"
-              name="category"
-              value={products.category}
-              onChange={handleChange}
-            />
-          </div>
+        <div className="flex flex-row ">
+          <div className="w-1/2 text-center mt-4">
+            <div className="mb-4 flex-col items-center">
+              <label
+                htmlFor="mainImage"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-left mr-4"
+              >
+                Main Image
+              </label>
+              <div className="w-full mr-8">
+                <img
+                  src={mainImage}
+                  alt="mainImage"
+                  className="rounded-md h-52 w-52 object-cover mx-auto shadow-xl"
+                />
+                <input
+                  type="file"
+                  id="product-main-image"
+                  hidden
+                  onChange={(event) => {
+                    setMainImage(URL.createObjectURL(event.target.files[0]));
+                  }}
+                />
+                <label
+                  htmlFor="product-main-image"
+                  className="font-bold flex justify-center items-center h-12 w-1/4 mx-auto mt-6 mb-2 bg-blue-500 text-white hover:cursor-pointer rounded-md"
+                >
+                  <div className="flex items-center my-2">
+                    <i className="pi pi-image mr-4" /> <span>Add</span>
+                  </div>
+                </label>
+              </div>
+            </div>
 
-          <div className="p-field">
-          <label htmlFor="mainImage">Main Image</label>
-            <div className="card">
-              <FileUpload
-                chooseLabel="Select Image"
-                uploadLabel="Upload Image"
-                name="mainImage"
-                multiple="false"
-                accept="image/*"
-                maxFileSize={1000000}
-                emptyTemplate={
-                  <p className="m-0">Drag and drop files to here to upload.</p>
-                }
-                uploadHandler={(event) => {
-                  setMainImage(URL.createObjectURL(event.files[0]));
-                }}
-              />
+            <div className="mb-4 flex-col items-center">
+              <label
+                htmlFor="subImage"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-left mr-4"
+              >
+                Sub Images
+              </label>
+              <div className="card">
+                <FileUpload
+                className="mr-8"
+                  chooseLabel="New"
+                  uploadLabel="Upload"
+                  cancelLabel="Cancel"
+                  uploadOptions={{className: "text-blue-700"}}
+                  cancelOptions={{className: "text-blue-700"}}
+                  name="subImages[]"
+                  multiple="true"
+                  accept="image/*"
+                  maxFileSize={1000000}
+                  emptyTemplate={
+                    <p className="m-0 p-2">
+                      Drag and drop files to here to upload.
+                    </p>
+                  }
+                  uploadHandler={(event) => {
+                    const subImageUrls = event.files.map((file) =>
+                      URL.createObjectURL(file)
+                    );
+                    setSubImages((prevSubImages) => [
+                      ...prevSubImages,
+                      ...subImageUrls,
+                    ]);
+                  }}
+                />
+              </div>
             </div>
           </div>
 
-          <div className="p-field">
-          <label htmlFor="subImage">Sub Image</label>
-            <div className="card">
-              <FileUpload
-                chooseLabel="Select Image"
-                uploadLabel="Upload Image"
-                name="subImages[]"
-                multiple="true"
-                accept="image/*"
-                maxFileSize={1000000}
-                emptyTemplate={
-                  <p className="m-0">Drag and drop files to here to upload.</p>
-                }
-                uploadHandler={(event) => {
-                  const subImageUrls = event.files.map((file) =>
-                    URL.createObjectURL(file)
-                  );
-                  setSubImages((prevSubImages) => [
-                    ...prevSubImages,
-                    ...subImageUrls,
-                  ]);
-                }}
+          <div className="w-1/2 mt-4">
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="name"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+              >
+                Name
+              </label>
+              <InputText
+                id="name"
+                name="name"
+                placeholder="Enter name"
+                value={products.name}
+                onChange={handleChange}
+                className="basis-2/3 mr-4"
+              />
+            </div>
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="category"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+              >
+                Category
+              </label>
+              <InputText
+                id="category"
+                name="category"
+                placeholder="Enter category"
+                value={products.category}
+                onChange={handleChange}
+                className="basis-2/3 mr-4"
+              />
+            </div>
+
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="description"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+              >
+                Description
+              </label>
+              <InputTextarea
+                id="description"
+                name="description"
+                placeholder="Enter description"
+                value={products.description}
+                onChange={handleChange}
+                className="basis-2/3 mr-4"
+                rows={3}
+                cols={30}
+              />
+            </div>
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="price"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+              >
+                Price
+              </label>
+              <InputText
+                id="price"
+                name="price"
+                placeholder="Enter price"
+                value={products.price}
+                onChange={handleChange}
+                className="basis-2/3 mr-4"
+              />
+            </div>
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="discountPrice"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+              >
+                Price After Discount
+              </label>
+              <InputText
+                id="discountPrice"
+                name="discountPrice"
+                placeholder="Enter price after discount"
+                value={products.price}
+                onChange={handleChange}
+                className="basis-2/3 mr-4"
+              />
+            </div>
+
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="colors"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
+              >
+                Colors
+              </label>
+              <MultiSelect
+                filter
+                id="colors"
+                name="colors"
+                options={colorOptions}
+                value={products.colors}
+                onChange={handleChange}
+                placeholder="Select Colors"
+                display="chip"
+                className="w-2/3 md:w-20rem  mr-4"
+              />
+            </div>
+
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="sizes"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
+              >
+                Sizes
+              </label>
+              <MultiSelect
+                filter
+                id="sizes"
+                name="sizes"
+                options={sizeOptions}
+                value={products.sizes}
+                onChange={handleChange}
+                //optionLabel="name"
+                placeholder="Select Sizes"
+                display="chip"
+                className="basis-2/3 mr-4"
+              />
+            </div>
+
+            <div className="mb-6 flex flex-row ">
+              <label
+                htmlFor="quantities"
+                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
+              >
+                Quantities
+              </label>
+              <InputNumber
+                id="quantities"
+                name="quantities"
+                placeholder="Enter quantity"
+                value={products.quantities}
+                onValueChange={handleChange}
+                integeronly
+                className="basis-2/3 mr-4"
               />
             </div>
           </div>
-
-          <div className="p-field">
-            <label htmlFor="description">Description</label>
-            <InputTextarea
-              id="description"
-              name="description"
-              value={products.description}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="p-field">
-            <label htmlFor="price">Price</label>
-            <InputText
-              id="price"
-              name="price"
-              value={products.price}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="p-field">
-            <label htmlFor="discountPrice">Price After Discount</label>
-            <InputText
-              id="discountPrice"
-              name="discountPrice"
-              value={products.price}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="p-field">
-            <label htmlFor="colors">Colors</label>
-            <MultiSelect
-              filter
-              id="colors"
-              name="colors"
-              options={colorOptions}
-              value={products.colors}
-              onChange={handleChange}
-              // optionLabel="name"
-              placeholder="Select Colors"
-              display="chip"
-            />
-          </div>
-
-          <div className="p-field">
-            <label htmlFor="sizes">Sizes</label>
-            <MultiSelect
-              filter
-              id="sizes"
-              name="sizes"
-              options={sizeOptions}
-              value={products.sizes}
-              onChange={handleChange}
-              //optionLabel="name"
-              placeholder="Select Sizes"
-              display="chip"
-            />
-          </div>
-
-          <div className="p-field">
-            <label htmlFor="quantities">Quantities</label>
-            <InputNumber
-              id="quantities"
-              name="quantities"
-              value={products.quantities}
-              onValueChange={handleChange}
-              integeronly
-            />
-          </div>
-          
         </div>
       </Dialog>
     </>

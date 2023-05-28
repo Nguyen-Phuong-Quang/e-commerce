@@ -52,7 +52,7 @@ const dataTrain = [
       description: "no thing",
       price: "232.000",
       discountPrice: "111.000",
-      colors: ["blue", "red", "green", "orange"],
+      colors: ["blue", "red", "green", "gray"],
       sizes: ["38", "39", "40", "41", "42"],
       quantity: 23,
     },
@@ -295,7 +295,7 @@ const rightToolbarTemplate = () => {
         )}
         {selectedProduct && (
           <Dialog
-            header={selectedProduct.name}
+            header= {`${selectedProduct.name} detail`}
             visible={showDialog}
             onHide={onHideDialog}
             className="rounded-md overflow-hidden  mx-auto w-1/2"
@@ -327,10 +327,13 @@ const rightToolbarTemplate = () => {
                   ))}
                 </div>
               </div>
-              <div className="space-y-4">
-                <h3 className="text-2xl font-bold">{selectedProduct.name}</h3>
-                <p className="text-gray-500">{selectedProduct.category}</p>
-                <p className="text-gray-700">{selectedProduct.description}</p>
+
+              <div className="space-y-4 ">
+                <h3 className="text-3xl font-bold">{selectedProduct.name}</h3>
+                <p className="text-gray-400 font-bold">{selectedProduct.category}</p>
+                <div className=' rounded bg-gray-50'>
+                <p className="text-gray-700 p-4">{selectedProduct.description}</p>
+                </div>
                 <div className="flex items-center">
                   <span className="text-3xl font-bold">
                     {" "}
@@ -362,7 +365,7 @@ const rightToolbarTemplate = () => {
                     </span>
                   ))}
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 pt-2">
                   <span className="font-semibold">Quantity:</span>
                   <span>{selectedProduct.quantity}</span>
                 </div>

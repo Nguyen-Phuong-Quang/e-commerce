@@ -37,7 +37,7 @@
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { useEffect, useState } from 'react';
-import productApi from '../../api/productApi';
+import reviewApi from '../../api/reviewApi';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 const EvaluationDialog = ({ visible, setVisible, evaluations }) => {
@@ -48,7 +48,7 @@ const EvaluationDialog = ({ visible, setVisible, evaluations }) => {
   //   const fetchApi = async () => {
   //     setLoading(true);
   //     try{
-  //       const response = await productApi.getEvaluation();
+  //       const response = await reviewApi.query(productId);
   //       if(response.data.type == "Success"){
   //         toastSuccess("success");
   //         setEvaluation(response.data.evaluation);
