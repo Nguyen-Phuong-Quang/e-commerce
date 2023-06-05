@@ -55,6 +55,8 @@ axiosClient.interceptors.response.use(
                 }
             }
         } else {
+            localStorage.removeItem("TOKEN");
+            localStorage.removeItem("REFRESH_TOKEN");
             throw error;
         }
 
