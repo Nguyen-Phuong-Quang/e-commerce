@@ -1,44 +1,38 @@
-import axios from 'axios';
+import axiosClient from './axiosClient';
 
-const baseUrl = 'http://localhost:5001/api/v1/discount';
+
+const PREFIX = "/product";
 
 const discountApi = {
-   getAllDiscount :  async () => {
-    return await axios.get(`${baseUrl}/discounts`);
-  },
+  getAllDiscount: () => {
+    const url = `${PREFIX}`;
+    return axiosClient.get(url);
+},
   
-  getDiscountById : async (id) => {
-     return await axios.get(`${baseUrl}/discounts/${id}`);
-  },
-  
-  addDiscount : async (discount) => {
-    const response = await axios.post(`${baseUrl}/discounts`, discount, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    return response;
+  getDiscountById :  (id) => {
+     const url =  (`${PREFIX}/${id}`);
+     return axiosClient.get(url);
   },
 
-   UpdateDiscountById :  async (id, discount) => {
-    const response = await axios.put(`${baseUrl}/discount/${id}`, discount, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+  addDiscount: (discount) => {
+    const url = `${PREFIX}`;
+    return axiosClient.post(url, data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
     });
-    return response;
-  }
+},
+
+  
+  UpdateDiscountById: (id, discount) => {
+    const url = `${PREFIX}`;
+    return axiosClient.put(url, discount, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    });
+},
 
 }
-// import axiosClient from "./axiosClient";
-
-// const PREFIX = "/discount";
-
-// const discountApi = {
-//     generate: (data) => {
-//         const url = `${PREFIX}/generate`;
-//         return axiosClient.post(url, data);
-//     },
-// };
 
 export default discountApi;

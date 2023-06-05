@@ -8,6 +8,7 @@ const route = {
     PRODUCT: "/product",
     CART: "/cart",
     ORDER: "/order",
+    DISCOUNT:"/discount",
 };
 
 export default route;
