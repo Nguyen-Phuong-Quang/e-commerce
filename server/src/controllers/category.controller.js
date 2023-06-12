@@ -126,26 +126,26 @@ exports.updateCategoryDetail = async (req, res, next) => {
  * @property  { Object } req.body - Body object data
  * @returns   { JSON } - A JSON object representing the type, message and category
  */
-exports.updateCategoryImage = async (req, res, next) => {
-    try {
-        const { type, message, statusCode, category } =
-            await categoryService.updateCategoryImage(
-                req.params.categoryId,
-                req.file
-            );
+// exports.updateCategoryImage = async (req, res, next) => {
+//     try {
+//         const { type, message, statusCode, category } =
+//             await categoryService.updateCategoryImage(
+//                 req.params.categoryId,
+//                 req.file
+//             );
 
-        if (type === statusType.error)
-            return next(new CustomErrorHandler(statusCode, message));
+//         if (type === statusType.error)
+//             return next(new CustomErrorHandler(statusCode, message));
 
-        res.status(statusCode).json({
-            type,
-            message,
-            category,
-        });
-    } catch (err) {
-        next(err);
-    }
-};
+//         res.status(statusCode).json({
+//             type,
+//             message,
+//             category,
+//         });
+//     } catch (err) {
+//         next(err);
+//     }
+// };
 
 /**
  * @desc      Delete Category Controller

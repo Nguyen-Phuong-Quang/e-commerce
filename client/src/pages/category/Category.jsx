@@ -2,38 +2,37 @@ import React, { useState, useEffect, useRef } from 'react';
 import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { CategoryService } from './CategoryService';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
-import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
+import categoryApi from "../../api/categoryApi";
 import './Category.css';
 
 var dataset = [
-    {"id": "1000","code": "f230fh0g3","name": "Watch","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1001","code": "f230fh0g4","name": "Hat","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1002","code": "f230fh123","name": "Clock","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1003","code": "f230fh0ad","name": "Pant","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1004","code": "f230fh0zx","name": "Shoes","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1005","code": "f230fhnbv","name": "Balo","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1006","code": "f230f253s","name": "Package","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1007","code": "f230fhgfd","name": "Short","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1008","code": "f230fdfgj","name": "Phone","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1009","code": "f230fhcvb","name": "Laptop","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1010","code": "f230fhfgh","name": "Pen","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1011","code": "f230fh657","name": "Fan","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1012","code": "f230fhiop","name": "Mouse","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1013","code": "f230fhjhg","name": "Paper","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1014","code": "f230fhida","name": "Book","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1015","code": "f230fhbcv","name": "Notebook","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1016","code": "f230fh458","name": "Cream","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1017","code": "f230fhjkl","name": "Lamp","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1018","code": "f230fhjqa","name": "Accessory","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1019","code": "f230fhree","name": "Houseware","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1020","code": "f230fhfdf","name": "Joinery","quantity": 24,"inventoryStatus": "INSTOCK"},
-    {"id": "1021","code": "nvklal433","name": "Clothes","quantity": 61,"inventoryStatus": "INSTOCK"}
+    {"id": "1000","description": "f230fh0g3","name": "Watch",},
+    {"id": "1001","description": "f230fh0g4","name": "Hat",},
+    {"id": "1002","description": "f230fh123","name": "Clock",},
+    {"id": "1003","description": "f230fh0ad","name": "Pant",},
+    {"id": "1004","description": "f230fh0zx","name": "Shoes",},
+    {"id": "1005","description": "f230fhnbv","name": "Balo",},
+    {"id": "1006","description": "f230f253s","name": "Package",},
+    {"id": "1007","description": "f230fhgfd","name": "Short",},
+    {"id": "1008","description": "f230fdfgj","name": "Phone",},
+    {"id": "1009","description": "f230fhcvb","name": "Laptop",},
+    {"id": "1010","description": "f230fhfgh","name": "Pen",},
+    {"id": "1011","description": "f230fh657","name": "Fan",},
+    {"id": "1012","description": "f230fhiop","name": "Mouse",},
+    {"id": "1013","description": "f230fhjhg","name": "Paper",},
+    {"id": "1014","description": "f230fhida","name": "Book",},
+    {"id": "1015","description": "f230fhbcv","name": "Notebook",},
+    {"id": "1016","description": "f230fh458","name": "Cream",},
+    {"id": "1017","description": "f230fhjkl","name": "Lamp",},
+    {"id": "1018","description": "f230fhjqa","name": "Accessory",},
+    {"id": "1019","description": "f230fhree","name": "Houseware",},
+    {"id": "1020","description": "f230fhfdf","name": "Joinery",},
+    {"id": "1021","description": "nvklal433","name": "Clothes",}
 ]
 
 export default function Category() {
@@ -41,12 +40,12 @@ export default function Category() {
     let emptyCategory = {
         id: null,
         name: '',
-        quantity: 0,
-        inventoryStatus: 'INSTOCK'
+        description: "",
     };
 
+    const [data, setData] = useState([]);
     const [categories, setCategories] = useState(null);
-    const [categoryDialog, setCategoryDialog] = useState(false);
+    const [addCategoryDialog, setAddCategoryDialog] = useState(false);
     const [deleteCategoryDialog, setDeleteCategoryDialog] = useState(false);
     const [deleteCategoriesDialog, setDeleteCategoriesDialog] = useState(false);
     const [category, setCategory] = useState(emptyCategory);
@@ -55,21 +54,30 @@ export default function Category() {
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
-    const categoryService = new CategoryService();
 
     useEffect(() => {
-        categoryService.getCategories().then(data => setCategories(data));
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+        const fetchData = async () => {
+            try {
+                const response = await categoryApi.query()
+                console.log(response);
+                setData();
+            } catch(err) {
+                console.log(err.response);
+            }
+        }
+        fetchData()
+    },[]);
 
-    const openNew = () => {
+
+    const handleAddCategory = () => {
         setCategory(emptyCategory);
         setSubmitted(false);
-        setCategoryDialog(true);
+        setAddCategoryDialog(true);
     }
 
     const hideDialog = () => {
         setSubmitted(false);
-        setCategoryDialog(false);
+        setAddCategoryDialog(false);
     }
 
     const hideDeleteCategoryDialog = () => {
@@ -90,24 +98,33 @@ export default function Category() {
                 const index = findIndexById(category.id);
 
                 _categories[index] = _category;
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Category Updated', life: 3000 });
+                toast.current.show({ 
+                    severity: 'success', 
+                    summary: 'Successful', 
+                    detail: 'Category Updated', 
+                    life: 3000 
+                });
             }
             else {
                 _category.id = createId();
-                _category.image = 'product-placeholder.svg';
                 _categories.push(_category);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Category Created', life: 3000 });
+                toast.current.show({ 
+                    severity: 'success', 
+                    summary: 'Successful', 
+                    detail: 'Category Created', 
+                    life: 3000 
+                });
             }
 
             setCategories(_categories);
-            setCategoryDialog(false);
+            setAddCategoryDialog(false);
             setCategory(emptyCategory);
         }
     }
 
-    const editCategory = (category) => {
+    const handleEditCategory = (category) => {
         setCategory({...category});
-        setCategoryDialog(true);
+        setAddCategoryDialog(true);
     }
 
     const confirmDeleteCategory = (category) => {
@@ -115,12 +132,16 @@ export default function Category() {
         setDeleteCategoryDialog(true);
     }
 
-    const deleteCategory = () => {
+    const handleDeleteCategory = () => {
         let _categories = categories.filter(val => val.id !== category.id);
         setCategories(_categories);
         setDeleteCategoryDialog(false);
         setCategory(emptyCategory);
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Category Deleted', life: 3000 });
+        toast.current.show({ 
+            severity: 'success', 
+            summary: 'Successful', 
+            detail: 'Category Deleted', 
+            life: 3000 });
     }
 
     const findIndexById = (id) => {
@@ -148,11 +169,18 @@ export default function Category() {
     }
 
     const deleteSelectedCategories = () => {
-        let _categories = categories.filter(val => !selectedCategories.includes(val));
+        let _categories = categories.filter(
+                val => !selectedCategories.includes(val)
+            );
         setCategories(_categories);
         setDeleteCategoriesDialog(false);
         setSelectedCategories(null);
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Categories Deleted', life: 3000 });
+        toast.current.show({ 
+            severity: 'success', 
+            summary: 'Successful', 
+            detail: 'Categories Deleted', 
+            life: 3000 
+        });
     }
 
     const onInputChange = (e, name) => {
@@ -163,38 +191,30 @@ export default function Category() {
         setCategory(_category);
     }
 
-    const onInputNumberChange = (e, name) => {
-        const val = e.value || 0;
-        let _category = {...category};
-        _category[`${name}`] = val;
-
-        setCategory(_category);
-    }
-
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <Button label="New" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                <Button label="Delete" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedCategories || !selectedCategories.length} />
+                <Button 
+                    label="New" 
+                    icon="pi pi-plus" 
+                    className="p-button-success mr-2" 
+                    onClick={handleAddCategory} 
+                    />
+                <Button 
+                    label="Delete" 
+                    icon="pi pi-trash" 
+                    className="p-button-danger" 
+                    onClick={confirmDeleteSelected} 
+                    disabled={!selectedCategories || !selectedCategories.length} 
+                    />
             </React.Fragment>
         )
-    }
-
-    const rightToolbarTemplate = () => {
-        return (
-            <React.Fragment>
-            </React.Fragment>
-        )
-    }
-
-    const statusBodyTemplate = (rowData) => {
-        return <span className={`product-badge status-${rowData.inventoryStatus.toLowerCase()}`}>{rowData.inventoryStatus}</span>;
     }
 
     const actionBodyTemplate = (rowData) => {
         return (
             <React.Fragment>
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => editCategory(rowData)} /> {" "}
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => handleEditCategory(rowData)} /> {" "}
                 <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteCategory(rowData)} />
             </React.Fragment>
         );
@@ -218,7 +238,7 @@ export default function Category() {
     const deleteCategoryDialogFooter = (
         <React.Fragment>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteCategoryDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteCategory} />
+            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={handleDeleteCategory} />
         </React.Fragment>
     );
     const deleteCategoriesDialogFooter = (
@@ -233,45 +253,71 @@ export default function Category() {
             <Toast ref={toast} />
 
             <div className="card">
-                <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+                <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
 
                 {/* <DataTable ref={dt} value={products} selection={selectedCategories} onSelectionChange={(e) => setSelectedCategories(e.value)} */}
-                <DataTable ref={dt} value={dataset} selection={selectedCategories} onSelectionChange={(e) => setSelectedCategories(e.value)}
+                <DataTable ref={dt} value={dataset} selection={selectedCategories} 
+                    onSelectionChange={(e) => setSelectedCategories(e.value)}
                     dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
-                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                    paginatorTemplate="FirstPageLink P  revPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
                     globalFilter={globalFilter} header={header} responsiveLayout="scroll">
                     <Column selectionMode="multiple" headerStyle={{ width: '3rem' }} exportable={false}></Column>
-                    <Column field="code" header="Code" sortable style={{ minWidth: '12rem' }}></Column>
-                    <Column field="name" header="Name" sortable style={{ minWidth: '16rem' }}></Column>
-                    <Column field="inventoryStatus" header="Status" body={statusBodyTemplate} sortable style={{ minWidth: '12rem' }}></Column>
+                    <Column field="name" header="Name" sortable style={{ minWidth: '12rem' }}></Column>
+                    <Column field="description" header="Description" style={{ minWidth: '24rem' }}></Column>
                     <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
                 </DataTable>
             </div>
 
-            <Dialog visible={categoryDialog} style={{ width: '450px' }} header="Category Details" modal className="p-fluid" footer={categoryDialogFooter} onHide={hideDialog}>
+            <Dialog visible={addCategoryDialog} style={{ width: '450px' }} header="Category Details" modal className="p-fluid" footer={categoryDialogFooter} onHide={hideDialog}>
                 <div className="field">
                     <label htmlFor="name">Name</label>
-                    <InputText id="name" value={category.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !category.name })} />
+                    <InputText 
+                        id="name" 
+                        value={category.name} 
+                        onChange={(e) => onInputChange(e, 'name')} 
+                        required 
+                        autoFocus 
+                        className={classNames({ 'p-invalid': submitted && !category.name })} 
+                    />
                     {submitted && !category.name && <small className="p-error">Name is required.</small>}
                 </div>
 
                 <div className="formgrid grid">
                     <div className="field col">
-                        <label htmlFor="quantity">Quantity</label>
-                        <InputNumber id="quantity" value={category.quantity} onValueChange={(e) => onInputNumberChange(e, 'quantity')} integeronly />
+                        <label htmlFor="description">Description</label>
+                        <InputText 
+                            id="description" 
+                            value={category.description} 
+                            onChange={(e) => onInputChange(e, 'description')} 
+                            required 
+                            className={classNames({ 'p-invalid': submitted && !category.description })} 
+                        />
+                    {submitted && !category.description && <small className="p-error">Description is required.</small>}
                     </div>
                 </div>
             </Dialog>
 
-            <Dialog visible={deleteCategoryDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteCategoryDialogFooter} onHide={hideDeleteCategoryDialog}>
+            <Dialog visible={deleteCategoryDialog} 
+                style={{ width: '450px' }} 
+                header="Confirm" 
+                modal 
+                footer={deleteCategoryDialogFooter} 
+                onHide={hideDeleteCategoryDialog}
+            >
                 <div className="confirmation-content">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
                     {category && <span>Are you sure you want to delete <b>{category.name}</b>?</span>}
                 </div>
             </Dialog>
 
-            <Dialog visible={deleteCategoriesDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteCategoriesDialogFooter} onHide={hideDeleteCategoriesDialog}>
+            <Dialog visible={deleteCategoriesDialog} 
+                style={{ width: '450px' }} 
+                header="Confirm" 
+                modal 
+                footer={deleteCategoriesDialogFooter} 
+                onHide={hideDeleteCategoriesDialog}
+            >
                 <div className="confirmation-content">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
                     {category && <span>Are you sure you want to delete the selected Categories?</span>}

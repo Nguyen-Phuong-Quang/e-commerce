@@ -23,10 +23,10 @@ router
     .delete(categoryController.deleteCategory);
 
 // Update category image
-router.patch(
-    "/image/:categoryId",
-    uploadSingleFile("image"),
-    categoryController.updateCategoryImage
-);
+// router.patch(
+//     "/image/:categoryId",
+//     uploadSingleFile("image"),
+//     categoryController.updateCategoryImage
+// );
 
 module.exports = router;
