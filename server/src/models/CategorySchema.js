@@ -11,14 +11,14 @@ const CategorySchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    image: {
-        type: String,
-        required: true,
-    },
-    imageId: {
-        type: String,
-        required: true,
-    },
+    // image: {
+    //     type: String,
+    //     required: true,
+    // },
+    // imageId: {
+    //     type: String,
+    //     required: true,
+    // },
 });
 
 CategorySchema.index({ name: 1, image: 1 }, { unique: true });

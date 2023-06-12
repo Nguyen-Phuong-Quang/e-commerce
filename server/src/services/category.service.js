@@ -13,30 +13,37 @@ const statusType = require("../constants/statusType");
  * @param   { object } imageFile - Category image
  * @returns { object<type|message|statusCode|category> }
  */
-exports.createCategory = async (name, description, imageFile) => {
+exports.createCategory = async (name, description) => {
     // 1. Check if messing field
-    if (!name || !description || !imageFile)
+    // if (!name || !description || !imageFile)
+    //     return {
+    //         type: statusType.error,
+    //         message: "Missing field!",
+    //         statusCode: 400,
+    //     };
+
+        if (!name || !description)
         return {
             type: statusType.error,
             message: "Missing field!",
             statusCode: 400,
         };
 
-    // 2. Folder path
-    const folderName = `Categories/${name.trim().split(" ").join("-")}`;
+    // // 2. Folder path
+    // const folderName = `Categories/${name.trim().split(" ").join("-")}`;
 
-    // 3. Image response after upload
-    const imageUploadResponse = await uploadFileCloudinary(
-        imageFile.buffer,
-        folderName
-    );
+    // // 3. Image response after upload
+    // const imageUploadResponse = await uploadFileCloudinary(
+    //     imageFile.buffer,
+    //     folderName
+    // );
 
     // 4. Create category
     const category = await CategorySchema.create({
         name,
         description,
-        image: imageUploadResponse.secure_url,
-        imageId: imageUploadResponse.public_id,
+        // image: imageUploadResponse.secure_url,
+        // imageId: imageUploadResponse.public_id,
     });
 
     return {
@@ -132,57 +139,57 @@ exports.updateCategoryDetail = async (categoryId, body) => {
  * @param   { object } imageFile - Category image
  * @returns { object<type|message|statusCode|category> }
  */
-exports.updateCategoryImage = async (categoryId, imageFile) => {
-    // 1. Check image if missed
-    if (imageFile === undefined)
-        return {
-            type: statusType.error,
-            message: "Image required!",
-            statusCode: 400,
-        };
+// exports.updateCategoryImage = async (categoryId, imageFile) => {
+//     // 1. Check image if missed
+//     if (imageFile === undefined)
+//         return {
+//             type: statusType.error,
+//             message: "Image required!",
+//             statusCode: 400,
+//         };
 
-    let category = await CategorySchema.findById(categoryId);
+//     let category = await CategorySchema.findById(categoryId);
 
-    // 2. Check category if not exist
-    if (!category)
-        return {
-            type: statusType.error,
-            message: "No category found!",
-            statusCode: 404,
-        };
+//     // 2. Check category if not exist
+//     if (!category)
+//         return {
+//             type: statusType.error,
+//             message: "No category found!",
+//             statusCode: 404,
+//         };
 
-    // 3. Delete old image
-    await destroyFileCloudinary(category.imageId);
+//     // 3. Delete old image
+//     await destroyFileCloudinary(category.imageId);
 
-    // 4. Folder path
-    const folderName = `Categories/${category.name
-        .trim()
-        .split(" ")
-        .join("-")}`;
+//     // 4. Folder path
+//     const folderName = `Categories/${category.name
+//         .trim()
+//         .split(" ")
+//         .join("-")}`;
 
-    // 5. Response after upload
-    const imageUploadResponse = await uploadFileCloudinary(
-        imageFile.buffer,
-        folderName
-    );
+//     // 5. Response after upload
+//     const imageUploadResponse = await uploadFileCloudinary(
+//         imageFile.buffer,
+//         folderName
+//     );
 
-    // 6. Update category image
-    category = await CategorySchema.findByIdAndUpdate(
-        categoryId,
-        {
-            image: imageUploadResponse.secure_url,
-            imageId: imageUploadResponse.public_id,
-        },
-        { new: true, runValidators: true }
-    );
+//     // 6. Update category image
+//     category = await CategorySchema.findByIdAndUpdate(
+//         categoryId,
+//         {
+//             image: imageUploadResponse.secure_url,
+//             imageId: imageUploadResponse.public_id,
+//         },
+//         { new: true, runValidators: true }
+//     );
 
-    return {
-        type: statusType.success,
-        message: "Update category successfully!",
-        statusCode: 200,
-        category,
-    };
-};
+//     return {
+//         type: statusType.success,
+//         message: "Update category successfully!",
+//         statusCode: 200,
+//         category,
+//     };
+// };
 
 /**
  * @desc    Delete Category
@@ -201,7 +208,7 @@ exports.deleteCategory = async (categoryId) => {
         };
 
     // 2. Delete category image
-    await destroyFileCloudinary(category.imageId);
+    // await destroyFileCloudinary(category.imageId);
 
     // 3. Delete category
     await CategorySchema.findByIdAndDelete(categoryId);
