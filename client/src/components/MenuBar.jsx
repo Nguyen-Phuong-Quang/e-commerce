@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { userStateContext } from "../contexts/StateProvider";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import route from "../constants/route";
 import { InputText } from "primereact/inputtext";
 import { Avatar } from "primereact/avatar";
 import authApi from "../api/authApi";
+import ChangePasswordDialog from "./ChangePasswordDialog";
 
 export default function MenuBar() {
+    const [visibleChangePassword, setVisibleChangePassword] = useState(false);
     const navigate = useNavigate();
     const { currentUser, setCurrentUser } = userStateContext();
-
-    // if (!localStorage.getItem("TOKEN")) return <Navigate to={route.HOME} />;
 
     const handleSignOut = () => {
         const signOut = async () => {
@@ -20,7 +20,6 @@ export default function MenuBar() {
                     setCurrentUser({});
                     localStorage.removeItem("TOKEN");
                     localStorage.removeItem("REFRESH_TOKEN");
-                    localStorage.removeItem("userId");
                     navigate(route.HOME);
                 }
             } catch (err) {
@@ -28,7 +27,6 @@ export default function MenuBar() {
                 setCurrentUser({});
                 localStorage.removeItem("TOKEN");
                 localStorage.removeItem("REFRESH_TOKEN");
-                localStorage.removeItem("userId");
                 navigate(route.HOME);
             }
         };
@@ -87,10 +85,10 @@ export default function MenuBar() {
                             image={currentUser.profileImage}
                             shape="circle"
                         />
-                        <div className="absolute right-0 invisible group-hover:visible pt-2 shadow-md rounded-lg bg-transparent bg-white">
+                        <div className="absolute right-0 invisible group-hover:visible pt-2 shadow-md rounded-lg bg-transparent bg-white w-48">
                             <div className="border-b-2 border-x py-2 hover:bg-gray-200 border-t-2 rounded-t-lg overflow-hidden border-transparent">
                                 <Link
-                                    className="w-32 flex items-center"
+                                    className="flex items-center w-fit"
                                     to={route.PROFILE}
                                 >
                                     <span className="pi pi-user mx-2"></span>{" "}
@@ -98,10 +96,21 @@ export default function MenuBar() {
                                 </Link>
                             </div>
                             <div
+                                className="border-b-2 border-x py-2 hover:bg-gray-200 overflow-hidden"
+                                onClick={() => {
+                                    setVisibleChangePassword(true);
+                                }}
+                            >
+                                <div className="w-fit">
+                                    <span className="pi pi-key mx-2"></span>{" "}
+                                    Change password
+                                </div>
+                            </div>
+                            <div
                                 className="border-b-2 border-x py-2 hover:bg-gray-200 rounded-b-lg overflow-hidden"
                                 onClick={() => handleSignOut()}
                             >
-                                <div className="w-32">
+                                <div className="w-fit">
                                     <span className="pi pi-sign-out mx-2"></span>{" "}
                                     Sign out
                                 </div>
@@ -113,10 +122,18 @@ export default function MenuBar() {
         }
     };
     return (
-        <div className="w-full fixed top-0 h-16 flex justify-between px-4 bg-white z-20 border-b border-slate-200 shadow-sm">
-            {start}
-            {search}
-            {end()}
-        </div>
+        <>
+            <div className="w-full fixed top-0 h-16 flex justify-between px-4 bg-white z-20 border-b border-slate-200 shadow-sm">
+                {start}
+                {search}
+                {end()}
+            </div>
+            {visibleChangePassword && (
+                <ChangePasswordDialog
+                    visible={visibleChangePassword}
+                    setVisible={setVisibleChangePassword}
+                />
+            )}
+        </>
     );
 }

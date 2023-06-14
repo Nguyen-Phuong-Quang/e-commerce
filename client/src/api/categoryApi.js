@@ -26,24 +26,28 @@ const categoryApi = {
     },
 
     // Update category detail (not image)
-    updateDetail: (data) => {
+    updateDetail: (id,data) => {
         const url = `${PREFIX}/${id}`;
         return axiosClient.patch(url, data);
     },
 
-    // Update category image (just image)
-    updateImage: (image) => {
+    deleteCategory: (id) => {
         const url = `${PREFIX}/${id}`;
-        return axiosClient.patch(
-            url,
-            { image },
-            {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            }
-        );
+        return axiosClient.delete(url);
     },
+    // // Update category image (just image)
+    // updateImage: (image) => {
+    //     const url = `${PREFIX}/${id}`;
+    //     return axiosClient.patch(
+    //         url,
+    //         { image },
+    //         {
+    //             headers: {
+    //                 "Content-Type": "multipart/form-data",
+    //             },
+    //         }
+    //     );
+    // },
 };
 
 export default categoryApi;

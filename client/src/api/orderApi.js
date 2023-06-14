@@ -19,10 +19,6 @@ const orderApi = {
         const url = `${PREFIX}/${orderId}`;
         return axiosClient.get(url);
     },
-    getById: (orderId) => {
-        const url = `${PREFIX}/${orderId}`;
-        return axiosClient.get(url);
-    },
 };
 
 export default orderApi;

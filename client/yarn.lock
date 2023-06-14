@@ -630,7 +630,6 @@ fs.realpath@^1.0.0:
   resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
 
-<<<<<<< Updated upstream
 <<<<<<< HEAD
 =======
 fsevents@~2.3.2:
@@ -639,8 +638,6 @@ fsevents@~2.3.2:
   integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
 
 >>>>>>> 79d65a9fa0c03b0503156bfa80609a09db71c5f9
-=======
->>>>>>> Stashed changes
 function-bind@^1.1.1:
   version "1.1.1"
   resolved "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz"
@@ -962,15 +959,20 @@ postcss@^8.0.0, postcss@^8.0.9, postcss@^8.1.0, postcss@^8.2.14, postcss@^8.4.21
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
-"primeicons@^5.0.0 || ^6.0.0", primeicons@^6.0.1:
+primeflex@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.npmjs.org/primeflex/-/primeflex-3.3.1.tgz"
+  integrity sha512-zaOq3YvcOYytbAmKv3zYc+0VNS9Wg5d37dfxZnveKBFPr7vEIwfV5ydrpiouTft8MVW6qNjfkaQphHSnvgQbpQ==
+
+primeicons@^6.0.1:
   version "6.0.1"
   resolved "https://registry.npmjs.org/primeicons/-/primeicons-6.0.1.tgz"
   integrity sha512-KDeO94CbWI4pKsPnYpA1FPjo79EsY9I+M8ywoPBSf9XMXoe/0crjbUK7jcQEDHuc0ZMRIZsxH3TYLv4TUtHmAA==
 
-primereact@^9.2.2:
-  version "9.2.2"
-  resolved "https://registry.npmjs.org/primereact/-/primereact-9.2.2.tgz"
-  integrity sha512-GGkxLHOdQot5DYW9Z7vTPPaDwzjvnderzLWAXda220teNScAJNtXCIqR3QESi4c9OaNbGD4IlBlhXr++z8fjsw==
+primereact@^9.5.0:
+  version "9.5.0"
+  resolved "https://registry.npmjs.org/primereact/-/primereact-9.5.0.tgz"
+  integrity sha512-ZykUr4MtEsVLECiTCk58oexYqYwtfa1/eg9T+0u6IaxQczEo/4UfljWCg/KLrs2KCgH6OKGScxvlUePiVMsBrw==
   dependencies:
     "@types/react-transition-group" "^4.4.1"
     react-transition-group "^4.4.1"
