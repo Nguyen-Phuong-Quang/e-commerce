@@ -1,7 +1,7 @@
 import axiosClient from './axiosClient';
 
 
-const PREFIX = "/product";
+const PREFIX = "/discount";
 
 const discountApi = {
   getAllDiscount: () => {
@@ -15,23 +15,25 @@ const discountApi = {
   },
 
   addDiscount: (discount) => {
-    const url = `${PREFIX}`;
-    return axiosClient.post(url, data, {
+    const url = `${PREFIX}/generate`;
+    return axiosClient.post(url, discount, {
         headers: {
             "Content-Type": "multipart/form-data",
         },
     });
 },
 
-  
-  UpdateDiscountById: (id, discount) => {
+
+  deleteDiscount: ( discountCode, userId) => {
     const url = `${PREFIX}`;
-    return axiosClient.put(url, discount, {
+    return axiosClient.put(url, discountCode, userId,  {
         headers: {
             "Content-Type": "multipart/form-data"
         }
     });
 },
+
+
 
 }
 

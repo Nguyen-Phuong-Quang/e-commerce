@@ -40,32 +40,33 @@ import { useEffect, useState } from 'react';
 import reviewApi from '../../api/reviewApi';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
-const EvaluationDialog = ({ visible, setVisible, evaluations }) => {
-  const [evaluation, setEvaluation] = useState([]);
+const EvaluationDialog = ({ visible, setVisible, productId }) => {
+  const [evaluations, setEvaluations] = useState([]);
   const  [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   const fetchApi = async () => {
-  //     setLoading(true);
-  //     try{
-  //       const response = await reviewApi.query(productId);
-  //       if(response.data.type == "Success"){
-  //         toastSuccess("success");
-  //         setEvaluation(response.data.evaluation);
-  //       }
-  //       if(response.data.evaluation.lenght < 1){
-  //         console.log("No evaluation found");
-  //       }
-  //     }
-  //     catch(err){
-  //       setEvaluation([]);
-  //     }
-  //     setLoading(false);
-  //   };
+  useEffect(() => {
+    const fetchApi = async () => {
+      setLoading(true);
+      try{
+        const response = await reviewApi.getAllReviews(productId);
+        if(response.data.type == "SUCCESS"){
+          toastSuccess(response.data.message);
+          setEvaluations(response.data.reviews);
+        }
+        if(response.data.reviews.lenght < 1){
+          console.log("No evaluation found");
+        }
+      }
+      catch(err){
+        toastError(err.response.data.message);
+        setEvaluations([]);
+      }
+      setLoading(false);
+    };
 
-  //   fetchApi();
-  // }
-  // , []);
+    fetchApi();
+  }
+  , []);
 
 
 

@@ -9,6 +9,16 @@ const productApi = {
         return axiosClient.get(url);
     },
 
+    // getProductStatics: () => {
+    //     const url = `${PREFIX}/seller-product`;
+    //     return axiosClient.get(url);
+    // },
+
+    getSellerProducts: (userId) => {
+        const url = `${PREFIX}/seller-product`;
+            return axiosClient.get(url, userId);
+    },
+
     getProductById: (id) => {
         const url = `${PREFIX}/${id}`;
         return axiosClient.get(url);

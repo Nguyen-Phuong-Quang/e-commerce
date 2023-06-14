@@ -34,67 +34,6 @@ const DialogEditProduct = ({visible, setVisible}) => {
   const colorOptions = ["red", "blue", "green", "yellow"];
   const sizeOptions = ["S", "M", "L", "XL"];
 
-  const dataTrain = [
-    {
-      name: "Mercurial 9",
-      category: "Soccer boots",
-      description: "no thing",
-      price: "232.000",
-      discountPrice: "111.000",
-      colors: ["blue", "red", "green", "orange"],
-      sizes: ["38", "39", "40", "41", "42"],
-      quantity: 23,
-    },
-    {
-      name: "Mercurial pro",
-      category: "Soccer boot",
-      description: "no thing to say no thing to say no thing to say no thing to say no thing to say",
-      price: "343.000",
-      discountPrice: "98.000",
-      colors: ["red", "blue", "green"],
-      sizes: ["S", "M", "L"],
-      quantity: 12,
-    },
-    {
-      name: "Gucci shoes",
-      category: "Shoes",
-      description: "no thing",
-      price: "232.000",
-      discountPrice: "111.000",
-      colors: ["red", "blue", "green"],
-      sizes: ["S", "M", "L"],
-      quantity: 23,
-    },
-    {
-      name: "Hermes shoes",
-      description: "no thing to say",
-      price: "343.000",
-      discountPrice: "98.000",
-      colors: ["red", "blue", "green"],
-      sizes: ["S", "M", "L"],
-      quantity: 12,
-    },
-    {
-      name: "Gucci short",
-      category: "Clothes",
-      description: "no thing",
-      price: "232.000",
-      discountPrice: "111.000",
-      colors: ["red", "blue", "green"],
-      sizes: ["S", "M", "L"],
-      quantity: 23,
-    },
-    {
-      name: "Hermes short",
-      category: "Hermet",
-      description: "no thing to say",
-      price: "343.000",
-      discountPrice: "98.000",
-      colors: ["red", "blue", "green"],
-      sizes: ["S", "M", "L"],
-      quantity: 12,
-    },
-  ];
 
 //   useEffect(() => {
 //     const fetchData = async () => {
@@ -118,7 +57,7 @@ useEffect(() => {
   const fetchData = async () => {
     setLoading(true);
     try{
-      setProducts(dataTrain);
+      // setProducts(dataTrain);
       setPreview(jacket1);
       setSubImages([{url:jacket1},{url:jacket1}, {url:jacket1}, {url:jacket1}  ]);
     }

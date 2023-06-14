@@ -15,7 +15,7 @@ const generateToken = (userId, expires, type) => {
         type,
     };
     return jwt.sign(payload, config.jwt.jwt_secret);
-};
+};``
 // Save token
 const saveToken = async (userId, token, expires, type) => {
     const newTokenSchema = await TokenSchema.create({

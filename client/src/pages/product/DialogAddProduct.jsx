@@ -9,23 +9,25 @@ import { useNavigate } from "react-router-dom";
 import { Dialog } from "primereact/dialog";
 import productApi from "./../../api/productApi";
 import { toastContext } from "./../../contexts/ToastProvider";
-import { classNames } from "primereact/utils";
+import { userStateContext } from "../../contexts/StateProvider";
 
 
 const DialogAddProduct = ({visible, setVisible}) => {
   const [loading, setLoading] = useState(false);
   const [mainImage, setMainImage] = useState(null);
-  const [subImages, setSubImages] = useState([]);
+  const [images, setImages] = useState([]);
   const { toastError, toastSuccess } = toastContext();
+  const { currentUser } = userStateContext();
+
   const [products, setProducts] = useState({
     name: "",
     category: "",
     description: "",
     price: null,
-    discountPrice: null,
+    priceAfterDiscount : null,
     colors: [],
     sizes: [],
-    quantities: null,
+    quantity: null,
   });
   const navigate = useNavigate();
 
@@ -33,16 +35,32 @@ const DialogAddProduct = ({visible, setVisible}) => {
   const sizeOptions = ["S", "M", "L", "XL"];
 
 
+
   const handelAddProduct = async () => {
     setLoading(true);
+    const formData = new FormData();
+    formData.append("mainImage", mainImage);
+
+    for (let i = 0; i < images.length; i++) {
+      formData.append('images', images[i]);
+    }
+
+
     try {
-        const response = await productApi.createProduct({ ...products, mainImage, subImages });
+      const response = await productApi.addProduct({
+        ...products, 
+        formData,
+        // mainImage, 
+        // images,
+        sellerId: currentUser.id
+      });
+
         if (response.data.type === "Success") {
             navigate("/");
             toastSuccess(response.data.message);
         }
     } catch (err) {
-        // toastError(err.response.data.message);
+        //  toastError(err.response.data.message);
         console.log(err);
     }
     setLoading(false);
@@ -62,7 +80,7 @@ const handleChange = (event) => {
   const handleCancelClick = () => {
     setVisible(false);
     setMainImage(null);
-    setSubImages([]);
+    setImages([]);
   }
 
 
@@ -100,14 +118,16 @@ const handleChange = (event) => {
                 />
                 <input
                   type="file"
-                  id="product-main-image"
+                  id="mainImage"
+                  name="mainImage"
                   hidden
                   onChange={(event) => {
                     setMainImage(URL.createObjectURL(event.target.files[0]));
                   }}
                 />
+                
                 <label
-                  htmlFor="product-main-image"
+                  htmlFor="mainImage"
                   className="font-bold flex justify-center items-center h-12 w-1/4 mx-auto mt-6 mb-2 bg-blue-500 text-white hover:cursor-pointer rounded-md"
                 >
                   <div className="flex items-center my-2">
@@ -126,13 +146,14 @@ const handleChange = (event) => {
               </label>
               <div className="card">
                 <FileUpload
+                type="file"
                 className="mr-8"
                   chooseLabel="New"
                   uploadLabel="Upload"
                   cancelLabel="Cancel"
                   uploadOptions={{className: "text-blue-700"}}
                   cancelOptions={{className: "text-blue-700"}}
-                  name="subImages[]"
+                  name="images"
                   multiple="true"
                   accept="image/*"
                   maxFileSize={1000000}
@@ -142,14 +163,19 @@ const handleChange = (event) => {
                     </p>
                   }
                   uploadHandler={(event) => {
-                    const subImageUrls = event.files.map((file) =>
-                      URL.createObjectURL(file)
-                    );
-                    setSubImages((prevSubImages) => [
-                      ...prevSubImages,
-                      ...subImageUrls,
-                    ]);
+                    const uploadedFiles = event.files;
+                    setImages((prevImages) => [...prevImages, ...uploadedFiles]);
                   }}
+                  
+                  // uploadHandler={(event) => {
+                  //   const subImageUrls = event.files.map((file) =>
+                  //     URL.createObjectURL(file)
+                  //   );
+                  //   setImages((prevSubImages) => [
+                  //     ...prevSubImages,
+                  //     ...subImageUrls,
+                  //   ]);
+                  // }}
                 />
 
               </div>
@@ -226,16 +252,16 @@ const handleChange = (event) => {
             </div>
             <div className="mb-6 flex flex-row ">
               <label
-                htmlFor="discountPrice"
+                htmlFor="priceAfterDiscount "
                 className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
               >
                 Price After Discount
               </label>
               <InputText
-                id="discountPrice"
-                name="discountPrice"
+                id="priceAfterDiscount "
+                name="priceAfterDiscount "
                 placeholder="Enter price after discount"
-                value={products.price}
+                value={products.priceAfterDiscount }
                 onChange={handleChange}
                 className="basis-2/3 mr-4"
               />
@@ -284,16 +310,16 @@ const handleChange = (event) => {
 
             <div className="mb-6 flex flex-row ">
               <label
-                htmlFor="quantities"
+                htmlFor="quantity"
                 className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
               >
-                Quantities
+                Quantity
               </label>
               <InputNumber
-                id="quantities"
-                name="quantities"
+                id="quantity"
+                name="quantity"
                 placeholder="Enter quantity"
-                value={products.quantities}
+                value={products.quantity}
                 onValueChange={handleChange}
                 integeronly
                 className="basis-2/3 mr-4"

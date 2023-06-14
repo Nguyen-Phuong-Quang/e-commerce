@@ -15,9 +15,11 @@ import { Dialog } from "primereact/dialog";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Toolbar } from "primereact/toolbar";
+import { userStateContext } from "../../contexts/StateProvider";
 
 export default function Discountpage() {
   const navigate = useNavigate();
+  const { currentUser, setCurrentUser } = userStateContext();
   const [visibleDialog, setVisibleDialog] = useState(false);
   const { toastError, toastSuccess } = toastContext();
   const [loading, setLoading] = useState(false);
@@ -95,17 +97,31 @@ export default function Discountpage() {
   const actionBodyTemplate = (rowData) => {
     return (
         <>
-            <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => editCategory(rowData)} /> {" "}
-            <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteCategory(rowData)} />
+            {/* <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => editDiscount(rowData)} /> {" "} */}
+            <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteDiscount(rowData)} />
         </>
     );
   }
 
+  const confirmDeleteDiscount = async (rowdata) => {
+    setLoading(true);
+    try {
+      const response = await discountApi.deleteDiscount({ discountCode: rowdata.discountCode, usrId: currentUser._id });
+      if (response.data.type === "SUCCESS") {
+      navigate("/admin");
+      toastSuccess(response.data.message);
+      }
+    } catch (err) {
+      toastError(err.response.data.message);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     const fetchDiscountCodes = async () => {
       try {
-        // const response = await discountApi.getAllDiscount();
-        // setDiscountCodes(response.data);
+        const response = await discountApi.getAllDiscount();
+        setDiscountCodes(response.data.discounts);
         setDiscountCodes(discountCodeExample);
       } catch (err) {
         toastError(err);
@@ -123,15 +139,13 @@ export default function Discountpage() {
   const handleCreate = async () => {
     setLoading(true);
     try {
-      const response = await discountApi.createDiscount({ ...discount });
-      //if (response.data.type === "Success") {
-      // navigate("/admin");
-      toastSuccess("Create discount code complete!!!");
-      // }
+      const response = await discountApi.addDiscount({ ...discount });
+      if (response.data.type === "SUCCESS") {
+      navigate("/admin");
+      toastSuccess(response.data.message);
+      }
     } catch (err) {
-      //toastError(err.response.data.message);
-      toastError("Chua co API");
-      console.log("Chua co api");
+      toastError(err.response.data.message);
     }
     setLoading(false);
   };
@@ -144,28 +158,7 @@ export default function Discountpage() {
         </div>
       )}
       {!loading && (
-        //   <div>
-        //   <h1 className='p-4'>Hi, It is discount page of product seller</h1>
-        //   <Button
-        //   icon="pi pi-plus"
-        //   label='Create new discount code'
-        //   severity='success'
-        //   onClick={() => {setVisibleDialog(true)}}
-        //   className='ml-4'
-        //   />
-        // </div>
         <div>
-          {/* <h1 className="text-2xl font-bold mb-4">List discount code</h1>
-          <h1 className="p-4">Hi, It is discount page of product seller</h1>
-          <Button
-            icon="pi pi-plus"
-            label="Create new discount code"
-            severity="success"
-            onClick={() => {
-              setVisibleDialog(true);
-            }}
-            className="ml-4"
-          /> */}
           <Toolbar
             className="mb-4"
             left={
