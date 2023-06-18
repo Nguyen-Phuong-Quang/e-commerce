@@ -185,23 +185,20 @@ function HomeProductSeller() {
                                                 className="w-full  object-contain h-[200px]"
                                             />
                                         </div>
-                                        <div className="mt-4">
-                                            <div>
-                                                <strong>Price: </strong>
-                                                <span className="text-s text-red-500">
-                                                    ₫
-                                                </span>
-                                                {product.price}
-                                            </div>
-                                            <div>
-                                                <strong>
-                                                    Price Discount:{" "}
-                                                </strong>
-                                                <span className="text-s text-red-500">
-                                                    ₫
+                                        <div className="flex items-center justify-start mt-4 ">
+                                            <span className="text-3xl font-bold text-red-700">
+                                                {" "}
+                                                <span class="text-sm text-red-500 pb-2">
+                                                    $
                                                 </span>
                                                 {product.priceAfterDiscount}
-                                            </div>
+                                            </span>
+                                            <span className="text-gray-400 text-sm line-through ml-2">
+                                                <span class="text-xs text-red-500">
+                                                    $
+                                                </span>
+                                                {product.price}
+                                            </span>
                                         </div>
                                     </Card>
                                 </div>

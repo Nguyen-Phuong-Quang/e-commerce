@@ -6,7 +6,7 @@ import reviewApi from "./../../api/reviewApi";
 import { toastContext } from "./../../contexts/ToastProvider";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Rating } from "primereact/rating";
-import {Avatar} from "primereact/avatar";
+import { Avatar } from "primereact/avatar";
 
 export default function Detail() {
   const navigate = useNavigate();
@@ -20,10 +20,11 @@ export default function Detail() {
   const formatDate = (dateTimeString) => {
     const date = new Date(dateTimeString);
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
 
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
@@ -85,6 +86,10 @@ export default function Detail() {
     fetchUserData();
   }, [review]);
 
+  const handleAddCart = () => {
+    console.log("handle add product to cart");
+};
+
   return (
     <>
       {loading && (
@@ -126,7 +131,18 @@ export default function Detail() {
             {/* <div className="space-y-4  ml-4  p-4 rounded-lg"> */}
             <div className="flex flex-col justify-between mb-4 ml-4 shadow-lg p-4 rounded-lg">
               {/* name  */}
-              <h3 className="text-3xl font-bold text-red-600">{data.name}</h3>
+              <div className="flex flex-row justify-between">
+                <h3 className="text-3xl font-bold text-red-600">{data.name}</h3>
+                <button className="flex justify-between text-[20px]  border-red-500 "
+                   onClick={handleAddCart}>
+                  <span
+                    className="rounded-lg border-red-600  px-2 py-2 font-bold  text-orange-600 hover:opacity-60 flex items-center hover:cursor-pointer"
+                  >
+                    <i className="pi pi-shopping-cart mr-2" />
+                    Add to cart
+                  </span>
+                </button>
+              </div>
               {/* price  */}
               <div className="flex items-center ">
                 <span className="text-3xl font-bold">
@@ -141,34 +157,37 @@ export default function Detail() {
               </div>
               {/* colorsss  */}
               <div>
-              <span className="font-semibold">Colors</span>
-              <div className="flex space-x-4 mt-4">
-                {data.colors &&
-                  data.colors.map((color, index) => (
-                    <span
-                      key={index}
-                      style={{backgroundColor: color.color.toLowerCase(), opacity:0.5}}
-                      className={`h-8 w-8 rounded-full border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md 
+                <span className="font-semibold">Colors</span>
+                <div className="flex space-x-4 mt-4">
+                  {data.colors &&
+                    data.colors.map((color, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          backgroundColor: color.color.toLowerCase(),
+                          opacity: 0.5,
+                        }}
+                        className={`h-8 w-8 rounded-full border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md 
                          }`}
-                    />
-                  ))}
-              </div>
+                      />
+                    ))}
+                </div>
               </div>
               {/* size   */}
               <div>
-              <span className="font-semibold">Sizes</span>
-              <div className="flex space-x-4 mt-4">
-                {data.sizes &&
-                  data.sizes.map((size, index) => (
-                    <span
-                      key={index}
-                      className={`flex justify-center items-center h-8 w-8 rounded-full bg-gray-300 border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
+                <span className="font-semibold">Sizes</span>
+                <div className="flex space-x-4 mt-4">
+                  {data.sizes &&
+                    data.sizes.map((size, index) => (
+                      <span
+                        key={index}
+                        className={`flex justify-center items-center h-8 w-8 rounded-full bg-gray-300 border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
                          }`}
-                    >
-                      {size.size.toUpperCase()}
-                    </span>
-                  ))}
-              </div>
+                      >
+                        {size.size.toUpperCase()}
+                      </span>
+                    ))}
+                </div>
               </div>
               {/* quantity   */}
               <div className="flex items-center space-x-2 pt-2 mb-8">
@@ -178,58 +197,65 @@ export default function Detail() {
             </div>
           </div>
           <div className="mt-8 block font-bold text-black opacity-70 ml-8 mr-8 text-2xl  capitalize bg-gray-200 py-4 ml-4 rounded-lg">
-               <p className="px-4">DESCRIPTION</p>
+            <p className="px-4">DESCRIPTION</p>
           </div>
-          <div className="mx-8 mb-8">{ data.description && 
-          <p className="text-gray-700 p-4">{data.description}</p>
-          }
-          { !data.description && 
-          <p className="text-gray-700 p-4">{"The seller does not ask anything about this product"}</p>
-          }
+          <div className="mx-8 mb-8">
+            {data.description && (
+              <p className="text-gray-700 p-4">{data.description}</p>
+            )}
+            {!data.description && (
+              <p className="text-gray-700 p-4">
+                {"The seller does not ask anything about this product"}
+              </p>
+            )}
           </div>
 
           <div className="mt-8 block font-bold text-black opacity-70 ml-8 mr-8 text-2xl  capitalize bg-gray-200 py-4 ml-4 rounded-lg">
-               <p className="px-4">REVIEWS</p>
+            <p className="px-4">REVIEWS</p>
           </div>
-
 
           {/* second----------------- */}
           <div className="w-full">
-          { review.length > 0 && review.map((item, index) => (
-            <div className="flex items-start space-x-4 ml-16  mx-8 my-8 w-full ">
-              {/* <img
+            {review.length > 0 &&
+              review.map((item, index) => (
+                <div className="flex items-start space-x-4 ml-16  mx-8 my-8 w-full ">
+                  {/* <img
                         src={userData[index].profileImage}
                         alt="Avatar"
                         className="h-12 w-12 rounded-full object-cover"
                       /> */}
-              {userData[index] && (
-                <Avatar
-                label={"Avatar"}
-                image={userData[index].profileImage}
-                shape="circle"
-                size="xlarge"
-              />
-              )}
-              <div className="flex flex-col  ">
-                {userData[index] && 
-                    <span className="text-2xl font-bold text-gray-700 mb-2"> {userData[index].name}</span>
-                }
-                <Rating
-                  value={item.rating}
-                  readOnly
-                  stars={5}
-                  cancel={false}
-                  className="text-primary-500"
-                />
-                <p>{formatDate(item.createdAt)}</p>
-                <p className="text-gray-600 mt-1">{item.review}</p>
-              </div>
-            </div>
-          ))}
-          {review.length === 0 &&
-            <p className="text-gray-700 p-4 mx-8">{"No one has written a review for this product yet. "}</p>
-
-          }
+                  {userData[index] && (
+                    <Avatar
+                      label={"Avatar"}
+                      image={userData[index].profileImage}
+                      shape="circle"
+                      size="xlarge"
+                    />
+                  )}
+                  <div className="flex flex-col  ">
+                    {userData[index] && (
+                      <span className="text-2xl font-bold text-gray-700 mb-2">
+                        {" "}
+                        {userData[index].name}
+                      </span>
+                    )}
+                    <Rating
+                      value={item.rating}
+                      readOnly
+                      stars={5}
+                      cancel={false}
+                      className="text-primary-500"
+                    />
+                    <p>{formatDate(item.createdAt)}</p>
+                    <p className="text-gray-600 mt-1">{item.review}</p>
+                  </div>
+                </div>
+              ))}
+            {review.length === 0 && (
+              <p className="text-gray-700 p-4 mx-8">
+                {"No one has written a review for this product yet. "}
+              </p>
+            )}
           </div>
         </div>
       )}
