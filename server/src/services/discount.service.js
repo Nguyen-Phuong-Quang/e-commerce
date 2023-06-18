@@ -25,6 +25,7 @@ exports.getAllDiscountCodes = async (req) => {
         statusCode: 200,
         discounts,
     };
+
 };
 
 /**
