@@ -385,6 +385,7 @@ const DialogAddProduct = ({ visible, setVisible }) => {
                                     placeholder="Select Colors"
                                     display="chip"
                                     className="w-2/3 md:w-20rem  mr-4"
+                                    style={{ overflow: "auto" }}
                                 />
                             </div>
 
@@ -406,6 +407,7 @@ const DialogAddProduct = ({ visible, setVisible }) => {
                                     placeholder="Select Sizes"
                                     display="chip"
                                     className="basis-2/3 mr-4"
+                                    style={{ overflow: "auto" }}
                                 />
                             </div>
 
