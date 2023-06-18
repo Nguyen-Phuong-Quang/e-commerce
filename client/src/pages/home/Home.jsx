@@ -112,12 +112,12 @@ function Home() {
                     <div className="mt-4">
                       <div>
                         <strong>Price: </strong>
-                        <span class="text-s text-red-500">₫</span>
+                        <span className="text-s text-red-500">₫</span>
                         {product.price}
                       </div>
                       <div>
                         <strong>Price Discount: </strong>
-                        <span class="text-s text-red-500">₫</span>
+                        <span className="text-s text-red-500">₫</span>
                         {product.priceAfterDiscount}
                       </div>
                     </div>
@@ -180,11 +180,11 @@ function Home() {
         //         <div className="flex items-center">
         //           <span className="text-3xl font-bold">
         //             {" "}
-        //             <span class="text-xs text-red-500">₫</span>
+        //             <span className="text-xs text-red-500">₫</span>
         //             {selectedProduct.priceAfterDiscount}
         //           </span>
         //           <span className="text-gray-400 text-sm line-through ml-2">
-        //             <span class="text-xs text-red-500">₫</span>
+        //             <span className="text-xs text-red-500">₫</span>
         //             {selectedProduct.price}
         //           </span>
         //         </div>

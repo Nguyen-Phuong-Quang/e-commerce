@@ -34,7 +34,6 @@ export default function DialogDeleteCategory({ id, visible, setVisible }) {
                 if (response.data.type === "Success") {
                     setVisible(false);
                     toastSuccess(response.data.message);
-                    console.log(response);
                 }
             } catch (err) {
                 toastError(err.response.data.message);

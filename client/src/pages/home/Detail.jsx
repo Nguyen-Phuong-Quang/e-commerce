@@ -79,7 +79,6 @@ export default function Detail() {
       });
 
       const uData = await Promise.all(userDataPromises);
-      console.log(uData);
       setUserData(uData);
     };
 
@@ -132,11 +131,11 @@ export default function Detail() {
               <div className="flex items-center ">
                 <span className="text-3xl font-bold">
                   {" "}
-                  <span class="text-xs text-red-500">₫</span>
+                  <span className="text-xs text-red-500">₫</span>
                   {data.priceAfterDiscount}
                 </span>
                 <span className="text-gray-400 text-sm line-through ml-2">
-                  <span class="text-xs text-red-500">₫</span>
+                  <span className="text-xs text-red-500">₫</span>
                   {data.price}
                 </span>
               </div>
