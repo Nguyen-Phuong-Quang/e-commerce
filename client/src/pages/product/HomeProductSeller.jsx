@@ -7,14 +7,8 @@ import DialogEditProduct from './DialogEditProduct';
 import EvaluationDialog from './DialogEvaluationPage';
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from 'primereact/dialog';
-import { Button } from 'primereact/button';
 import DialogAddProduct from './DialogAddProduct';
-import hermet from "./image/hermet.jpg";
-import mer1 from "./image/mer1.jpg";
-import jacket1 from "./image/jacket-1.jpeg";
-import jacket2 from "./image/jacket-2.jpg";
-import ava from "./image/ava.jpg";
-import merpro from "./image/merpro.jpg";
+import { userStateContext } from "../../contexts/StateProvider";
 
 
 
@@ -27,11 +21,13 @@ function HomeProductSeller() {
   const [visibleEditDialog, setvisibleEditDialog] = useState(false);
   const [visibleAddDialog, setvisibleAddDialog] = useState(false);
   const [visibleEvaluation, setVisibleEvaluation] = useState(false);
-  const [productId, setProductId] = useState("");
+  const [productId, setProductId] = useState(null);
   const [productName, setProductName] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
-  
+  const { currentUser } = userStateContext();
+  const [review, setReview] = useState([]);
+  const [category, setCategory] = useState([]);
 
   const onProductSelect = (product) => {
     setSelectedProduct(product);
@@ -43,142 +39,31 @@ function HomeProductSeller() {
     setShowDialog(false);
   };
 
-const dataTrain = [
-    {
-      name: "Mercurial 9",
-      category: "Soccer boots",
-      mainImage: merpro,
-      subImages: [mer1, merpro,jacket1, jacket2, mer1 , hermet],
-      description: "no thing",
-      price: "232.000",
-      discountPrice: "111.000",
-      colors: ["blue", "red", "green", "gray"],
-      sizes: ["38", "39", "40", "41", "42"],
-      quantity: 23,
-    },
-    {
-      name: "Mercurial pro",
-      category: "Soccer boot",
-      mainImage: merpro,
-      subImages: [hermet],
-      description: "no thing to say no thing to say no thing to say no thing to say no thing to say",
-      price: "343.000",
-      discountPrice: "98.000",
-      colors: ["red", "blue", "green"],
-      sizes: ["S", "M", "L"],
-      quantity: 12,
-    },
-    {
-      name: "Gucci shoes",
-      category: "Shoes",
-      mainImage: hermet,
-      subImages: [hermet],
-      description: "no thing",
-      price: "232.000",
-      discountPrice: "111.000",
-      colors: ["red", "blue", "green"],
-      sizes: ["S", "M", "L"],
-      quantity: 23,
-    },
-    {
-      name: "Hermes shoes",
-      category: "Shoes",
-      mainImage: hermet,
-      subImages: [hermet],
-      description: "no thing to say",
-      price: "343.000",
-      discountPrice: "98.000",
-      colors: ["red", "blue", "green"],
-      sizes: ["S", "M", "L"],
-      quantity: 12,
-    },
-    {
-      name: "Gucci short",
-      category: "Clothes",
-      mainImage: hermet,
-      subImages: [hermet],
-      description: "no thing",
-      price: "232.000",
-      discountPrice: "111.000",
-      colors: ["red", "blue", "green"],
-      sizes: ["S", "M", "L"],
-      quantity: 23,
-    },
-    {
-      name: "Hermes short",
-      category: "Hermet",
-      mainImage: hermet,
-      subImages: [hermet],
-      description: "no thing to say",
-      price: "343.000",
-      discountPrice: "98.000",
-      colors: ["red", "blue", "green"],
-      sizes: ["S", "M", "L"],
-      quantity: 12,
-    },
-  ];
-
-  const EvaluationTest = [
-    {
-      id:1,
-      avatar:ava,
-      author: "Nguyen Quang",
-      date: "20-03-2022",
-      comment:"Very beautiful"
-    },
-    {
-      id:2,
-      avatar:ava,
-      author: "Quang Nguyen",
-      date: "21-03-2022",
-      comment:"Very beautiful, it ok, ok and then comeback soon"
-    },
-    {
-      id:3,
-      avatar:ava,
-      author: "Nguyen Ngoc",
-      date: "22-03-2022",
-      comment:"Very bad"
-    },
-    {
-      id:4,
-      avatar:ava,
-      author: "Ngoc Quang",
-      date: "23-03-2022",
-      comment:"Quite ok"
-    },
-    {
-      id:5,
-      avatar:ava,
-      author: "Ng Quang",
-      date: "24-03-2022",
-      comment:"Beautiful, it deserve with this cost, comeback soon "
-    },
-  ]
 
   useEffect(() => {
     const fetchApi = async () => {
         setLoading(true);
         try {
-            // const response = await productApi.getAllProduct();
-            // // console.log(response);
-            // if (response.data.type === "Success") {
-            //     setProducts(response.data.products);
-            // }
+            const response = await productApi.getSellerProducts(currentUser._id);;
+            if (response.data.type === "SUCCESS") {
+                setProducts(response.data.products);
+            }
 
-            // if (response.data.products.length < 1) {
-            //     console.log("No product founddd!");
-            // }
-            setProducts(dataTrain);
+            if (response.data.products.length < 1) {
+                console.log("No product founddd!");
+            }
+            // setProducts(dataTrain);
         } catch (err) {
+            // toastError(err.response.data.message);
+            console.log(err);
             setProducts([]);
-            // console.log(err);
         }
         setLoading(false);
     };
 
     fetchApi();
-}, [visibleDeleteDialog, visibleEditDialog]);
+}, [visibleAddDialog, visibleDeleteDialog, visibleEditDialog]);
+
 
 const handleAdd = () => {
     setvisibleAddDialog(true);
@@ -191,14 +76,6 @@ const rightToolbarTemplate = () => {
     );
 }
 
-const actionBodyTemplate = (rowData) => {
-  return (
-      <React.Fragment>
-          <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => editCategory(rowData)} /> {" "}
-          <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteCategory(rowData)} />
-      </React.Fragment>
-  );
-}
 
   return (
     <>
@@ -223,21 +100,24 @@ const actionBodyTemplate = (rowData) => {
           <ProgressSpinner className=" w-full" />
         </div>
       )}
-      <div className="grid min-[1200px]:grid-cols-3 min-[1440px]:grid-cols-4 min-[1700px]:grid-cols-4  gap-4 mr-2 ml-2">
+  <div className="grid min-[1200px] grid-cols-3 min-[1440px] grid-cols-4 min-[1700px] grid-cols-4 gap-4 m-4">
+      {/* <div className="grid min-[1200px]:grid-cols-3 min-[1440px]:grid-cols-4 min-[1700px]:grid-cols-4  gap-4 m-4"> */}
         {!loading && ( 
           <>
             {products.length > 0 ? (
               products.map((product, index) => (
-                <div key={product.id} className="flex flex-col justify-between">
+                <div key={product._id} className="flex flex-col justify-between">
                   <Card
-                    title={product.name}
-                    subTitle={product.category}
-                    footer={
-                      <div className="flex justify-between text-[14px]">
+                    // title={product.name}
+                    title={<div className="h-[50px] overflow-hidden">{product.name}</div>}
+                    subTitle={product.category.name}
+                    footer={[
+                      <div key="footer" className="flex justify-between text-[14px]" >
                         <span className="flex items-center">
                           <div
                             className="text-red-500 cursor-pointer px-2 py-1 rounded border border-transparent hover:border-red-500 flex justify-center items-center"
                             onClick={() => {
+                              setProductId(product._id);
                               setvisibleEditDialog(true);
                             }}
                           >
@@ -265,19 +145,21 @@ const actionBodyTemplate = (rowData) => {
                             className="text-red-500 cursor-pointer px-2 py-1 rounded border border-transparent hover:border-red-500 flex justify-center items-center"
                             onClick={() => {
                               setVisibleEvaluation(true);
+                              setProductId(product._id);
+                              setVisibleEvaluation(true);
                             }}
                           >
                             <i className="pi pi-star" />
                           </div>
                         </span>
                       </div>
-                    }
+                                        ]}
                   >
                     <div className="flex justify-center">
                       <img
                         src={product.mainImage}
                         alt={product.name}
-                        className="w-full h-auto"
+                        className="w-full  object-contain h-[200px]"
                       />
                     </div>
                     <div className="mt-4">
@@ -289,11 +171,17 @@ const actionBodyTemplate = (rowData) => {
                       <div>
                         <strong>Price Discount: </strong>
                         <span class="text-s text-red-500">₫</span>
-                        {product.discountPrice}
+                        {product.priceAfterDiscount}
                       </div>
                     </div>
                   </Card>
+                
+
                 </div>
+
+                // definition review 
+
+
               ))
             ) : (
               <div className="font-semibold text-3xl text-red">
@@ -314,10 +202,11 @@ const actionBodyTemplate = (rowData) => {
                 <img
                   src={selectedProduct.mainImage}
                   alt={selectedProduct.name}
-                  className="h-full rounded-lg shadow-md object-cover"
+                  // className="h-full rounded-lg shadow-md  object-contain"
+                  className="w-full  object-contain h-auto"
                 />
                 <div className="mt-4 flex flex-row flex-wrap ">
-                  {selectedProduct.subImages.map((image, index) => (
+                  {selectedProduct.images.map((image, index) => (
                     <img
                       key={index}
                       src={image}
@@ -338,8 +227,8 @@ const actionBodyTemplate = (rowData) => {
               </div>
 
               <div className="space-y-4 ">
-                <h3 className="text-3xl font-bold">{selectedProduct.name}</h3>
-                <p className="text-gray-400 font-bold">{selectedProduct.category}</p>
+                <h3 className="text-3xl font-bold text-red-600">{selectedProduct.name}</h3>
+                <p className="text-gray-400 font-bold">{selectedProduct.category.name}</p>
                 <div className=' rounded bg-gray-50'>
                 <p className="text-gray-700 p-4">{selectedProduct.description}</p>
                 </div>
@@ -347,21 +236,28 @@ const actionBodyTemplate = (rowData) => {
                   <span className="text-3xl font-bold">
                     {" "}
                     <span class="text-xs text-red-500">₫</span>
-                    {selectedProduct.discountPrice}
+                    {selectedProduct.priceAfterDiscount}
                   </span>
                   <span className="text-gray-400 text-sm line-through ml-2">
                     <span class="text-xs text-red-500">₫</span>
                     {selectedProduct.price}
                   </span>
                 </div>
+                <div className='flex items-center'>
+                <span className="font-bold text-gray-600">Colors</span>
+                </div>
                 <div className="flex space-x-4">
                   {selectedProduct.colors.map((color, index) => (
                     <span
                       key={index}
-                      className={`h-8 w-8 rounded-full bg-${color.toLowerCase()}-500 border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
+                      style={{backgroundColor:color.color.toLowerCase(), opacity:0.5}}
+                      className={`h-8 w-8 rounded-full  border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
                       }`}
                     />
                   ))}
+                </div>
+                <div className='flex items-center'>
+                <span className="font-bold text-gray-600">Sizes</span>
                 </div>
                 <div className="flex space-x-4">
                   {selectedProduct.sizes.map((size, index) => (
@@ -370,12 +266,12 @@ const actionBodyTemplate = (rowData) => {
                       className={`flex justify-center items-center h-8 w-8 rounded-full bg-gray-300 border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
                       }`}
                     >
-                      {size}
+                      {size.size.toUpperCase()}
                     </span>
                   ))}
                 </div>
                 <div className="flex items-center space-x-2 pt-2">
-                  <span className="font-semibold">Quantity:</span>
+                  <span className="font-semibold">Quantity</span>
                   <span>{selectedProduct.quantity}</span>
                 </div>
               </div>
@@ -395,6 +291,7 @@ const actionBodyTemplate = (rowData) => {
         {/* display edit dialog */}
         {visibleEditDialog && (
           <DialogEditProduct
+          productId={productId}
             visible={visibleEditDialog}
             setVisible={setvisibleEditDialog}
           />
@@ -406,13 +303,15 @@ const actionBodyTemplate = (rowData) => {
           />
         )}
 
-        {visibleEvaluation && (
-          <EvaluationDialog
-            visible={visibleEvaluation}
-            setVisible={setVisibleEvaluation}
-            evaluations={EvaluationTest}
-          />
-        )}
+{visibleEvaluation && (
+                  <EvaluationDialog
+                    visible={visibleEvaluation}
+                    setVisible={setVisibleEvaluation}
+                    productId={productId}
+                    // onHide={onHideDialog}
+                  />
+                )}
+
       </div>
     </>
   );

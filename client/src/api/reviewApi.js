@@ -15,7 +15,7 @@ const reviewApi = {
         const url = `${PREFIX}/${productId}/${reviewId}`;
         return axiosClient.delete(url);
     },
-    query: (productId) => {
+    getAllReviews: (productId) => {
         const url = `${PREFIX}/${productId}`;
         return axiosClient.get(url);
     },

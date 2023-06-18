@@ -65,6 +65,7 @@ exports.getAllProductsByQuery = async (req) => {
     };
 };
 
+//Lấy ra các prodcuts của người bán
 exports.getSellerProducts = async (req, userId) => {
     if (!req.query.limit) req.query.limit = 20;
 
@@ -119,6 +120,7 @@ exports.createProduct = async (body, files, sellerId) => {
         !colors ||
         !sizes ||
         !quantity ||
+        !mainImage|| 
         mainImage.length === 0 ||
         images.length === 0
     )
@@ -570,6 +572,8 @@ exports.deleteSize = async (productId, sellerId, size) => {
     };
 };
 
+
+//lấy thống kê về các sản phẩm.
 exports.getProductStatics = async () => {
     return await ProductSchema.aggregate([
         {

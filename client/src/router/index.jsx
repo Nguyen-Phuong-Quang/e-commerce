@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import route from "../constants/route";
-import Home from "../pages/home/home";
+import Home from "../pages/home/Home";
 import Signin from "../pages/sign-in/Signin";
 import DefaultLayout from "../components/DefaultLayout";
 import Signup from "../pages/sign-up/Signup";
@@ -11,6 +11,7 @@ import HomeProductSeller from "../pages/product/HomeProductSeller";
 import Cart from "../pages/cart/Cart";
 import Discountpage from "../pages/discount/DiscountPage";
 import Order from "../pages/order/Order";
+import Detail from "../pages/home/Detail";
 
 const router = createBrowserRouter([
     {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
             {
                 path: route.HOME,
                 element: <Home />,
+            },
+            {
+                path: '/detail/:id',
+                element : <Detail/>
             },
             {
                 path: route.PRODUCT,
