@@ -56,8 +56,8 @@ const apiFeatures = async (req, Model, populate = []) => {
     }
 
     // Panigation
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 100;
+    const page = req.query.page * 1 | 1;
+    const limit = req.query.limit * 1 | 100;
 
     // Skip to page
     const skip = (page - 1) * limit;
