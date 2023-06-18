@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
@@ -6,6 +6,7 @@ import { Toast } from 'primereact/toast';
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import orderApi from '../../api/orderApi';
+import { toastContext } from "../../contexts/ToastProvider";
 import './Order.css';
 
 const Order = () => {
@@ -19,21 +20,8 @@ const Order = () => {
     const [paymentMethod, setPaymentMethod] = useState('');
     const [phone, setPhone] = useState('');
     const [loading, setLoading] = useState(false);
+    const { toastError,toastSuccess } = toastContext();
     const toast = useRef(null);
-
-    const fetch = async () => {
-        setLoading(true);
-        try {
-            const response = await orderApi.getById();
-            if (response.data.type === "SUCCESS") {
-                setCartItems(response.data.cartItems);
-            }
-        } catch (err) {
-            // toastError(err.response.data.message);
-        }
-        setLoading(false);
-    };
-
     const [cartItems, setCartItems] = useState([
         {
             id: 1,
@@ -108,13 +96,31 @@ const Order = () => {
             image: "https://via.placeholder.com/150",
         },
     ]);
+
+    const fetch = async () => {
+        setLoading(true);
+        try {
+            const response = await orderApi.query();
+            if (response.data.type === "SUCCESS") {
+                toastSuccess(response.data)
+            }
+        } catch (err) {
+            toastError(err.response.data.message);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        fetch();
+    }, []);
+
     const imageBodyTemplate = (rowData) => {
         return <img src={rowData.image} alt={rowData.name} />;
     };
 
     const handlePlaceOrder = () => {
         // Perform order placement logic here
-        
+
         // Show success toast message
         toast.current.show({
         severity: 'success',

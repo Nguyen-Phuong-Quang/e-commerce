@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { InputText } from "primereact/inputtext";
-import { useNavigate } from "react-router-dom";
 import { Dialog } from "primereact/dialog";
-import CategoryDialogFooter from "./components/CategoryDialogFooter";
 import { classNames } from 'primereact/utils';
+import { Button } from "primereact/button";
 import productApi from "./../../api/categoryApi";
 import { toastContext } from "./../../contexts/ToastProvider";
 
@@ -11,22 +10,18 @@ import { toastContext } from "./../../contexts/ToastProvider";
 const DialogAddCategory = ({visible, setVisible, category}) => {
 
     const [submitted, setSubmitted] = useState(false);
-    const [loading, setLoading] = useState(false);
     const { toastError, toastSuccess } = toastContext();
     const [name,setName] = useState(category.name);
     const [description,setDescription] = useState(category.description);
-    const navigate = useNavigate();
 
     const handleAddCategory = () => {
         const addCategory = async () => {
-            setLoading(true);
             try {
                 const data = {
                     name,
                     description,
                 }
                 const response = await productApi.create(data);
-                console.log(response);
                 if (response.data.type === "SUCCESS") {
                     setName('');
                     setDescription('');
@@ -34,20 +29,30 @@ const DialogAddCategory = ({visible, setVisible, category}) => {
                 }
             } catch (err) {
                 toastError(err.response.data.message);
-                console.log(err);
             }
-            setLoading(false);
+            setVisible(false);
         };
         addCategory();
     };
 
-    const handleSaveClick = () => {
-        handleAddCategory();
-    };
-
-    const handleCancelClick = () => {
-        setVisible(false);
-    }
+    const footerContent = (
+        <div>
+            <Button
+                label="Cancel"
+                icon="pi pi-times"
+                onClick={() => setVisible(false)}
+                className="p-button-text"
+                severity="danger"
+                autoFocus
+                outlined
+            />
+            <Button
+                label="Confirm"
+                icon="pi pi-check"
+                onClick={() => handleAddCategory()}
+            />
+        </div>
+    );
 
     return (
         <>
@@ -56,16 +61,7 @@ const DialogAddCategory = ({visible, setVisible, category}) => {
                 style={{ width: "600px" }}
                 modal 
                 className="p-fluid"
-                footer={
-                    <CategoryDialogFooter
-                        Cancel={handleCancelClick}
-                        Save={handleSaveClick}
-                    />
-                    }
-                    onHide={() => {
-                        setVisible(false);
-                    }   
-                }
+                footer={footerContent}
                 header="Add Category"
             >
             {/* {!loading && ( */}

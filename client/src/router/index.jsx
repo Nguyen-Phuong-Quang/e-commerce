@@ -7,7 +7,6 @@ import Signup from "../pages/sign-up/Signup";
 import Guest from "../components/Guest";
 import Profile from "../pages/profile/Profile";
 import Category from "../pages/category/Category";
-import HomeCategory from "../pages/category/HomeCategory";
 import HomeProductSeller from "../pages/product/HomeProductSeller";
 import Cart from "../pages/cart/Cart";
 import Discountpage from "../pages/discount/DiscountPage";
@@ -34,10 +33,6 @@ const router = createBrowserRouter([
             {
                 path: route.CATEGORY,
                 element: <Category />,
-            },
-            {
-                path: route.HOMECATEGORY,
-                element: <HomeCategory />,
             },
             {
                 path: route.PROFILE,

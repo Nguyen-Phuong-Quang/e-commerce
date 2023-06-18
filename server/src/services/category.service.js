@@ -46,6 +46,8 @@ exports.createCategory = async (name, description) => {
         // imageId: imageUploadResponse.public_id,
     });
 
+    await  category.save();
+
     return {
         type: statusType.success,
         message: "Create category successfully!",
@@ -93,7 +95,6 @@ exports.getCategoriesByQuery = async (req) => {
             message: "No category found!",
             statusCode: 404,
         };
-    console.log(categories.length);
     return {
         type: statusType.success,
         message: "Category found!",
