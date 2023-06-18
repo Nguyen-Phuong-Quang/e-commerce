@@ -32,18 +32,18 @@ const productApi = {
             },
         });
     },
-
-    updateProductById: (id, data) => {
-        const url = `${PREFIX}`;
-        return axiosClient.put(url, data, {
+    updateProductDetail: (productId, data) => {
+        const url = `${PREFIX}/update-product-detail/${productId}`;
+        return axiosClient.patch(url, data, {
             headers: {
-                "Content-Type": "multipart/form-data"
-            }
-        });
+                "Content-Type": "multipart/form-data",
+            },
+        }) ;
     },
+
     
-    updateMainImage: (data) => {
-        const url = `${PREFIX}/update-mainImage`;
+    updateProductImages: (productId, data) => {
+        const url = `${PREFIX}/update-product-images/${productId}`;
         return axiosClient.patch(url, data, {
             headers: {
                 "Content-Type": "multipart/form-data",

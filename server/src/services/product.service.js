@@ -120,8 +120,8 @@ exports.createProduct = async (body, files, sellerId) => {
         !colors ||
         !sizes ||
         !quantity ||
-        // !mainImage 
-         mainImage.length === 0 ||
+        !mainImage|| 
+        mainImage.length === 0 ||
         images.length === 0
     )
         return {

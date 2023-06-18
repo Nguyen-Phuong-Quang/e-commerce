@@ -52,6 +52,7 @@ exports.getAllProducts = async (req, res, next) => {
     }
 };
 
+//lấy ra các sản phẩm của người bán
 exports.getSellerProducts = async (req, res, next) => {
     try {
         const { type, message, statusCode, products } =

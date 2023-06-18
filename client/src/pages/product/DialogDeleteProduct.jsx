@@ -16,6 +16,7 @@ export default function DeleteDialog({ id, name, visible, setVisible
             const response = await productApi.deleteProduct(id);
             if (response.data.type === "SUCCESS") {
                 toastSuccess(response.data.message);
+                setVisible(false);
             }
         } catch (err) {
             toastError(err.response.data.message);

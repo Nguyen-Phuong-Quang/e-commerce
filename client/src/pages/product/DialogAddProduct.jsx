@@ -1,30 +1,33 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
-import { FileUpload } from "primereact/fileupload";
-import { MultiSelect } from 'primereact/multiselect';
+import { MultiSelect } from "primereact/multiselect";
 import { InputNumber } from "primereact/inputnumber";
 import ProductDialogFooter from "./Components/ProductDialogFooter";
 import { useNavigate } from "react-router-dom";
 import { Dialog } from "primereact/dialog";
 import productApi from "./../../api/productApi";
+import categoryApi from "./../../api/categoryApi";
 import { toastContext } from "./../../contexts/ToastProvider";
-import { userStateContext } from "../../contexts/StateProvider";
+import { Dropdown } from "primereact/dropdown";
 
-
-const DialogAddProduct = ({visible, setVisible}) => {
+const DialogAddProduct = ({ visible, setVisible }) => {
   const [loading, setLoading] = useState(false);
-  const [mainImage, setMainImage] = useState(null);
+  const [mainImage, setMainImage] = useState(undefined);
+  const [preview, setPreview] = useState(undefined);
+  let [categoryOptions, setCategoryOptions] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [category, setCategory] = useState(null);
+
   const [images, setImages] = useState([]);
-  const { toastError, toastSuccess } = toastContext();
-  const { currentUser } = userStateContext();
+  const { toastSuccess } = toastContext();
 
   const [products, setProducts] = useState({
     name: "",
-    category: "",
+    // category: "",
     description: "",
-    price: null,
-    priceAfterDiscount : null,
+    price: 0,
+    priceAfterDiscount: 0,
     colors: [],
     sizes: [],
     quantity: null,
@@ -34,62 +37,139 @@ const DialogAddProduct = ({visible, setVisible}) => {
   const colorOptions = ["red", "blue", "green", "yellow"];
   const sizeOptions = ["S", "M", "L", "XL"];
 
+  // fetch category ---------------------------------
+  useEffect(() => {
+    // Lấy danh sách category từ backend (ví dụ sử dụng hàm getCategoryOptions từ api.js)
+    const fetchCategoryOptions = async () => {
+      try {
+        const response = await categoryApi.query();
+        if (response.data.type === "SUCCESS") {
+          if (response.data.type === "SUCCESS") {
+            console.log(response.data.categories);
+            // setCategoryOptions(response.data.categories)
+            let categories = response.data.categories;
+            categories.map((cate) => {
+              categoryOptions.push({ id: cate._id, name: cate.name });
+            });
+          }
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
+    fetchCategoryOptions();
+  }, [visible]);
+
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.value);
+    setCategory(event.value.id);
+  };
 
   const handelAddProduct = async () => {
     setLoading(true);
     const formData = new FormData();
+
     formData.append("mainImage", mainImage);
-
-    for (let i = 0; i < images.length; i++) {
-      formData.append('images', images[i]);
-    }
-
+    images.forEach((file) => {
+      formData.append("images", file);
+    });
+    formData.append("name", products.name);
+    formData.append("category", category);
+    formData.append("description", products.description);
+    formData.append("price", products.price);
+    formData.append("priceAfterDiscount", products.priceAfterDiscount);
+    formData.append("colors", products.colors);
+    formData.append("sizes", products.sizes);
+    formData.append("quantity", products.quantity);
+    console.log("formdata name: ");
+    console.log(formData.get("name"));
 
     try {
-      const response = await productApi.addProduct({
-        ...products, 
-        formData,
-        // mainImage, 
-        // images,
-        sellerId: currentUser.id
-      });
+      console.log(mainImage);
+      const response = await productApi.addProduct(formData);
 
-        if (response.data.type === "Success") {
-            navigate("/");
-            toastSuccess(response.data.message);
-        }
+      if (response.data.type === "SUCCESS") {
+        toastSuccess(response.data.message);
+        setVisible(false);
+        navigate("/product");
+      }
     } catch (err) {
-        //  toastError(err.response.data.message);
-        console.log(err);
+      //  toastError(err.response.data.message);
+      console.log(err);
     }
     setLoading(false);
-};
+  };
 
-const handleChange = (event) => {
+  const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
     setProducts((values) => ({ ...values, [name]: value }));
-};
-
+  };
 
   const handleSaveClick = () => {
     handelAddProduct();
   };
 
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    // const fileURLs = files.map((file) => URL.createObjectURL(file));
+    setImages((prevImages) => [...prevImages, ...files]);
+  };
+
+  const handleImageDelete = (index) => {
+    setImages((prevImages) => {
+      const updatedImages = [...prevImages];
+      updatedImages.splice(index, 1);
+      return updatedImages;
+    });
+  };
+
+  const onSelectFile = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setMainImage(undefined);
+      return;
+    }
+    // I've kept this example simple by using the first image instead of multiple
+    setMainImage(e.target.files[0]);
+  };
+
+  // const uploadHandler = (event) => {
+  //   const uploadedFiles = event.target.files;
+
+  //   const fileURLs = uploadedFiles.map((file) => URL.createObjectURL(file));
+
+  //   setImages((prevSubImages) => [...prevSubImages, ...fileURLs]);
+  // };
+  // const uploadHandler = (event) => {
+  //   const files = event.target.files;
+  //   const fileURLs = files.map((file) => URL.createObjectURL(file));
+  //   setUploadedFiles(files);
+  //   setImages(fileURLs);
+  // };
+
   const handleCancelClick = () => {
     setVisible(false);
-    setMainImage(null);
+    setMainImage(undefined);
     setImages([]);
-  }
+    setUploadedFiles([]);
+  };
 
-
+  useEffect(() => {
+    if (!mainImage) {
+      setPreview(undefined);
+      return;
+    }
+    const mainImageUrl = URL.createObjectURL(mainImage);
+    setPreview(mainImageUrl);
+  }, [mainImage]);
 
   return (
     <>
       <Dialog
         visible={visible} //pass params as addVisible.
-        style={{ width: "60%" }}
+        // style={{ width: "60%" }}
+        className="sm:w-full md:w-11/12 lg:w-3/4 xl:w-2/3 2xl:w-1/2 mx-auto"
         footer={
           <ProductDialogFooter
             Cancel={handleCancelClick}
@@ -101,8 +181,8 @@ const handleChange = (event) => {
         }}
         header="Add Product"
       >
-        <div className="flex flex-row ">
-          <div className="w-1/2 text-center mt-4">
+        <div className="flex flex-col md:flex-row ">
+          <div className="w-full md:w-1/2 text-center mt-4">
             <div className="mb-4 flex-col items-center">
               <label
                 htmlFor="mainImage"
@@ -112,23 +192,20 @@ const handleChange = (event) => {
               </label>
               <div className="w-full mr-8">
                 <img
-                  src={mainImage}
-                  alt="mainImage"
+                  src={preview}
+                  alt="preview"
                   className="rounded-md h-52 w-52 object-cover mx-auto shadow-xl"
                 />
                 <input
                   type="file"
-                  id="mainImage"
-                  name="mainImage"
+                  id="main-image-upload"
                   hidden
-                  onChange={(event) => {
-                    setMainImage(URL.createObjectURL(event.target.files[0]));
-                  }}
+                  onChange={onSelectFile}
                 />
-                
+
                 <label
-                  htmlFor="mainImage"
-                  className="font-bold flex justify-center items-center h-12 w-1/4 mx-auto mt-6 mb-2 bg-blue-500 text-white hover:cursor-pointer rounded-md"
+                  htmlFor="main-image-upload"
+                  className="font-bold flex justify-center items-center h-12 w-1/4 mx-auto mt-6 mb-2 bg-blue-500 text-white hover:cursor-pointer rounded-md hover:bg-blue-700"
                 >
                   <div className="flex items-center my-2">
                     <i className="pi pi-image mr-4" /> <span>Add</span>
@@ -139,50 +216,63 @@ const handleChange = (event) => {
 
             <div className="mb-4 flex-col items-center">
               <label
-                htmlFor="subImage"
+                htmlFor="images"
                 className="basis-1/3 block text-gray-700 font-bold mb-2 text-left mr-4"
               >
                 Sub Images
               </label>
-              <div className="card">
-                <FileUpload
-                type="file"
-                className="mr-8"
-                  chooseLabel="New"
-                  uploadLabel="Upload"
-                  cancelLabel="Cancel"
-                  uploadOptions={{className: "text-blue-700"}}
-                  cancelOptions={{className: "text-blue-700"}}
-                  name="images"
-                  multiple="true"
-                  accept="image/*"
-                  maxFileSize={1000000}
-                  emptyTemplate={
-                    <p className="m-0 p-2">
-                      Drag and drop files to here to upload.
-                    </p>
-                  }
-                  uploadHandler={(event) => {
-                    const uploadedFiles = event.files;
-                    setImages((prevImages) => [...prevImages, ...uploadedFiles]);
-                  }}
-                  
-                  // uploadHandler={(event) => {
-                  //   const subImageUrls = event.files.map((file) =>
-                  //     URL.createObjectURL(file)
-                  //   );
-                  //   setImages((prevSubImages) => [
-                  //     ...prevSubImages,
-                  //     ...subImageUrls,
-                  //   ]);
-                  // }}
-                />
 
+              {/* --------------------- */}
+              <div className=" flex flex-col  w-full  rounded-lg  mr-4 p-4   h-auto">
+                <input
+                  type="file"
+                  multiple
+                  onChange={handleImageUpload}
+                  hidden
+                  id="image-input"
+                />
+                <label
+                  htmlFor="image-input"
+                  className="font-bold flex justify-center items-center h-12 w-1/4 mx-auto mt-4 mb-2 bg-blue-500 text-white hover:cursor-pointer rounded-md hover:bg-blue-700"
+                >
+                  <div className="flex items-center my-2">
+                    <i className="pi pi-images mr-4" /> <span>Upload</span>
+                  </div>
+                </label>
+                {/* <label
+                  htmlFor="image-input"
+                  className="bg-blue-500 px-4 py-2 text-white rounded cursor-pointer font-bold py-3"
+                >
+                  Choose Images
+                </label> */}
+                <div className="grid grid-cols-3 gap-4 mt-4">
+                  {images.map((image, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={URL.createObjectURL(image)}
+                        alt={`images${index + 1}`}
+                        className="h-40 w-full object-cover rounded-lg"
+                      />
+                      {/* <button
+                        className="absolute top-2 right-2 bg-gray-300 text-white font-bold rounded-full p-2"
+                        onClick={() => handleImageDelete(index)}
+                      >
+                        x
+                      </button> */}
+                      <span className="absolute top-2 right-2 text-red-500 hover:text-red-800 cursor-pointer"
+                                              onClick={() => handleImageDelete(index)}
+                      >
+                        <i className="pi pi-times-circle "></i>
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
+              {/* ----------------------------------------- */}
             </div>
           </div>
 
-          <div className="w-1/2 mt-4">
+          <div className="w-full md:w-1/2 mt-4">
             <div className="mb-6 flex flex-row ">
               <label
                 htmlFor="name"
@@ -199,22 +289,26 @@ const handleChange = (event) => {
                 className="basis-2/3 mr-4"
               />
             </div>
-            <div className="mb-6 flex flex-row ">
+            <div className="mb-6 flex flex-row">
               <label
                 htmlFor="category"
                 className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
               >
                 Category
               </label>
-              <InputText
+              <Dropdown
+                className="basis-2/3 mr-4"
                 id="category"
                 name="category"
-                placeholder="Enter category"
-                value={products.category}
-                onChange={handleChange}
-                className="basis-2/3 mr-4"
+                options={categoryOptions}
+                value={selectedCategory}
+                onChange={handleCategoryChange}
+                optionLabel="name" 
+                placeholder="Select a category"
               />
             </div>
+
+            {/* --------------- --------------------------------------- */}
 
             <div className="mb-6 flex flex-row ">
               <label
@@ -241,12 +335,12 @@ const handleChange = (event) => {
               >
                 Price
               </label>
-              <InputText
+              <InputNumber
                 id="price"
                 name="price"
                 placeholder="Enter price"
                 value={products.price}
-                onChange={handleChange}
+                onValueChange={handleChange}
                 className="basis-2/3 mr-4"
               />
             </div>
@@ -257,12 +351,12 @@ const handleChange = (event) => {
               >
                 Price After Discount
               </label>
-              <InputText
-                id="priceAfterDiscount "
-                name="priceAfterDiscount "
+              <InputNumber
+                id="priceAfterDiscount"
+                name="priceAfterDiscount"
                 placeholder="Enter price after discount"
-                value={products.priceAfterDiscount }
-                onChange={handleChange}
+                value={products.priceAfterDiscount}
+                onValueChange={handleChange}
                 className="basis-2/3 mr-4"
               />
             </div>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import productApi from "./../../api/productApi";
+import categoryApi from "./../../api/categoryApi";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Card } from "primereact/card";
 import EvaluationDialog from "../product/DialogEvaluationPage";
-import { Dialog } from "primereact/dialog";
 import { userStateContext } from "../../contexts/StateProvider";
 import { toastContext } from "./../../contexts/ToastProvider";
 import { Link } from "react-router-dom";
@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 function Home() {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
+  const [category, setCategory] = useState([]);
   const [visibleEvaluation, setVisibleEvaluation] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
@@ -25,6 +26,7 @@ function Home() {
     setSelectedProduct(null);
     setShowDialog(false);
   };
+
 
   useEffect(() => {
     const fetchApi = async () => {
@@ -50,6 +52,26 @@ function Home() {
     fetchApi();
   }, [ ]);
 
+  useEffect(() => {
+    const fetchCategory = async () => {
+      const catePromise = products.map(async (item) => {
+        try {
+          const response = await categoryApi.getById(item.category);
+          return response.data.category;
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
+      });
+
+      const cateData = await Promise.all(catePromise);
+      setCategory(cateData);
+    };
+
+    fetchCategory();
+  }, [products]);
+
+
   return (
     <>
       {loading && (
@@ -65,37 +87,16 @@ function Home() {
                 <div key={index} className="flex flex-col justify-between">
                   <Card
                     title={product.name}
-                    subTitle={product.category}
+                    subTitle={category[index] ? category[index].name : ""}
+                    // subTitle={product.category}
                     footer={
-                      // view details of product 
-                      // <div className="flex justify-between text-[14px]">
-                      //   <span className="flex items-center">
-                      //     <div
-                      //       className="text-red-500 cursor-pointer px-2 py-1 rounded border border-transparent hover:border-red-500 flex justify-center items-center"
-                      //       onClick={() => {
-                      //         onProductSelect(product);
-                      //       }}
-                      //     >
-                      //       <i className="pi pi-info-circle" />
-                      //     </div>
-                      //     {/* view Evaluation of product  */}
-                      //     <div
-                      //       className="text-red-500 cursor-pointer px-2 py-1 rounded border border-transparent hover:border-red-500 flex justify-center items-center"
-                      //       onClick={() => {
-                      //         setVisibleEvaluation(true);
-                      //       }}
-                      //     >
-                      //       <i className="pi pi-star" />
-                      //     </div>
-                      //   </span>
-                      // </div>
                       <div className="flex justify-between text-[14px]">
                       <Link
                           to={`/detail/${product._id}`}
-                          className="rounded border-blue-600 border px-2 py-1 font-bold  text-blue-600 hover:opacity-60 flex items-center"
+                          className="rounded-lg border-blue-600  px-2 py-2 font-bold  text-blue-600 hover:opacity-60 flex items-center"
                       >
                           <i className="pi pi-eye mr-2" />{" "}
-                          {/* Detail */}
+                          Detail
                       </Link>
    
                   </div>
@@ -131,91 +132,90 @@ function Home() {
           </>
         )}
 
-      {/* Dialog view details of products  */}
-        {/* {selectedProduct && (
-          <Dialog
-            header={`${selectedProduct.name} detail`}
-            visible={showDialog}
-            onHide={onHideDialog}
-            className="rounded-md overflow-hidden  mx-auto w-1/2"
-          >
-            <div className="grid grid-cols-2 gap-4 py-4 px-6">
-              <div className="flex flex-col">
-                <img
-                  src={selectedProduct.mainImage}
-                  alt={selectedProduct.name}
-                  className="h-full rounded-lg shadow-md object-cover"
-                />
-                <div className="mt-4 flex flex-row flex-wrap ">
-                  {selectedProduct.images.map((image, index) => (
-                    <img
-                      key={index}
-                      src={image}
-                      alt={selectedProduct.name}
-                      className={`h-20 w-20 m-1 object-cover box-border border-2 border-gray-300 rounded-lg cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md ${
-                        image === selectedProduct.mainImage &&
-                        "border-primary-500"
-                      }`}
-                      onClick={() => {
-                        setSelectedProduct((pre) => ({
-                          ...pre,
-                          mainImage: image,
-                        }));
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
+         {/* {selectedProduct && (
+        //   <Dialog
+        //     header={`${selectedProduct.name} detail`}
+        //     visible={showDialog}
+        //     onHide={onHideDialog}
+        //     className="rounded-md overflow-hidden  mx-auto w-1/2"
+        //   >
+        //     <div className="grid grid-cols-2 gap-4 py-4 px-6">
+        //       <div className="flex flex-col">
+        //         <img
+        //           src={selectedProduct.mainImage}
+        //           alt={selectedProduct.name}
+        //           className="h-full rounded-lg shadow-md object-cover"
+        //         />
+        //         <div className="mt-4 flex flex-row flex-wrap ">
+        //           {selectedProduct.images.map((image, index) => (
+        //             <img
+        //               key={index}
+        //               src={image}
+        //               alt={selectedProduct.name}
+        //               className={`h-20 w-20 m-1 object-cover box-border border-2 border-gray-300 rounded-lg cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md ${
+        //                 image === selectedProduct.mainImage &&
+        //                 "border-primary-500"
+        //               }`}
+        //               onClick={() => {
+        //                 setSelectedProduct((pre) => ({
+        //                   ...pre,
+        //                   mainImage: image,
+        //                 }));
+        //               }}
+        //             />
+        //           ))}
+        //         </div>
+        //       </div>
 
-              <div className="space-y-4 ">
-                <h3 className="text-3xl font-bold">{selectedProduct.name}</h3>
-                <p className="text-gray-400 font-bold">
-                  {selectedProduct.category}
-                </p>
-                <div className=" rounded bg-gray-50">
-                  <p className="text-gray-700 p-4">
-                    {selectedProduct.description}
-                  </p>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-3xl font-bold">
-                    {" "}
-                    <span class="text-xs text-red-500">₫</span>
-                    {selectedProduct.priceAfterDiscount}
-                  </span>
-                  <span className="text-gray-400 text-sm line-through ml-2">
-                    <span class="text-xs text-red-500">₫</span>
-                    {selectedProduct.price}
-                  </span>
-                </div>
-                <div className="flex space-x-4">
-                  {selectedProduct.colors.map((color, index) => (
-                    <span
-                      key={index}
-                      className={`h-8 w-8 rounded-full bg-${color.color.toLowerCase()}-500 border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
-                      }`}
-                    />
-                  ))}
-                </div>
-                <div className="flex space-x-4">
-                  {selectedProduct.sizes.map((size, index) => (
-                    <span
-                      key={index}
-                      className={`flex justify-center items-center h-8 w-8 rounded-full bg-gray-300 border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
-                      }`}
-                    >
-                      {size}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex items-center space-x-2 pt-2">
-                  <span className="font-semibold">Quantity:</span>
-                  <span>{selectedProduct.quantity}</span>
-                </div>
-              </div>
-            </div>
-          </Dialog>
-        )} */}
+        //       <div className="space-y-4 ">
+        //         <h3 className="text-3xl font-bold">{selectedProduct.name}</h3>
+        //         <p className="text-gray-400 font-bold">
+        //           {selectedProduct.category}
+        //         </p>
+        //         <div className=" rounded bg-gray-50">
+        //           <p className="text-gray-700 p-4">
+        //             {selectedProduct.description}
+        //           </p>
+        //         </div>
+        //         <div className="flex items-center">
+        //           <span className="text-3xl font-bold">
+        //             {" "}
+        //             <span class="text-xs text-red-500">₫</span>
+        //             {selectedProduct.priceAfterDiscount}
+        //           </span>
+        //           <span className="text-gray-400 text-sm line-through ml-2">
+        //             <span class="text-xs text-red-500">₫</span>
+        //             {selectedProduct.price}
+        //           </span>
+        //         </div>
+        //         <div className="flex space-x-4">
+        //           {selectedProduct.colors.map((color, index) => (
+        //             <span
+        //               key={index}
+        //               className={`h-8 w-8 rounded-full bg-${color.color.toLowerCase()}-500 border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
+        //               }`}
+        //             />
+        //           ))}
+        //         </div>
+        //         <div className="flex space-x-4">
+        //           {selectedProduct.sizes.map((size, index) => (
+        //             <span
+        //               key={index}
+        //               className={`flex justify-center items-center h-8 w-8 rounded-full bg-gray-300 border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
+        //               }`}
+        //             >
+        //               {size}
+        //             </span>
+        //           ))}
+        //         </div>
+        //         <div className="flex items-center space-x-2 pt-2">
+        //           <span className="font-semibold">Quantity:</span>
+        //           <span>{selectedProduct.quantity}</span>
+        //         </div>
+        //       </div>
+        //     </div>
+        //   </Dialog> */}
+
         {visibleEvaluation && (
           <EvaluationDialog
             visible={visibleEvaluation}
