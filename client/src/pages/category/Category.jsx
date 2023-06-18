@@ -70,13 +70,6 @@ export default function Category() {
                     className="p-button-success mr-2" 
                     onClick={handleAddCategory} 
                 />
-                {/* <Button 
-                    label="Delete" 
-                    icon="pi pi-trash" 
-                    className="p-button-danger" 
-                    onClick={confirmDeleteSelected} 
-                    disabled={!selectedCategories || !selectedCategories.length} 
-                /> */}
             </React.Fragment>
         )
     }
@@ -150,20 +143,6 @@ export default function Category() {
                 />
             )}
 
-            {/* {visibleDeletesDialog && (
-                <Dialog visible={visibleDeletesDialog} 
-                    style={{ width: '450px' }} 
-                    header="Confirm" 
-                    modal 
-                    footer={deleteCategoriesDialogFooter} 
-                    onHide={hideDeleteCategoriesDialog}
-                >
-                    <div className="confirmation-content">
-                        <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
-                        {category && <span>Are you sure you want to delete the selected Categories?</span>}
-                    </div>
-                </Dialog>
-            )} */}
         </div>
     );
 }

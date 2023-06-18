@@ -165,12 +165,12 @@ export default function Discountpage() {
               <>
                 <button
                   type="button"
-                  class="px-4 py-2 bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-opacity-50 text-white rounded-md shadow-md"
+                  className="px-4 py-2 bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-opacity-50 text-white rounded-md shadow-md"
                   onClick={() => {
                     setVisibleDialog(true);
                   }}
                 >
-                  <i class="pi pi-plus mr-1"></i>Add
+                  <i className="pi pi-plus mr-1"></i>Add
                 </button>
               </>
             }

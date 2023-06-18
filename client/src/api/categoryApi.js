@@ -4,9 +4,20 @@ const PREFIX = "/category";
 
 const categoryApi = {
     // Get all category (Can use sort and search by name)
-    query: () => {
+    query: (sort = 1, name = "") => {
+        let sortQuery = "";
+        if (sort === 1) {
+            sortQuery = "asc,name";
+        }
+        if (sort === -1) {
+            sortQuery = "desc,name";
+        }
         const url = `${PREFIX}`;
-        return axiosClient.get(url);
+        return axiosClient.get(url, {
+            params: {
+                sort: sortQuery,
+            },
+        });
     },
 
     // Get category by id
@@ -26,7 +37,7 @@ const categoryApi = {
     },
 
     // Update category detail (not image)
-    updateDetail: (id,data) => {
+    updateDetail: (id, data) => {
         const url = `${PREFIX}/${id}`;
         return axiosClient.patch(url, data);
     },

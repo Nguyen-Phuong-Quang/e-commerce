@@ -74,12 +74,7 @@ useEffect(() => {
     try {
       const response = await categoryApi.query();
         if (response.data.type === "SUCCESS") {
-          console.log(response.data.categories);
-          // setCategoryOptions(response.data.categories)
-          let categories = response.data.categories;
-          categories.map((cate) => {
-            categoryOptions.push({ id: cate._id, name: cate.name });
-          });
+          setCategoryOptions(response.data.categories);
       }
     } catch (err) {
       console.log(err);
@@ -143,7 +138,7 @@ const handleChange = (event) => {
 
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.value);
-    setCategory(event.value.id);
+    setCategory(event.value._id);
   };
 
   const handleImageUpload = (e) => {

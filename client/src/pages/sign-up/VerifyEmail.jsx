@@ -15,7 +15,6 @@ export default function VerifyEmail({ email, handleSignUp }) {
     const submit = async () => {
         try {
             const response = await authApi.verifyEmail({ email, code });
-            console.log(response.data);
             if (response.data.type === "SUCCESS") setSuccess(true);
         } catch (err) {
             console.log(err);

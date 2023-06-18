@@ -40,7 +40,9 @@ export default function Cart()  {
             image: "https://via.placeholder.com/150",
         },
     ]);
-    const [cart,setCart] = ("");
+
+
+    const [cart,setCart] = ([]);
     const [selectedCartItem, setSelectedCartItem] = useState(null);
     const [totalPrice, setTotalPrice] = useState(
         cartItems.reduce((total, item) => total + item.price * item.quantity, 0)
@@ -56,6 +58,7 @@ export default function Cart()  {
             const response = await cartApi.getCart();
             if (response.data.type === "SUCCESS") {
                 setCart(response.data.cart);
+                console.log(response.data.cart);
                 toastSuccess(response.data)
             }
         } catch (err) {
@@ -66,6 +69,8 @@ export default function Cart()  {
     useEffect(() => {
         fetch();
     }, []);
+
+    
 
     const onQuantityChange = (event, rowData) => {
         const updatedItems = [...cartItems];
