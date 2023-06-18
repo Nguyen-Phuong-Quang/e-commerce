@@ -6,11 +6,14 @@ import { InputText } from "primereact/inputtext";
 import { Avatar } from "primereact/avatar";
 import authApi from "../api/authApi";
 import ChangePasswordDialog from "./ChangePasswordDialog";
+import { useSearchContext } from "../contexts/SearchProvider";
 
 export default function MenuBar() {
     const [visibleChangePassword, setVisibleChangePassword] = useState(false);
     const navigate = useNavigate();
     const { currentUser, setCurrentUser } = userStateContext();
+
+    const { searchText, setSearchText } = useSearchContext();
 
     const handleSignOut = () => {
         const signOut = async () => {
@@ -50,6 +53,8 @@ export default function MenuBar() {
                 placeholder="Search"
                 type="text"
                 className="my-2 w-full rounded-full"
+                value={searchText}
+                onChange={setSearchText}
             />
             <i className="pi pi-spin pi-spinner" />
         </span>

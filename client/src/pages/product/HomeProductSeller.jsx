@@ -188,16 +188,20 @@ function HomeProductSeller() {
                                         <div className="flex items-center justify-start mt-4 ">
                                             <span className="text-3xl font-bold text-red-700">
                                                 {" "}
-                                                <span class="text-sm text-red-500 pb-2">
-                                                    $
+                                                <span className="text-sm text-red-500 pb-2">
+                                                    đ
                                                 </span>
-                                                {product.priceAfterDiscount}
+                                                {new Intl.NumberFormat().format(
+                                                    product.priceAfterDiscount
+                                                )}
                                             </span>
                                             <span className="text-gray-400 text-sm line-through ml-2">
-                                                <span class="text-xs text-red-500">
-                                                    $
+                                                <span className="text-xs text-red-500">
+                                                    đ
                                                 </span>
-                                                {product.price}
+                                                {new Intl.NumberFormat().format(
+                                                    product.price
+                                                )}
                                             </span>
                                         </div>
                                     </Card>

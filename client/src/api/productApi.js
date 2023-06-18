@@ -1,12 +1,15 @@
 import axiosClient from "./axiosClient";
 
-
 const PREFIX = "/product";
 
 const productApi = {
-    getAllProduct: () => {
+    getAllProduct: (name = "") => {
         const url = `${PREFIX}`;
-        return axiosClient.get(url);
+        return axiosClient.get(url, {
+            params: {
+                name,
+            },
+        });
     },
 
     // getProductStatics: () => {
@@ -16,7 +19,7 @@ const productApi = {
 
     getSellerProducts: (userId) => {
         const url = `${PREFIX}/seller-product`;
-            return axiosClient.get(url, userId);
+        return axiosClient.get(url, userId);
     },
 
     getProductById: (id) => {
@@ -38,10 +41,9 @@ const productApi = {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
-        }) ;
+        });
     },
 
-    
     updateProductImages: (productId, data) => {
         const url = `${PREFIX}/update-product-images/${productId}`;
         return axiosClient.patch(url, data, {
