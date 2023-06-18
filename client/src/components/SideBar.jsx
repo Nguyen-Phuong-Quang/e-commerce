@@ -12,18 +12,26 @@ export default function SideBar() {
     const adminItems = [
         {
             label: "Category",
-            icon: "pi pi-fw pi-plus",
             command: () => {
                 navigate(route.CATEGORY);
             },
         },
     ];
 
+    const sellerItems = [
+        {
+            label: "My product",
+            command: () => {
+                navigate(route.PRODUCT);
+            },
+        },
+    ];
+
     const adminSidebar = () => {
-        return <Menu className="w-full" model={adminItems}/>;
+        return <Menu className="w-full" model={adminItems} />;
     };
     const sellerSidebar = () => {
-        return <div>seller</div>;
+        return <Menu className="w-full" model={sellerItems} />;
     };
     const customerSidebar = () => {
         return <div>customer</div>;

@@ -71,13 +71,6 @@ export default function Category() {
                     className="p-button-success mr-2" 
                     onClick={handleAddCategory} 
                 />
-                {/* <Button 
-                    label="Delete" 
-                    icon="pi pi-trash" 
-                    className="p-button-danger" 
-                    onClick={confirmDeleteSelected} 
-                    disabled={!selectedCategories || !selectedCategories.length} 
-                /> */}
             </React.Fragment>
         )
     }
@@ -153,6 +146,7 @@ export default function Category() {
                     id={editId}
                 />
             )}
+
         </div>
     );
 }
