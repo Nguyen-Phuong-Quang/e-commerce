@@ -7,7 +7,6 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import orderApi from '../../api/orderApi';
 import { toastContext } from "../../contexts/ToastProvider";
-import './Order.css';
 
 const Order = () => {
     const [user,setUser] = useState();
@@ -44,51 +43,6 @@ const Order = () => {
         {
             id: 3,
             name: "Product 3",
-            size: "M",
-            color: "Red",
-            quantity: 3,
-            price: 30,
-            image: "https://via.placeholder.com/150",
-        },
-        {
-            id: 4,
-            name: "Product 4",
-            size: "M",
-            color: "Red",
-            quantity: 3,
-            price: 30,
-            image: "https://via.placeholder.com/150",
-        },
-        {
-            id: 5,
-            name: "Product 5",
-            size: "M",
-            color: "Red",
-            quantity: 1,
-            price: 10,
-            image: "https://via.placeholder.com/150",
-        },
-        {
-            id: 6,
-            name: "Product 6",
-            size: "M",
-            color: "Red",
-            quantity: 2,
-            price: 20,
-            image: "https://via.placeholder.com/150",
-        },
-        {
-            id: 7,
-            name: "Product 7",
-            size: "M",
-            color: "Red",
-            quantity: 3,
-            price: 30,
-            image: "https://via.placeholder.com/150",
-        },
-        {
-            id: 8,
-            name: "Product 8",
             size: "M",
             color: "Red",
             quantity: 3,
@@ -144,29 +98,29 @@ const Order = () => {
 
     return (
         <div className="order-container">
-        <h1>Order</h1>
+        <h1 className="flex justify-center items-center text-4xl my-6">Order</h1>
 
-        <div className="order-form">
-            <h2 className="content">Products</h2>
+        <div className="">
+            <h2 className="m-5 text-xl">Products</h2>
             <DataTable value={cartItems} selectionMode="single"
-            dataKey="id" responsiveLayout="scroll">
+            dataKey="id">
                 {/* <Column selectionMode="multiple" headerStyle={{ width: '3rem' }} exportable={false}></Column> */}
-                <Column field="name" header="Name"></Column>
-                <Column field="image" header="Image" body={imageBodyTemplate} />
-                <Column field="size" header="Size" ></Column>
-                <Column field="color" header="Color" ></Column>
-                <Column field="quantity" header="Quantity"></Column>
-                <Column field="price" header="Price"></Column>
+                <Column field="image" header="Image" body={imageBodyTemplate} style={{ width: '8rem' }}/>
+                <Column field="name" header="Name" style={{ width: '12rem' }}></Column>
+                <Column field="size" header="Size" style={{ width: '12rem' }} ></Column>
+                <Column field="color" header="Color" style={{ width: '12rem' }}></Column>
+                <Column field="quantity" header="Quantity" style={{ width: '12rem' }}></Column>
+                <Column field="price" header="Price" style={{ width: '12rem' }}></Column>
             </DataTable>
             
-            <h2 className="content">Order Price</h2>
-            <h2 className="content">Tax Price</h2>
-            <h2 className="content">Shipping Price</h2>
-            <h2 className="content">Total Price</h2>
+            <h2 className="m-5 text-xl">Order Price</h2>
+            <h2 className="m-5 text-xl">Tax Price</h2>
+            <h2 className="m-5 text-xl">Shipping Price</h2>
+            <h2 className="m-5 text-xl">Total Price</h2>
 
-            <h2 className="content">User</h2>
-            <div className="p-fluid">
-                <div className="p-field">    
+            <h2 className="m-5 text-xl">User</h2>
+            <div className="p-fluid m-5">
+                <div className="p-field m-5">    
                     <InputText
                         id="user"
                         value={user}
@@ -175,9 +129,9 @@ const Order = () => {
                     />
                 </div>
             </div>
-            <h2 className="content">Shipping Address</h2>
-            <div className="p-fluid">
-                <div className="p-field">
+            <h2 className="m-5 text-xl">Shipping Address</h2>
+            <div className="p-fluid m-5">
+                <div className="p-field m-5">
                     <label htmlFor="address">Address</label>
                     <InputText
                     id="address"
@@ -191,7 +145,7 @@ const Order = () => {
                     }
                     />
                 </div>
-                <div className="p-field">
+                <div className="p-field m-5">
                     <label htmlFor="city">City</label>
                     <InputText
                     id="city"
@@ -205,7 +159,7 @@ const Order = () => {
                     }
                     />
                 </div>
-                <div className="p-field">
+                <div className="p-field m-5">
                     <label htmlFor="postalCode">Postal Code</label>
                     <InputText
                     id="postalCode"
@@ -219,7 +173,7 @@ const Order = () => {
                     }
                     />
                 </div>
-                <div className="p-field">
+                <div className="p-field m-5">
                     <label htmlFor="country">Country</label>
                     <InputText
                     id="country"
@@ -235,8 +189,8 @@ const Order = () => {
                 </div>
                 </div>
 
-            <h2 className="content">Payment Method</h2>
-            <div className="p-field">
+            <h2 className="m-5 text-xl">Payment Method</h2>
+            <div className="p-field m-5">
             <Dropdown
                 id="paymentMethod"
                 value={paymentMethod}
@@ -253,8 +207,8 @@ const Order = () => {
             />
             </div>
 
-            <h2 className="content">Contact Phone</h2>
-            <div className="p-field">
+            <h2 className="m-5 text-xl">Contact Phone</h2>
+            <div className="p-field m-5">
                 <InputText
                     id="phone"
                     value={phone}
@@ -262,16 +216,19 @@ const Order = () => {
                     onChange={(e) => setPhone(e.target.value)}
                 />
                 {" "}
-                <Button
-                    label="Comfirm Order"
-                    onClick={handlePlaceOrder}
-                    className="p-button-success ml-10"
-                />
-                <Button
-                    label="Cancel"
-                    onClick={handleCancelOrder}
-                    className="p-button-danger ml-10"
-                />
+                <div className='flex justify-center'>
+                    <Button
+                        label="Comfirm Order"
+                        onClick={handlePlaceOrder}
+                        className="p-button-success ml-10"
+                    />
+                    <Button
+                        label="Cancel"
+                        onClick={handleCancelOrder}
+                        className="p-button-danger ml-10"
+                    />
+
+                </div>
             </div>
 
             <Toast ref={toast} />

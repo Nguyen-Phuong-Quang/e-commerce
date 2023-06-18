@@ -3,35 +3,44 @@ import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import { classNames } from 'primereact/utils';
 import { Button } from "primereact/button";
-import productApi from "./../../api/categoryApi";
+import { ProgressSpinner } from "primereact/progressspinner";
 import { toastContext } from "./../../contexts/ToastProvider";
+import productApi from "./../../api/categoryApi";
 
 
 const DialogAddCategory = ({visible, setVisible, category}) => {
 
+    const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const { toastError, toastSuccess } = toastContext();
-    const [name,setName] = useState(category.name);
-    const [description,setDescription] = useState(category.description);
+    const [name, setName] = useState(category.name);
+    const [description, setDescription] = useState(category.description);
+
+
+    // useEffect(() => {
+
+    // ,[]};
+    const addCategory = async () => {
+        setLoading(true);
+        try {
+            const data = {
+                name,
+                description,
+            }
+            const response = await productApi.create(data);
+            if (response.data.type === "SUCCESS") {
+                setName('');
+                setDescription('');
+                toastSuccess(response.data.message);
+            }
+        } catch (err) {
+            toastError(err.response.data.message);
+        }
+        setLoading(false);
+        setVisible(false);
+    };
 
     const handleAddCategory = () => {
-        const addCategory = async () => {
-            try {
-                const data = {
-                    name,
-                    description,
-                }
-                const response = await productApi.create(data);
-                if (response.data.type === "SUCCESS") {
-                    setName('');
-                    setDescription('');
-                    toastSuccess(response.data.message);
-                }
-            } catch (err) {
-                toastError(err.response.data.message);
-            }
-            setVisible(false);
-        };
         addCategory();
     };
 
@@ -62,9 +71,12 @@ const DialogAddCategory = ({visible, setVisible, category}) => {
                 modal 
                 className="p-fluid"
                 footer={footerContent}
+                onHide={() => {
+                    setVisible(false);
+                }}
                 header="Add Category"
             >
-            {/* {!loading && ( */}
+            {!loading && (
                 <>
                     <div className="field">
                         <label htmlFor="name">Name</label>
@@ -95,8 +107,12 @@ const DialogAddCategory = ({visible, setVisible, category}) => {
                         </div>
                     </div>
                 </>
-            {/* )} */}
-            
+            )}
+            {loading && (
+                <div className="justify-center items-center ">
+                    <ProgressSpinner className=" w-full" />
+                </div>
+            )}
             </Dialog>
         </>
     );

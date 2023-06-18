@@ -4,12 +4,12 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 import { InputText } from 'primereact/inputtext';
-import categoryApi from "../../api/categoryApi";
+import { ProgressSpinner } from "primereact/progressspinner";
 import { toastContext } from '../../contexts/ToastProvider';
+import categoryApi from "../../api/categoryApi";
 import DialogEditCategory from './DialogEditCategory';
 import DialogAddCategory from './DialogAddCategory';
 import DialogDeleteCategory from './DialogDeleteCategory';
-import './Category.css';
 
 export default function Category() {
 
@@ -36,18 +36,19 @@ export default function Category() {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
                 const response = await categoryApi.query()
                 setData(response.data.categories);
             } catch(err) {
                 toastError(err.response.data.message);
             }
+            setLoading(false);
         }
-        fetchData()
+        fetchData();
     },[visibleAddDialog,visibleDeleteDialog,visibleEditDialog]);
 
     const handleAddCategory = () => {
-        setCategory(emptyCategory);
         setVisibleAddDialog(true);
     }
 
@@ -91,8 +92,8 @@ export default function Category() {
     }
 
     const header = (
-        <div className="table-header">
-            <h5 className="mx-0 my-1">Manage Category</h5>
+        <div className="table-header flex justify-between ">
+            <h5 className="text-2xl mx-2 mt-3">Manage Category</h5>
             <span className="p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
@@ -102,10 +103,9 @@ export default function Category() {
 
     return (
         <div className="datatable-crud-demo">
-            {!loading && (
+            {/* {!loading && ( */}
                 <>
                     {/* <Toast ref={toast} /> */}
-
                     <div className="card" >
                         <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
 
@@ -114,16 +114,21 @@ export default function Category() {
                             paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                             paginatorTemplate="FirstPageLink P  revPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-                            globalFilter={globalFilter} header={header} responsiveLayout="scroll">
+                            globalFilter={globalFilter} header={header} >
                             {/* <Column selectionMode="multiple" headerStyle={{ width: '3rem' }} exportable={false}></Column> */}
-                            <Column field="name" header="Name" sortable style={{ minWidth: '12rem' }}></Column>
-                            <Column field="description" header="Description" style={{ minWidth: '24rem' }}></Column>
-                            <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
+                            <Column field="name" header="Name" sortable style={{ width: '12rem' }}></Column>
+                            <Column field="description" header="Description" style={{ width: '24rem' }}></Column>
+                            <Column body={actionBodyTemplate} exportable={false} style={{ width: '8rem' }}></Column>
                         </DataTable>
                     </div>
-
                 </>
-            )}
+            {/* )} */}
+
+            {/* {loading && (
+                    <div className="w-full h-[600px] flex justify-center items-center ">
+                        <ProgressSpinner className=" w-full" />
+                    </div>
+            )} */}
 
             {visibleAddDialog && (
                 <DialogAddCategory
@@ -133,7 +138,6 @@ export default function Category() {
                 />
             )}
 
-            {/* display delete dialog */}
             {visibleDeleteDialog && (
                 <DialogDeleteCategory
                         visible={visibleDeleteDialog}
@@ -141,7 +145,7 @@ export default function Category() {
                         id={deleteId}
                 />
             )}
-            {/* display edit dialog */}
+
             {visibleEditDialog && (
                 <DialogEditCategory
                     visible={visibleEditDialog}
@@ -149,21 +153,6 @@ export default function Category() {
                     id={editId}
                 />
             )}
-
-            {/* {visibleDeletesDialog && (
-                <Dialog visible={visibleDeletesDialog} 
-                    style={{ width: '450px' }} 
-                    header="Confirm" 
-                    modal 
-                    footer={deleteCategoriesDialogFooter} 
-                    onHide={hideDeleteCategoriesDialog}
-                >
-                    <div className="confirmation-content">
-                        <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
-                        {category && <span>Are you sure you want to delete the selected Categories?</span>}
-                    </div>
-                </Dialog>
-            )} */}
         </div>
     );
 }
