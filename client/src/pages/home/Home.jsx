@@ -7,6 +7,8 @@ import EvaluationDialog from "../product/DialogEvaluationPage";
 import { userStateContext } from "../../contexts/StateProvider";
 import { toastContext } from "./../../contexts/ToastProvider";
 import { Link } from "react-router-dom";
+import useDebounce from "../../hooks/useDebounce";
+import { useSearchContext } from "../../contexts/SearchProvider";
 
 function Home() {
     const [loading, setLoading] = useState(false);
@@ -16,6 +18,7 @@ function Home() {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showDialog, setShowDialog] = useState(false);
     const { toastError, toastSuccess } = toastContext();
+    const { searchText } = useSearchContext();
 
     const handleAddCart = () => {
         console.log("handle add product to cart");
@@ -26,11 +29,13 @@ function Home() {
         setShowDialog(false);
     };
 
+    const debouncedValue = useDebounce(searchText, 500);
+
     useEffect(() => {
         const fetchApi = async () => {
             setLoading(true);
             try {
-                const response = await productApi.getAllProduct();
+                const response = await productApi.getAllProduct(debouncedValue);
                 if (response.data.type === "SUCCESS") {
                     setProducts(response.data.products);
                 }
@@ -48,7 +53,7 @@ function Home() {
         };
 
         fetchApi();
-    }, []);
+    }, [debouncedValue]);
 
     useEffect(() => {
         const fetchCategory = async () => {
@@ -132,13 +137,13 @@ function Home() {
                                         <div className="flex items-center justify-start mt-4 ">
                                             <span className="text-3xl font-bold text-red-700">
                                                 {" "}
-                                                <span class="text-sm text-red-500 pb-2">
+                                                <span className="text-sm text-red-500 pb-2">
                                                     $
                                                 </span>
                                                 {product.priceAfterDiscount}
                                             </span>
                                             <span className="text-gray-400 text-sm line-through ml-2">
-                                                <span class="text-xs text-red-500">
+                                                <span className="text-xs text-red-500">
                                                     $
                                                 </span>
                                                 {product.price}

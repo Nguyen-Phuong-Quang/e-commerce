@@ -134,6 +134,8 @@ exports.createOrder = async (body, user) => {
  * @param   { object } req - Request object
  * @returns { object<type|message|statusCode|orders> }
  */
+
+
 exports.getOrdersByQuery = async (req) => {
     // 1. Set user id in req.query
     req.query.user = req.user._id;
