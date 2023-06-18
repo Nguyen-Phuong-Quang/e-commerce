@@ -39,51 +39,6 @@ export default function Cart()  {
             price: 30,
             image: "https://via.placeholder.com/150",
         },
-        {
-            id: 4,
-            name: "Product 4",
-            size: "M",
-            color: "Red",
-            quantity: 3,
-            price: 30,
-            image: "https://via.placeholder.com/150",
-        },
-        {
-            id: 5,
-            name: "Product 5",
-            size: "M",
-            color: "Red",
-            quantity: 1,
-            price: 10,
-            image: "https://via.placeholder.com/150",
-        },
-        {
-            id: 6,
-            name: "Product 6",
-            size: "M",
-            color: "Red",
-            quantity: 2,
-            price: 20,
-            image: "https://via.placeholder.com/150",
-        },
-        {
-            id: 7,
-            name: "Product 7",
-            size: "M",
-            color: "Red",
-            quantity: 3,
-            price: 30,
-            image: "https://via.placeholder.com/150",
-        },
-        {
-            id: 8,
-            name: "Product 8",
-            size: "M",
-            color: "Red",
-            quantity: 3,
-            price: 30,
-            image: "https://via.placeholder.com/150",
-        },
     ]);
     const [cart,setCart] = ("");
     const [selectedCartItem, setSelectedCartItem] = useState(null);
@@ -97,17 +52,15 @@ export default function Cart()  {
     const toast = useRef(null);
 
     const fetch = async () => {
-        setLoading(true);
         try {
             const response = await cartApi.getCart();
             if (response.data.type === "SUCCESS") {
-                setCart(response.data.user);
+                setCart(response.data.cart);
                 toastSuccess(response.data)
             }
         } catch (err) {
             toastError(err.response.data.message);
         }
-        setLoading(false);
     };
 
     useEffect(() => {

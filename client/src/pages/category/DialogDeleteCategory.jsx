@@ -2,24 +2,47 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import categoryApi from "./../../api/categoryApi";
 import { toastContext } from "./../../contexts/ToastProvider";
-import { useState } from "react";
-import { ProgressSpinner } from "primereact/progressspinner";
+import { useState, useEffect } from "react";
 
-export default function DialogDeleteCategory({ id, name, visible, setVisible }) {
+export default function DialogDeleteCategory({ id, visible, setVisible }) {
+    const [category,setCategory] = useState({});
+    const [name, setName] = useState(category.name);
+    const [description, setDescription] = useState(category.description);
     const { toastError, toastSuccess } = toastContext();
-    const [loading, setLoading] = useState(false);
+    
 
-    const handleDelete = async () => {
-        setLoading(true);
-        try {
-            const response = await categoryApi.deleteCategory(id);
-            if (response.data.type === "Success") {
-                toastSuccess(response.data.message);
+    useEffect(() => {
+        const getCategory = async () => {
+            try {
+                const response = await categoryApi.getById(id);
+                if (response.data.type === "SUCCESS") {
+                    setCategory(response.data.category);
+                    setName(response.data.category.name);
+                    setDescription(response.data.category.description);
+                }
+            } catch (err) {
+                toastError(err.response.data.message);
             }
-        } catch (err) {
-            toastError(err.response.data.message);
-        }
-        setLoading(false);
+        };
+        getCategory();
+    },[] );
+
+    const handleDelete = () => {
+        const confirmDelete = async () => {
+            try {
+                const response = await categoryApi.deleteCategory(id);
+                if (response.data.type === "Success") {
+                    setVisible(false);
+                    toastSuccess(response.data.message);
+                    console.log(response);
+                }
+            } catch (err) {
+                toastError(err.response.data.message);
+                console.log(err);
+            }
+            setVisible(false);
+        };
+        confirmDelete();
     };
 
     const footerContent = (
@@ -49,12 +72,9 @@ export default function DialogDeleteCategory({ id, name, visible, setVisible }) 
                 onHide={() => setVisible(false)}
                 footer={footerContent}
             >
-                    <span>Are you sure to delete <span className="text-red-500">{name}</span>?</span>
-                {loading && (
-                    <div className="w-full h-full flex justify-center items-center">
-                        <ProgressSpinner className="" />
-                    </div>
-                )}
+                    <span>Are you sure to delete 
+                        <span className="text-red-500">{}</span>?
+                    </span>
             </Dialog>
         </div>
     );
