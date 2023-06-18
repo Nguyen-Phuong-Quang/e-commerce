@@ -1,22 +1,18 @@
-import React, {  useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import productApi from "./../../api/productApi";
 import { ProgressSpinner } from "primereact/progressspinner";
-import {Card}  from "primereact/card";
+import { Card } from "primereact/card";
 import DialogDeleteProduct from "./DialogDeleteProduct";
-import DialogEditProduct from './DialogEditProduct';
-import EvaluationDialog from './DialogEvaluationPage';
+import DialogEditProduct from "./DialogEditProduct";
+import EvaluationDialog from "./DialogEvaluationPage";
 import { Toolbar } from "primereact/toolbar";
-import { Dialog } from 'primereact/dialog';
-import DialogAddProduct from './DialogAddProduct';
+import { Dialog } from "primereact/dialog";
+import DialogAddProduct from "./DialogAddProduct";
 import { userStateContext } from "../../contexts/StateProvider";
-
-
-
-
 
 function HomeProductSeller() {
   const [loading, setLoading] = useState(false);
-  const[products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]);
   const [visibleDeleteDialog, setVisibleDeleteDialog] = useState(false);
   const [visibleEditDialog, setvisibleEditDialog] = useState(false);
   const [visibleAddDialog, setvisibleAddDialog] = useState(false);
@@ -33,49 +29,43 @@ function HomeProductSeller() {
     setSelectedProduct(product);
     setShowDialog(true);
   };
-  
+
   const onHideDialog = () => {
     setSelectedProduct(null);
     setShowDialog(false);
   };
 
-
   useEffect(() => {
     const fetchApi = async () => {
-        setLoading(true);
-        try {
-            const response = await productApi.getSellerProducts(currentUser._id);;
-            if (response.data.type === "SUCCESS") {
-                setProducts(response.data.products);
-            }
-
-            if (response.data.products.length < 1) {
-                console.log("No product founddd!");
-            }
-            // setProducts(dataTrain);
-        } catch (err) {
-            // toastError(err.response.data.message);
-            console.log(err);
-            setProducts([]);
+      setLoading(true);
+      try {
+        const response = await productApi.getSellerProducts(currentUser._id);
+        if (response.data.type === "SUCCESS") {
+          setProducts(response.data.products);
         }
-        setLoading(false);
+
+        if (response.data.products.length < 1) {
+          console.log("No product founddd!");
+        }
+        // setProducts(dataTrain);
+      } catch (err) {
+        // toastError(err.response.data.message);
+        console.log(err);
+        setProducts([]);
+      }
+      setLoading(false);
     };
 
     fetchApi();
-}, [visibleAddDialog, visibleDeleteDialog, visibleEditDialog]);
+  }, [visibleAddDialog, visibleDeleteDialog, visibleEditDialog]);
 
-
-const handleAdd = () => {
+  const handleAdd = () => {
     setvisibleAddDialog(true);
-}
+  };
 
-const rightToolbarTemplate = () => {
-    return(
-        <>
-        </>
-    );
-}
-
+  const rightToolbarTemplate = () => {
+    return <></>;
+  };
 
   return (
     <>
@@ -89,7 +79,7 @@ const rightToolbarTemplate = () => {
               class="px-4 py-2 bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-opacity-50 text-white rounded-md shadow-md"
               onClick={handleAdd}
             >
-              <i class="pi pi-plus mr-1"></i>Add 
+              <i class="pi pi-plus mr-1"></i>Add
             </button>
           </>
         }
@@ -100,19 +90,29 @@ const rightToolbarTemplate = () => {
           <ProgressSpinner className=" w-full" />
         </div>
       )}
-  <div className="grid min-[1200px] grid-cols-3 min-[1440px] grid-cols-4 min-[1700px] grid-cols-4 gap-4 m-4">
-      {/* <div className="grid min-[1200px]:grid-cols-3 min-[1440px]:grid-cols-4 min-[1700px]:grid-cols-4  gap-4 m-4"> */}
-        {!loading && ( 
+      <div className="grid min-[1200px] grid-cols-3 min-[1440px] grid-cols-4 min-[1700px] grid-cols-4 gap-4 m-4">
+        {/* <div className="grid min-[1200px]:grid-cols-3 min-[1440px]:grid-cols-4 min-[1700px]:grid-cols-4  gap-4 m-4"> */}
+        {!loading && (
           <>
             {products.length > 0 ? (
               products.map((product, index) => (
-                <div key={product._id} className="flex flex-col justify-between">
+                <div
+                  key={product._id}
+                  className="flex flex-col justify-between"
+                >
                   <Card
                     // title={product.name}
-                    title={<div className="h-[50px] overflow-hidden">{product.name}</div>}
+                    title={
+                      <div className="h-[50px] overflow-hidden">
+                        {product.name}
+                      </div>
+                    }
                     subTitle={product.category.name}
                     footer={[
-                      <div key="footer" className="flex justify-between text-[14px]" >
+                      <div
+                        key="footer"
+                        className="flex justify-between text-[14px]"
+                      >
                         <span className="flex items-center">
                           <div
                             className="text-red-500 cursor-pointer px-2 py-1 rounded border border-transparent hover:border-red-500 flex justify-center items-center"
@@ -152,8 +152,8 @@ const rightToolbarTemplate = () => {
                             <i className="pi pi-star" />
                           </div>
                         </span>
-                      </div>
-                                        ]}
+                      </div>,
+                    ]}
                   >
                     <div className="flex justify-center">
                       <img
@@ -162,26 +162,22 @@ const rightToolbarTemplate = () => {
                         className="w-full  object-contain h-[200px]"
                       />
                     </div>
-                    <div className="mt-4">
-                      <div>
-                        <strong>Price: </strong>
-                        <span class="text-s text-red-500">₫</span>
-                        {product.price}
-                      </div>
-                      <div>
-                        <strong>Price Discount: </strong>
-                        <span class="text-s text-red-500">₫</span>
+
+                    <div className="flex items-center justify-start mt-4 ">
+                      <span className="text-3xl font-bold text-red-700">
+                        {" "}
+                        <span class="text-sm text-red-500 pb-2">$</span>
                         {product.priceAfterDiscount}
-                      </div>
+                      </span>
+                      <span className="text-gray-400 text-sm line-through ml-2">
+                        <span class="text-xs text-red-500">$</span>
+                        {product.price}
+                      </span>
                     </div>
                   </Card>
-                
-
                 </div>
 
-                // definition review 
-
-
+                // definition review
               ))
             ) : (
               <div className="font-semibold text-3xl text-red">
@@ -192,7 +188,7 @@ const rightToolbarTemplate = () => {
         )}
         {selectedProduct && (
           <Dialog
-            header= {`${selectedProduct.name} detail`}
+            header={`${selectedProduct.name} detail`}
             visible={showDialog}
             onHide={onHideDialog}
             className="rounded-md overflow-hidden  mx-auto w-1/2"
@@ -227,10 +223,16 @@ const rightToolbarTemplate = () => {
               </div>
 
               <div className="space-y-4 ">
-                <h3 className="text-3xl font-bold text-red-600">{selectedProduct.name}</h3>
-                <p className="text-gray-400 font-bold">{selectedProduct.category.name}</p>
-                <div className=' rounded bg-gray-50'>
-                <p className="text-gray-700 p-4">{selectedProduct.description}</p>
+                <h3 className="text-3xl font-bold text-red-600">
+                  {selectedProduct.name}
+                </h3>
+                <p className="text-gray-400 font-bold">
+                  {selectedProduct.category.name}
+                </p>
+                <div className=" rounded bg-gray-50">
+                  <p className="text-gray-700 p-4">
+                    {selectedProduct.description}
+                  </p>
                 </div>
                 <div className="flex items-center">
                   <span className="text-3xl font-bold">
@@ -243,21 +245,24 @@ const rightToolbarTemplate = () => {
                     {selectedProduct.price}
                   </span>
                 </div>
-                <div className='flex items-center'>
-                <span className="font-bold text-gray-600">Colors</span>
+                <div className="flex items-center">
+                  <span className="font-bold text-gray-600">Colors</span>
                 </div>
                 <div className="flex space-x-4">
                   {selectedProduct.colors.map((color, index) => (
                     <span
                       key={index}
-                      style={{backgroundColor:color.color.toLowerCase(), opacity:0.5}}
+                      style={{
+                        backgroundColor: color.color.toLowerCase(),
+                        opacity: 0.5,
+                      }}
                       className={`h-8 w-8 rounded-full  border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
                       }`}
                     />
                   ))}
                 </div>
-                <div className='flex items-center'>
-                <span className="font-bold text-gray-600">Sizes</span>
+                <div className="flex items-center">
+                  <span className="font-bold text-gray-600">Sizes</span>
                 </div>
                 <div className="flex space-x-4">
                   {selectedProduct.sizes.map((size, index) => (
@@ -291,7 +296,7 @@ const rightToolbarTemplate = () => {
         {/* display edit dialog */}
         {visibleEditDialog && (
           <DialogEditProduct
-          productId={productId}
+            productId={productId}
             visible={visibleEditDialog}
             setVisible={setvisibleEditDialog}
           />
@@ -303,15 +308,14 @@ const rightToolbarTemplate = () => {
           />
         )}
 
-{visibleEvaluation && (
-                  <EvaluationDialog
-                    visible={visibleEvaluation}
-                    setVisible={setVisibleEvaluation}
-                    productId={productId}
-                    // onHide={onHideDialog}
-                  />
-                )}
-
+        {visibleEvaluation && (
+          <EvaluationDialog
+            visible={visibleEvaluation}
+            setVisible={setVisibleEvaluation}
+            productId={productId}
+            // onHide={onHideDialog}
+          />
+        )}
       </div>
     </>
   );

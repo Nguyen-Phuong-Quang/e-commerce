@@ -369,6 +369,7 @@ const DialogAddProduct = ({ visible, setVisible }) => {
                 Colors
               </label>
               <MultiSelect
+              style={{ overflow: "auto" }}
                 filter
                 id="colors"
                 name="colors"
@@ -389,6 +390,7 @@ const DialogAddProduct = ({ visible, setVisible }) => {
                 Sizes
               </label>
               <MultiSelect
+              style={{ overflow: "auto" }}
                 filter
                 id="sizes"
                 name="sizes"

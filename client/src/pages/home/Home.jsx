@@ -17,9 +17,8 @@ function Home() {
   const [showDialog, setShowDialog] = useState(false);
   const { toastError, toastSuccess } = toastContext();
 
-  const onProductSelect = (product) => {
-    setSelectedProduct(product);
-    setShowDialog(true);
+  const handleAddCart = () => {
+    console.log("handle add product to cart");
   };
 
   const onHideDialog = () => {
@@ -27,18 +26,17 @@ function Home() {
     setShowDialog(false);
   };
 
-
   useEffect(() => {
     const fetchApi = async () => {
       setLoading(true);
       try {
         const response = await productApi.getAllProduct();
         if (response.data.type === "SUCCESS") {
-            setProducts(response.data.products);
+          setProducts(response.data.products);
         }
 
         if (response.data.products.length < 1) {
-            console.log("No product foundddd!");
+          console.log("No product foundddd!");
         }
         // setProducts(dataTrain);
       } catch (err) {
@@ -50,7 +48,7 @@ function Home() {
     };
 
     fetchApi();
-  }, [ ]);
+  }, []);
 
   useEffect(() => {
     const fetchCategory = async () => {
@@ -71,7 +69,6 @@ function Home() {
     fetchCategory();
   }, [products]);
 
-
   return (
     <>
       {loading && (
@@ -90,16 +87,27 @@ function Home() {
                     subTitle={category[index] ? category[index].name : ""}
                     // subTitle={product.category}
                     footer={
-                      <div className="flex justify-between text-[14px]">
-                      <Link
+                      <>
+                      <div className="flex flex-row justify-between">
+                      <div className="flex justify-between text-[16px]">
+                        <Link
                           to={`/detail/${product._id}`}
                           className="rounded-lg border-blue-600  px-2 py-2 font-bold  text-blue-600 hover:opacity-60 flex items-center"
-                      >
-                          <i className="pi pi-eye mr-2" />{" "}
-                          Detail
-                      </Link>
-   
-                  </div>
+                        >
+                          <i className="pi pi-eye mr-2" /> Detail
+                        </Link>
+                      </div>
+                      <div className="flex justify-between text-[16px]">
+                        <span
+                          // to={`/order/${product._id}`}
+                          onClick={handleAddCart}
+                          className="rounded-lg border-blue-600  px-2 py-2 font-bold  text-blue-600 hover:opacity-60 flex items-center hover:cursor-pointer"
+                        >
+                          <i className="pi pi-shopping-cart mr-2" />Cart
+                        </span>
+                      </div>
+                      </div>
+                      </>
                     }
                   >
                     <div className="flex justify-center">
@@ -109,17 +117,17 @@ function Home() {
                         className="w-full  object-contain h-[200px]"
                       />
                     </div>
-                    <div className="mt-4">
-                      <div>
-                        <strong>Price: </strong>
-                        <span class="text-s text-red-500">₫</span>
-                        {product.price}
-                      </div>
-                      <div>
-                        <strong>Price Discount: </strong>
-                        <span class="text-s text-red-500">₫</span>
+
+                    <div className="flex items-center justify-start mt-4 ">
+                      <span className="text-3xl font-bold text-red-700">
+                        {" "}
+                        <span class="text-sm text-red-500 pb-2">$</span>
                         {product.priceAfterDiscount}
-                      </div>
+                      </span>
+                      <span className="text-gray-400 text-sm line-through ml-2">
+                        <span class="text-xs text-red-500">$</span>
+                        {product.price}
+                      </span>
                     </div>
                   </Card>
                 </div>
@@ -132,7 +140,7 @@ function Home() {
           </>
         )}
 
-         {/* {selectedProduct && (
+        {/* {selectedProduct && (
         //   <Dialog
         //     header={`${selectedProduct.name} detail`}
         //     visible={showDialog}

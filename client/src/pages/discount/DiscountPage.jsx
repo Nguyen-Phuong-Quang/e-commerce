@@ -1,5 +1,3 @@
-import { InputText } from "primereact/inputtext";
-import { Checkbox } from "primereact/checkbox";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
@@ -17,6 +15,7 @@ import { Column } from "primereact/column";
 import { Toolbar } from "primereact/toolbar";
 import { userStateContext } from "../../contexts/StateProvider";
 
+
 export default function Discountpage() {
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = userStateContext();
@@ -27,8 +26,8 @@ export default function Discountpage() {
     codeLength: null,
     available: null,
     discountValue: null,
-    discountUnit: "₫",
-    startDate: null,
+    discountUnit: "dolar",
+    // startDate: null,
     validUntil: null,
     minOrderValue: null,
     maxDiscountAmount: null,
@@ -108,11 +107,12 @@ export default function Discountpage() {
     try {
       const response = await discountApi.deleteDiscount({ discountCode: rowdata.discountCode, usrId: currentUser._id });
       if (response.data.type === "SUCCESS") {
-      navigate("/admin");
+      navigate("/discount");
       toastSuccess(response.data.message);
       }
     } catch (err) {
-      toastError(err.response.data.message);
+      // toastError(err.response.data.message);
+      console.log(err);
     }
     setLoading(false);
   };
@@ -122,9 +122,10 @@ export default function Discountpage() {
       try {
         const response = await discountApi.getAllDiscount();
         setDiscountCodes(response.data.discounts);
-        setDiscountCodes(discountCodeExample);
+        // setDiscountCodes(discountCodeExample);
       } catch (err) {
-        toastError(err);
+        // toastError(err);
+        console.log(err);
       }
     };
     fetchDiscountCodes();
@@ -136,12 +137,19 @@ export default function Discountpage() {
     setDiscount((values) => ({ ...values, [name]: value }));
   };
 
+  const handleChangeDate = (event) => {
+    const date = new Date(event.target.value);
+    // const formattedDate = moment(event.target.value).format('YYYY-MM-DD');
+    setDiscount({validUntil: date});
+  }
+
   const handleCreate = async () => {
     setLoading(true);
     try {
+      console.log(discount);
       const response = await discountApi.addDiscount({ ...discount });
       if (response.data.type === "SUCCESS") {
-      navigate("/admin");
+      navigate("/discount");
       toastSuccess(response.data.message);
       }
     } catch (err) {
@@ -273,7 +281,7 @@ export default function Discountpage() {
                   name="discountUnit"
                   value={discount.discountUnit}
                   onChange={handleChange}
-                  options={["$", "%", "₫"]}
+                  options={["dolar", "percent"]}
                   className="w-full basis-1/3 ml-4"
                 />
               </div>
@@ -290,9 +298,10 @@ export default function Discountpage() {
                 <Calendar
                   id="validUntil"
                   name="validUntil"
-                  placeholder="Choose end date"
+                  placeholder="Choose the end date"
                   value={discount.validUntil}
-                  onChange={handleChange}
+                  // value = {moment(discount.validUntil).toDate()}
+                  onChange={handleChangeDate}
                   showIcon
                   className="w-full bg-blue-400 basis-2/3   rounded"
                 />
