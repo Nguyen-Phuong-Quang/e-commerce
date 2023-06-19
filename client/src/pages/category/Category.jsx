@@ -40,6 +40,7 @@ export default function Category() {
             try {
                 const response = await categoryApi.query()
                 setData(response.data.categories);
+                console.log(response.data.categories);
             } catch(err) {
                 toastError(err.response.data.message);
             }
