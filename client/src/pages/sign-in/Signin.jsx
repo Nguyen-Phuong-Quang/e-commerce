@@ -17,36 +17,37 @@ export default function Signin() {
     const [loading, setLoading] = useState(false);
     const { toastError } = toastContext();
 
-    const handleSignin = () => {
-        const submit = async () => {
-            setLoading(true);
-            try {
-                const data = {
-                    email,
-                    password,
-                };
-                const response = await authApi.signin(data);
+    const submit = async () => {
+        setLoading(true);
+        try {
+            const data = {
+                email,
+                password,
+            };
+            const response = await authApi.signin(data);
 
-                if (response.data.type === "SUCCESS") {
-                    setCurrentUser(response.data.user);
-                    localStorage.setItem("userId", response.data.user._id);
-                    localStorage.setItem(
-                        "REFRESH_TOKEN",
-                        response.data.tokens.refreshToken
-                    );
-                    localStorage.setItem(
-                        "TOKEN",
-                        response.data.tokens.accessToken
-                    );
-                    return navigate(route.HOME);
-                }
-            } catch (err) {
-                toastError(err.response.data.message);
-                console.log(err);
+            if (response.data.type === "SUCCESS") {
+                setCurrentUser(response.data.user);
+                localStorage.setItem("userId", response.data.user._id);
+                localStorage.setItem(
+                    "REFRESH_TOKEN",
+                    response.data.tokens.refreshToken
+                );
+                localStorage.setItem("TOKEN", response.data.tokens.accessToken);
+                return navigate(route.HOME);
             }
-            setLoading(false);
-        };
+        } catch (err) {
+            toastError(err.response.data.message);
+            console.log(err);
+        }
+        setLoading(false);
+    };
 
+    const handleEnterKey = (e) => {
+        if (e.key === "Enter") submit();
+    };
+
+    const handleSignin = () => {
         submit();
     };
 
@@ -54,7 +55,10 @@ export default function Signin() {
         <div className="h-screen w-screen flex items-center justify-center">
             {loading && <ProgressSpinner />}
             {!loading && (
-                <div className="flex flex-col items-center shadow-2xl border-2 border-slate-300 rounded-xl w-[520px] bg-white">
+                <div
+                    onKeyDown={handleEnterKey}
+                    className="flex flex-col items-center shadow-2xl border-2 border-slate-300 rounded-xl w-[520px] bg-white"
+                >
                     <div className="py-2.5 border-b-2 border-slate-300 w-full text-center my-2 pb-5">
                         <span className="text-3xl font-bold">Sign in</span>
                     </div>
