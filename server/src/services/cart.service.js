@@ -13,7 +13,7 @@ const statusType = require("../constants/statusType");
  * @param   { String } size - Size
  * @returns { object<type|message|statusCode|cart> }
  */
-exports.addItemToCart = async (email, productId, quantity, color, size) => {
+exports.addItemToCart = async (email, productId, quantity, colorId, sizeId) => {
     // 1. Check quantity must be greater than zero
     if (quantity <= 0)
         return {
@@ -37,7 +37,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
     const cart = await CartSchema.findOne({ email });
 
     const colorCheck = product.colors.find(
-        (cl) => cl.color.toString() === color.toString()
+        (cl) => cl._id.toString() === colorId.toString()
     );
 
     // 3. Check if color doesn't exist
@@ -49,7 +49,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
         };
 
     const sizeCheck = product.sizes.find(
-        (sz) => sz.size.toString() === size.toString()
+        (sz) => sz._id.toString() === sizeId.toString()
     );
 
     // 3. Check if size doesn't exist

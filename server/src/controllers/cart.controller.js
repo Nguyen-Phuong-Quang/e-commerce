@@ -14,15 +14,15 @@ const statusType = require("../constants/statusType");
  * @returns   { JSON } - A JSON object representing the type, message, and the cart
  */
 exports.addItemToCart = async (req, res, next) => {
-    const { productId, quantity, color, size } = req.body;
+    const { productId, quantity, colorId, sizeId } = req.body;
     try {
         const { type, message, statusCode, cart } =
             await cartService.addItemToCart(
                 req.user.email,
                 productId,
                 quantity,
-                color,
-                size
+                colorId,
+                sizeId
             );
 
         if (type === statusType.error)

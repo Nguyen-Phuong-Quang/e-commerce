@@ -3,8 +3,6 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
 import orderApi from '../../api/orderApi';
 import { toastContext } from "../../contexts/ToastProvider";
 
@@ -76,24 +74,12 @@ const Order = () => {
         // Perform order placement logic here
 
         // Show success toast message
-        toast.current.show({
-        severity: 'success',
-        summary: 'Order Placed',
-        detail: 'Your order has been placed successfully!',
-        life: 3000,
-        });
     };
 
     const handleCancelOrder = () => {
         // Perform order cancellation logic here
 
         // Show cancel toast message
-        toast.current.show({
-        severity: 'warn',
-        summary: 'Order Cancelled',
-        detail: 'Your order has been cancelled!',
-        life: 3000,
-        });
     }
 
     return (
@@ -102,21 +88,41 @@ const Order = () => {
 
         <div className="">
             <h2 className="m-5 text-xl">Products</h2>
-            <DataTable value={cartItems} selectionMode="single"
-            dataKey="id">
-                {/* <Column selectionMode="multiple" headerStyle={{ width: '3rem' }} exportable={false}></Column> */}
-                <Column field="image" header="Image" body={imageBodyTemplate} style={{ width: '8rem' }}/>
-                <Column field="name" header="Name" style={{ width: '12rem' }}></Column>
-                <Column field="size" header="Size" style={{ width: '12rem' }} ></Column>
-                <Column field="color" header="Color" style={{ width: '12rem' }}></Column>
-                <Column field="quantity" header="Quantity" style={{ width: '12rem' }}></Column>
-                <Column field="price" header="Price" style={{ width: '12rem' }}></Column>
-            </DataTable>
+            <table className="min-w-full">
+                <thead>
+                    <tr>
+                    <th className="px-4 py-2">Image</th>
+                    <th className="px-4 py-2">Name</th>
+                    <th className="px-4 py-2">Size</th>
+                    <th className="px-4 py-2">Color</th>
+                    <th className="px-4 py-2">Quantity</th>
+                    <th className="px-4 py-2">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {cartItems.map((item) => (
+                    <tr key={item.id}>
+                        <td className="px-4 py-2">
+                        <img src={item.image} alt={item.name} className="w-20 h-20" />
+                        </td>
+                        <td className="px-4 py-2">{item.name}</td>
+                        <td className="px-4 py-2">{item.size}</td>
+                        <td className="px-4 py-2">{item.color}</td>
+                        <td className="px-4 py-2">{item.quantity}</td>
+                        <td className="px-4 py-2">{item.price}</td>
+                    </tr>
+                    ))}
+                </tbody>
+            </table>
             
             <h2 className="m-5 text-xl">Order Price</h2>
             <h2 className="m-5 text-xl">Tax Price</h2>
             <h2 className="m-5 text-xl">Shipping Price</h2>
             <h2 className="m-5 text-xl">Total Price</h2>
+            <h2 className="m-5 text-xl">Is Paid</h2>
+            <h2 className="m-5 text-xl">Paid At</h2>
+            <h2 className="m-5 text-xl">Is Delivery</h2>
+            <h2 className="m-5 text-xl">Status</h2>
 
             <h2 className="m-5 text-xl">User</h2>
             <div className="p-fluid m-5">
