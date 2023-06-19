@@ -104,7 +104,7 @@ export default function Detail() {
                             <img
                                 src={data.mainImage}
                                 alt={data.name}
-                                className="h-[400px] object-contain rounded-lg shadow-md object-cover"
+                                className="h-[400px] object-contain rounded-lg shadow-md"
                             />
                             <div className="mt-4 flex flex-row flex-wrap ">
                                 {data.images &&
@@ -203,7 +203,7 @@ export default function Detail() {
                             </div>
                         </div>
                     </div>
-                    <div className="mt-8 block font-bold text-black opacity-70 ml-8 mr-8 text-2xl  capitalize bg-gray-200 py-4 ml-4 rounded-lg">
+                    <div className="mt-8 block font-bold text-black opacity-70 ml-4 mr-4 text-2xl  capitalize bg-gray-200 py-4  rounded-lg">
                         <p className="px-4">DESCRIPTION</p>
                     </div>
                     <div className="mx-8 mb-8">
@@ -221,7 +221,7 @@ export default function Detail() {
                         )}
                     </div>
 
-                    <div className="mt-8 block font-bold text-black opacity-70 ml-8 mr-8 text-2xl  capitalize bg-gray-200 py-4 ml-4 rounded-lg">
+                    <div className="mt-8 block font-bold text-black opacity-70 mr-4 text-2xl  capitalize bg-gray-200 py-4 ml-4 rounded-lg">
                         <p className="px-4">REVIEWS</p>
                     </div>
 

@@ -95,7 +95,7 @@ function HomeProductSeller() {
                     <ProgressSpinner className=" w-full" />
                 </div>
             )}
-            <div className="grid min-[1200px] grid-cols-3 min-[1440px] grid-cols-4 min-[1700px] grid-cols-4 gap-4 m-4">
+            <div className="grid min-[1200px]:grid-cols-3 min-[1440px]:grid-cols-4 min-[1700px] gap-4 m-4">
                 {/* <div className="grid min-[1200px]:grid-cols-3 min-[1440px]:grid-cols-4 min-[1700px]:grid-cols-4  gap-4 m-4"> */}
                 {!loading && (
                     <>
