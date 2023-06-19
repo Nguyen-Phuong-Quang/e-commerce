@@ -3,7 +3,36 @@ const statusOrder = require("../constants/statusOrder");
 
 const OrderSchema = new mongoose.Schema(
     {
-        products: Array,
+        products:  [
+            {
+                product: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "Product",
+                    required: true,
+                },
+                color: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "Color",
+                    required: true,
+                },
+                size: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "Size",
+                    required: true,
+                },
+                totalProductQuantity: {
+                    type: Number,
+                    required: true,
+                },
+                totalProductPrice: {
+                    type: Number,
+                    required: true,
+                },
+                image: {
+                    type: String,
+                },
+            },
+        ],
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
@@ -66,6 +95,24 @@ const OrderSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
+OrderSchema.pre(/^find/, function (next) {
+    this.populate([
+        {
+            path: "products.product",
+            select: "name",
+        },
+        {
+            path: "products.color",
+            select: "color",
+        },
+        {
+            path: "products.size",
+            select: "size",
+        },
+    ]);
+
+    next();
+});
 
 // Calculate total order price automatically after save
 OrderSchema.pre("save", async function (next) {
