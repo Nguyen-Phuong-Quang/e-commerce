@@ -43,22 +43,22 @@ export default function Detail() {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
 
-  const handleCallApiCart = () => {
+  const handleCallApiCart = async () => {
     setLoading(true);
     try {
       const formData = new FormData();
       formData.append("quantity", quantity);
-      formData.append("color", selectedColor);
-      formData.append("size", selectedSize);
+      formData.append(" colorId", selectedColor._id);
+      formData.append("sizeId", selectedSize._id);
       formData.append("productId", id);
-      const response = cartApi.add(formData);
+      const response = await cartApi.add(formData);
       if(response.data.type === "SUCCESS"){
         toastSuccess(response.data.message);
         setVisibleCart(false);
       }
     } catch (err) {
-        toastError(err.response.data.message);
-      console.log(err);
+        // toastError(err.response.data.message);
+        console.log(err);
     }
   };
 
@@ -74,7 +74,7 @@ export default function Detail() {
       setVisibleCart(false);
     } else {
       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
-      navigate(route.SIGNUP);
+      navigate(route.SIGNIN);
     }
   };
 
@@ -84,11 +84,13 @@ export default function Detail() {
       try {
         const response = await productApi.getProductById(id);
         if (response.data.type === "SUCCESS") {
-          setData(response.data.product);
-          data.colors && setColorOptions(data.colors.map((item) => item.color));
-          data.sizes &&
-            setSizeOptions(data.sizes.map((item) => item.size.toUpperCase()));
+          const productData = response.data.product;
+          setData(productData);
+          setColorOptions(productData.colors);
+          setSizeOptions(productData.sizes);
+          console.log("color options: ");
           console.log(colorOptions);
+
           // toastSuccess(response.data.message);
         }
       } catch (err) {
@@ -99,7 +101,7 @@ export default function Detail() {
     };
 
     fetchData();
-  }, [visibleCart]);
+  }, []);
 
   useEffect(() => {
     const fetchReivew = async () => {
@@ -337,34 +339,36 @@ export default function Detail() {
           <div className="flex flex-col space-y-6">
             <div>
               <label
-                htmlFor="size"
+                htmlFor="sizess"
                 className=" block text-gray-700 font-bold mb-4 text-left mr-4"
               >
                 Size
               </label>
               <Dropdown
-                id="size"
+                id="sizess"
                 value={selectedSize}
                 options={sizeOptions}
-                onChange={(e) => setSelectedSize(e.value.toLowerCase())}
+                onChange={(e) => setSelectedSize(e.value)}
+                optionLabel="size"
                 className="w-full"
                 placeholder="Select Size"
               />
             </div>
             <div>
               <label
-                htmlFor="color"
+                htmlFor="coloss"
                 className=" block text-gray-700 font-bold mb-4 text-left mr-4"
               >
                 Color
               </label>
               <Dropdown
-                id="color"
+                id="coloss"
                 value={selectedColor}
                 options={colorOptions}
                 onChange={(e) => setSelectedColor(e.value)}
                 className="w-full"
-                placeholder="Select Size"
+                placeholder="Select color"
+                optionLabel="color"
               />
             </div>
             <label

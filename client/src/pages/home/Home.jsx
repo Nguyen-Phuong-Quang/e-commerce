@@ -9,6 +9,11 @@ import { toastContext } from "./../../contexts/ToastProvider";
 import { Link } from "react-router-dom";
 import useDebounce from "../../hooks/useDebounce";
 import { useSearchContext } from "../../contexts/SearchProvider";
+import { Dialog } from "primereact/dialog";
+import ProductDialogFooter from "../product/Components/ProductDialogFooter";
+import { Dropdown } from "primereact/dropdown";
+import { InputNumber } from "primereact/inputnumber";
+import cartApi from "../../api/cartApi";
 
 function Home() {
     const [loading, setLoading] = useState(false);
@@ -19,10 +24,57 @@ function Home() {
     const [showDialog, setShowDialog] = useState(false);
     const { toastError, toastSuccess } = toastContext();
     const { searchText } = useSearchContext();
+    const [visibleCart, setVisibleCart] = useState(false);
+    const [selectedSize, setSelectedSize] = useState("");
+    const [selectedColor, setSelectedColor] = useState("");
+    const [quantity, setQuantity] = useState(0);
+    const [colorOptions, setColorOptions] = useState([]);
+    const [sizeOptions, setSizeOptions] = useState([]);
+    const [productId, setProductId] = useState(null);
+    const { currentUser, setCurrentUser } = userStateContext();
 
-    const handleAddCart = () => {
+    const handleSaveAddCart = () => {
+        // Kiểm tra xem người dùng đã đăng nhập hay chưa
+        const isLoggedIn = currentUser;
+        /* Kiểm tra logic đăng nhập ở đây */ false;
+    
+        if (isLoggedIn) {
+          console.log("Product added to cart:", selectedSize, selectedColor);
+          // call api add to cart
+          handleCallApiCart();
+        } else {
+          // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+          navigate(route.SIGNIN);
+        }
+      };
+
+      const handleCallApiCart = async () => {
+        setLoading(true);
+        try {
+          const formData = new FormData();
+          formData.append("quantity", quantity);
+          formData.append(" colorId", selectedColor._id);
+          formData.append("sizeId", selectedSize._id);
+          formData.append("productId", productId);
+          const response = await cartApi.add(formData);
+          if(response.data.type === "SUCCESS"){
+            toastSuccess(response.data.message);
+            setVisibleCart(false);
+          }
+        } catch (err) {
+            // toastError(err.response.data.message);
+            console.log(err);
+        }
+        setLoading(false);
+      };
+
+    const handleAddCart = (id) => {
         console.log("handle add product to cart");
-    };
+        setVisibleCart(true);
+        setSizeOptions(products.find((item) => item._id === id)?.sizes);
+        setColorOptions(products.find((item) => item._id === id)?.colors);
+        setProductId(id);
+      };
 
     const onHideDialog = () => {
         setSelectedProduct(null);
@@ -37,6 +89,7 @@ function Home() {
             try {
                 const response = await productApi.getAllProduct(debouncedValue);
                 if (response.data.type === "SUCCESS") {
+                    const dataProduct = response.data.products;
                     setProducts(response.data.products);
                 }
 
@@ -112,9 +165,8 @@ function Home() {
                                                     </div>
                                                     <div className="flex justify-between text-[16px]">
                                                         <span
-                                                            // to={`/order/${product._id}`}
                                                             onClick={
-                                                                handleAddCart
+                                                                () => handleAddCart(product._id)
                                                             }
                                                             className="rounded-lg border-blue-600  px-2 py-2 font-bold  text-blue-600 hover:opacity-60 flex items-center hover:cursor-pointer"
                                                         >
@@ -162,90 +214,84 @@ function Home() {
                         )}
                     </>
                 )}
-
-                {/* {selectedProduct && (
-        //   <Dialog
-        //     header={`${selectedProduct.name} detail`}
-        //     visible={showDialog}
-        //     onHide={onHideDialog}
-        //     className="rounded-md overflow-hidden  mx-auto w-1/2"
-        //   >
-        //     <div className="grid grid-cols-2 gap-4 py-4 px-6">
-        //       <div className="flex flex-col">
-        //         <img
-        //           src={selectedProduct.mainImage}
-        //           alt={selectedProduct.name}
-        //           className="h-full rounded-lg shadow-md object-cover"
-        //         />
-        //         <div className="mt-4 flex flex-row flex-wrap ">
-        //           {selectedProduct.images.map((image, index) => (
-        //             <img
-        //               key={index}
-        //               src={image}
-        //               alt={selectedProduct.name}
-        //               className={`h-20 w-20 m-1 object-cover box-border border-2 border-gray-300 rounded-lg cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md ${
-        //                 image === selectedProduct.mainImage &&
-        //                 "border-primary-500"
-        //               }`}
-        //               onClick={() => {
-        //                 setSelectedProduct((pre) => ({
-        //                   ...pre,
-        //                   mainImage: image,
-        //                 }));
-        //               }}
-        //             />
-        //           ))}
-        //         </div>
-        //       </div>
-
-        //       <div className="space-y-4 ">
-        //         <h3 className="text-3xl font-bold">{selectedProduct.name}</h3>
-        //         <p className="text-gray-400 font-bold">
-        //           {selectedProduct.category}
-        //         </p>
-        //         <div className=" rounded bg-gray-50">
-        //           <p className="text-gray-700 p-4">
-        //             {selectedProduct.description}
-        //           </p>
-        //         </div>
-        //         <div className="flex items-center">
-        //           <span className="text-3xl font-bold">
-        //             {" "}
-        //             <span className="text-xs text-red-500">₫</span>
-        //             {selectedProduct.priceAfterDiscount}
-        //           </span>
-        //           <span className="text-gray-400 text-sm line-through ml-2">
-        //             <span className="text-xs text-red-500">₫</span>
-        //             {selectedProduct.price}
-        //           </span>
-        //         </div>
-        //         <div className="flex space-x-4">
-        //           {selectedProduct.colors.map((color, index) => (
-        //             <span
-        //               key={index}
-        //               className={`h-8 w-8 rounded-full bg-${color.color.toLowerCase()}-500 border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
-        //               }`}
-        //             />
-        //           ))}
-        //         </div>
-        //         <div className="flex space-x-4">
-        //           {selectedProduct.sizes.map((size, index) => (
-        //             <span
-        //               key={index}
-        //               className={`flex justify-center items-center h-8 w-8 rounded-full bg-gray-300 border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
-        //               }`}
-        //             >
-        //               {size}
-        //             </span>
-        //           ))}
-        //         </div>
-        //         <div className="flex items-center space-x-2 pt-2">
-        //           <span className="font-semibold">Quantity:</span>
-        //           <span>{selectedProduct.quantity}</span>
-        //         </div>
-        //       </div>
-        //     </div>
-        //   </Dialog> */}
+                
+      {visibleCart && (
+        <Dialog
+          className="w-1/4 h-auto"
+          visible={visibleCart}
+          onHide={() => {
+            setVisibleCart(false);
+            setColorOptions([]);
+            setSizeOptions([]);
+            setSelectedColor(null);
+            setSelectedSize(null);
+          }}
+          header="Add to Cart"
+          footer={
+            <ProductDialogFooter
+              Cancel={() => {
+                setVisibleCart(false);
+                setColorOptions([]);
+                setSizeOptions([]);
+                setSelectedColor(null);
+                setSelectedSize(null);
+              }}
+              Save={handleSaveAddCart}
+            />
+          }
+        >
+          <div className="flex flex-col space-y-6">
+            <div>
+              <label
+                htmlFor="sizess"
+                className=" block text-gray-700 font-bold mb-4 text-left mr-4"
+              >
+                Size
+              </label>
+              <Dropdown
+                id="sizess"
+                value={selectedSize}
+                options={sizeOptions}
+                onChange={(e) => setSelectedSize(e.value)}
+                optionLabel="size"
+                className="w-full"
+                placeholder="Select Size"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="coloss"
+                className=" block text-gray-700 font-bold mb-4 text-left mr-4"
+              >
+                Color
+              </label>
+              <Dropdown
+                id="coloss"
+                value={selectedColor}
+                options={colorOptions}
+                onChange={(e) => setSelectedColor(e.value)}
+                className="w-full"
+                placeholder="Select color"
+                optionLabel="color"
+              />
+            </div>
+            <label
+              htmlFor="quantity"
+              className=" block text-gray-700 font-bold mb-4 text-left mr-4"
+            >
+              Quantity
+            </label>
+            <InputNumber
+              id="quantity"
+              name="quantity"
+              placeholder="Enter quantity"
+              value={quantity}
+              onValueChange={(e) => setQuantity(e.target.value)}
+              className=""
+            />
+          </div>
+        </Dialog>
+      )}
 
                 {visibleEvaluation && (
                     <EvaluationDialog
