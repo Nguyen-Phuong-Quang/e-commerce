@@ -82,9 +82,9 @@ export default function MenuBar() {
         if (localStorage.getItem("TOKEN")) {
             return (
                 <div className="flex h-full items-center">
-                    {/* <div className="px-4 hover:cursor-pointer hover:text-blue-400">
+                    <Link className="px-4 hover:cursor-pointer hover:text-blue-400" to={route.CART}>
                         <i className="pi pi-shopping-cart text-2xl"></i>
-                    </div> */}
+                    </Link>
                     <div className="hover:cursor-pointer relative group px-4">
                         <Avatar
                             image={currentUser.profileImage}

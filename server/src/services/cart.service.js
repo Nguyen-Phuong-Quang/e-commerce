@@ -71,7 +71,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
                     size: sizeCheck._id,
                     totalProductQuantity: quantity,
                     totalProductPrice: priceAfterDiscount * quantity,
-                    image: mainImage
+                    image: mainImage,
                 },
             ],
         };
@@ -105,7 +105,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
             size: sizeCheck._id,
             totalProductQuantity: quantity,
             totalProductPrice: priceAfterDiscount * quantity,
-            image: mainImage
+            image: mainImage,
         });
     }
 
