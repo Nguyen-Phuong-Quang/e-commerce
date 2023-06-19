@@ -55,20 +55,20 @@ const CartSchema = new mongoose.Schema(
 CartSchema.index({ email: 1 }, { unique: 1 });
 
 CartSchema.pre("save", function (next) {
-    this.populate([
-        {
-            path: "items.product",
-            select: "name",
-        },
-        {
-            path: "items.color",
-            select: "color",
-        },
-        {
-            path: "items.size",
-            select: "size",
-        },
-    ]);
+    // this.populate([
+    //     {
+    //         path: "items.product",
+    //         select: "name",
+    //     },
+    //     {
+    //         path: "items.color",
+    //         select: "color",
+    //     },
+    //     {
+    //         path: "items.size",
+    //         select: "size",
+    //     },
+    // ]);
 
     next();
 });
@@ -79,14 +79,14 @@ CartSchema.pre(/^find/, function (next) {
             path: "items.product",
             select: "name",
         },
-        {
-            path: "items.color",
-            select: "color",
-        },
-        {
-            path: "items.size",
-            select: "size",
-        },
+        // {
+        //     path: "items.color",
+        //     select: "color",
+        // },
+        // {
+        //     path: "items.size",
+        //     select: "size",
+        // },
     ]);
 
     next();
