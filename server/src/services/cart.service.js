@@ -32,7 +32,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
             statusCode: 404,
         };
 
-    const { priceAfterDiscount } = product;
+    const { priceAfterDiscount, mainImage } = product;
 
     const cart = await CartSchema.findOne({ email });
 
@@ -71,6 +71,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
                     size: sizeCheck._id,
                     totalProductQuantity: quantity,
                     totalProductPrice: priceAfterDiscount * quantity,
+                    image: mainImage
                 },
             ],
         };
@@ -104,6 +105,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
             size: sizeCheck._id,
             totalProductQuantity: quantity,
             totalProductPrice: priceAfterDiscount * quantity,
+            image: mainImage
         });
     }
 
@@ -157,7 +159,7 @@ exports.deleteCart = async (email) => {
         };
 
     return {
-        type: statusType.error,
+        type: statusType.success,
         message: "Delete cart successfully!",
         statusCode: 200,
     };
