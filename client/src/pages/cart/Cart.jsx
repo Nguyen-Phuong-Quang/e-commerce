@@ -16,7 +16,7 @@
 //             name: "Product 1",
 //             size: "M",
 //             color: "Red",
-//             quantity: 1,
+//             totalProductQuantity: 1,
 //             price: 10,
 //             image: "https://via.placeholder.com/150",
 //         },
@@ -25,7 +25,7 @@
 //             name: "Product 2",
 //             size: "M",
 //             color: "Red",
-//             quantity: 2,
+//             totalProductQuantity: 2,
 //             price: 20,
 //             image: "https://via.placeholder.com/150",
 //         },
@@ -34,7 +34,7 @@
 //             name: "Product 3",
 //             size: "M",
 //             color: "Red",
-//             quantity: 3,
+//             totalProductQuantity: 3,
 //             price: 30,
 //             image: "https://via.placeholder.com/150",
 //         },
@@ -44,7 +44,7 @@
 //     const [cart,setCart] = ([]);
 //     const [selectedCartItem, setSelectedCartItem] = useState(null);
 //     const [totalPrice, setTotalPrice] = useState(
-//         cartItems.reduce((total, item) => total + item.price * item.quantity, 0)
+//         cartItems.reduce((total, item) => total + item.price * item.totalProductQuantity, 0)
 //     );
 //     const [globalFilter, setGlobalFilter] = useState(null);
 //     const { toastError,toastSuccess } = toastContext();
@@ -77,15 +77,15 @@
 //     const onQuantityChange = (event, rowData) => {
 //         const updatedItems = [...cartItems];
 //         const index = updatedItems.findIndex((item) => item.id === rowData.id);
-//         updatedItems[index].quantity = event.value;
+//         updatedItems[index].totalProductQuantity = event.value;
 //         setCartItems(updatedItems);
 //         setTotalPrice(
-//             updatedItems.reduce((total, item) => total + item.price * item.quantity, 0)
+//             updatedItems.reduce((total, item) => total + item.price * item.totalProductQuantity, 0)
 //         );
 //         toast.current.show({
 //             severity: "success",
 //             summary: "Quantity updated",
-//             detail: `${rowData.name} quantity updated to ${event.value}`,
+//             detail: `${rowData.name} totalProductQuantity updated to ${event.value}`,
 //             life: 3000,
 //         });
 //     };
@@ -94,7 +94,7 @@
 //         const updatedItems = cartItems.filter((item) => item.id !== rowData.id);
 //         setCartItems(updatedItems);
 //         setTotalPrice(
-//             updatedItems.reduce((total, item) => total + item.price * item.quantity, 0)
+//             updatedItems.reduce((total, item) => total + item.price * item.totalProductQuantity, 0)
 //         );
 //         toast.current.show({
 //             severity: "success",
@@ -145,9 +145,9 @@
 //                 <Column field="image" header="Image" body={imageBodyTemplate} />
 //                 <Column field="size" header="Size" ></Column>
 //                 <Column field="color" header="Color" ></Column>
-//                 <Column field="quantity" header="Quantity" 
+//                 <Column field="totalProductQuantity" header="Quantity" 
 //                     body={(rowData) => <InputNumber 
-//                     value={rowData.quantity} 
+//                     value={rowData.totalProductQuantity} 
 //                     onValueChange={(e) => onQuantityChange(e, rowData)} mode="decimal" showButtons min={1} max={100} />}>
 //                 </Column>
 //                 <Column field="price" header="Price"></Column>
@@ -170,9 +170,10 @@ import { Button } from "primereact/button";
 import { toastContext } from "../../contexts/ToastProvider";
 
 const Cart = () => {
-    const [user,setUser] = useState('');
-    const [email,setEmail] = useState('');
-    const [cart, setCart] = useState([]);
+    const [cart, setCart] = useState({});
+    const [items, setItems] = useState([]);
+    const [totalProductQuantity, setTotalProductQuantity] = useState(0);
+    const [totalProductPrice, setTotalProductPrice] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -182,14 +183,15 @@ const Cart = () => {
         try {
             const response = await cartApi.getCart();
             if (response.data.type === "SUCCESS") {
-                console.log(response.data.cart);
                 setCart(response.data.cart);
-                calculateTotalPrice(response.data.cart);
-                toastSuccess(response.data.message);
+                setItems(response.data.cart.items);
+                setTotalProductPrice(response.data.cart.totalProductPrice);
+                setTotalProductQuantity(response.data.cart.totalProductQuantity);
+                setTotalPrice(response.data.cart.totalPrice);
             }
         } catch (error) {
             toastError(error.response.data.message);
-            console.error(error);
+            console.log(error.response.data.message);
         }
     };
 
@@ -198,15 +200,15 @@ const Cart = () => {
     }, []);
 
 
-    const calculateTotalPrice = (items) => {
-        const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
-        setTotalPrice(totalPrice);
-    };
+    // const calculateTotalPrice = (items) => {
+    //     const totalPrice = items.reduce((total, item) => total + item.price * item.totalProductQuantity, 0);
+    //     setTotalProductPrice(totalPrice);
+    // };
 
 
-    const handleDecreaseOne = async (itemId) => {
+    const handleDecreaseOne = async (productId) => {
         try {
-            const response = await cartApi.decreaseOne(itemId);
+            const response = await cartApi.decreaseOne(productId);
             if (response.data.type === "SUCCESS") {
                 fetchCartItems();
                 toastSuccess(response.data.message);
@@ -217,9 +219,9 @@ const Cart = () => {
         }
     };
     
-    const handleIncreaseOne = async (itemId) => {
+    const handleIncreaseOne = async (productId) => {
         try {
-            const response = await cartApi.increaseOne(itemId);
+            const response = await cartApi.increaseOne(productId);
             if (response.data.type === "SUCCESS") {
                 fetchCartItems();
                 toastSuccess(response.data.message);
@@ -230,9 +232,9 @@ const Cart = () => {
         }
     };
     
-    // const handleQuantityChange = async (itemId, quantity) => {
+    // const handleQuantityChange = async (productId, totalProductQuantity) => {
     //     try {
-    //         const response = await axiosClient.patch(`/cart/${itemId}`, { quantity });
+    //         const response = await axiosClient.patch(`/cart/${productId}`, { totalProductQuantity });
     //         if (response.data.type === "SUCCESS") {
     //             fetchCartItems();
     //             toastSuccess(response.data.message);
@@ -243,9 +245,9 @@ const Cart = () => {
     //     }
     // };
 
-    const handleDeleteItem = async (itemId) => {
+    const handleDeleteItem = async (productId) => {
         try {
-            const response = await cartApi.deleteItemInCart(itemId);
+            const response = await cartApi.deleteItemInCart(productId);
             if (response.data.type === "SUCCESS") {
                 fetchCartItems();
                 toastSuccess(response.data.message);
@@ -265,89 +267,79 @@ const Cart = () => {
 
         <h1 className="text-4xl my-6 text-center">Shopping Cart</h1>
 
-        {/* {cart.length === 0 ? (
+        {items && items.length === 0 ? (
             <p className="text-center">Your cart is empty.</p>
-        ) : ( */}
-            <table className="table-auto w-full">
-                <thead>
-                    <tr>
-                    <th className="px-4 py-2">Image</th>
-                    <th className="px-4 py-2">Name</th>
-                    <th className="px-4 py-2">Size</th>
-                    <th className="px-4 py-2">Color</th>
-                    <th className="px-4 py-2">Quantity</th>
-                    <th className="px-4 py-2">Price</th>
-                    <th className="px-4 py-2">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {cart.map((item) => (
-                        <tr key={item._id}>
-                            <td className="px-4 py-2">
-                                <img src={item.image} alt={item.name} className="h-16 w-16" />
-                            </td>
-                            <td className="px-4 py-2">{item.name}</td>
-                            <td className="px-4 py-2">{item.size}</td>
-                            <td className="px-4 py-2">{item.color}</td>
-                            {/* <td className="px-4 py-2">
-                                <input
-                                    type="number"
-                                    className="w-16"
-                                    min={1}
-                                    max={100}
-                                    value={item.quantity}
-                                    onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
-                                />
-                            </td> */}
-                            <td className="px-4 py-2">
-                                <div className="flex items-center">
-                                    <button
-                                        className="px-2 py-1 border border-gray-300 rounded-md"
-                                        onClick={() => handleDecreaseOne(item.id)}
-                                    >
-                                        -
-                                    </button>
-                                    <input
-                                        type="number"
-                                        className="w-16 mx-2"
-                                        min={1}
-                                        max={100}
-                                        value={item.quantity}
-                                        onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
-                                    />
-                                    <button
-                                        className="px-2 py-1 border border-gray-300 rounded-md"
-                                        onClick={() => handleIncreaseOne(item.id)}
-                                    >
-                                        +
-                                    </button>
-                                </div>
-                            </td>
-                            <td className="px-4 py-2">${item.price}</td>
-                            <td className="px-4 py-2">
-                                <button
-                                    className="text-red-500 hover:text-red-700"
-                                    onClick={() => handleDeleteItem(item.id)}
-                                >
-                                    Remove
-                                </button>
-                            </td>
+        ) : (
+            <>
+                <table className="table-auto w-full">
+                    <thead>
+                        <tr>
+                            <th className="px-4 py-2">Image</th>
+                            <th className="px-4 py-2">Name</th>
+                            <th className="px-4 py-2">Size</th>
+                            <th className="px-4 py-2">Color</th>
+                            <th className="px-4 py-2">Quantity</th>
+                            <th className="px-4 py-2">Price</th>
+                            <th className="px-4 py-2">Actions</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-        {/* )} */}
-
-        {cart.length > 0 && (
-            <div className="flex justify-between items-center mt-4">
-                <span className="text-2xl">Total Price: ${totalPrice}</span>
-                <button
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-                    onClick={handlePlaceOrder}
-                >
-                    Place Order
-                </button>
-            </div>
+                    </thead>
+                    <tbody>
+                        {items && items.map((item) => (
+                            <tr className="" key={item._id}>
+                                <td className="pl-8 py-2">
+                                    <img src={item.image} alt={item.product.name} className="h-16 w-16" />
+                                </td>
+                                <td className="pl-8 py-2">{item.product.name}</td>
+                                <td className="pl-8 py-2">{item.size.size}</td>
+                                <td className="pl-8 py-2">{item.color.color}</td>
+                                <td className="pl-8 py-2">
+                                    <div className="flex items-center">
+                                        <button
+                                            className="px-2 py-1 border border-gray-300 rounded-md"
+                                            onClick={() => handleDecreaseOne(item._id)}
+                                        >
+                                            -
+                                        </button>
+                                        <input
+                                            type="number"
+                                            className="w-8 mx-2"
+                                            min={1}
+                                            max={100}
+                                            value={item.totalProductQuantity}
+                                            // onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
+                                        />
+                                        <button
+                                            className="px-2 py-1 border border-gray-300 rounded-md"
+                                            onClick={() => handleIncreaseOne(item._id)}
+                                        >
+                                            +
+                                        </button>
+                                    </div>
+                                </td>
+                                <td className="pl-8 py-2">${item.totalProductPrice}</td>
+                                <td className="pl-8 py-2">
+                                    <button
+                                        className="text-red-500 hover:text-red-700"
+                                        onClick={() => handleDeleteItem(item._id)}
+                                    >
+                                        Remove
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <div className="flex justify-between items-center mt-4">
+                    <span className="text-2xl ml-4">Total Price: ${cart.totalPrice}</span>
+                    <button
+                        className="mr-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+                        onClick={handlePlaceOrder}
+                    >
+                        Place Order
+                    </button>
+                </div>
+            
+            </>
         )}
         </div>
     );
