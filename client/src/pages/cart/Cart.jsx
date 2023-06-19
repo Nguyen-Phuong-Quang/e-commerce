@@ -178,14 +178,11 @@ const Cart = () => {
     const [loading, setLoading] = useState(false);
     const { toastError, toastSuccess } = toastContext();
 
-    useEffect(() => {
-        fetchCartItems();
-    }, []);
-
     const fetchCartItems = async () => {
         try {
             const response = await cartApi.getCart();
             if (response.data.type === "SUCCESS") {
+                console.log(response.data.cart);
                 setCart(response.data.cart);
                 calculateTotalPrice(response.data.cart);
                 toastSuccess(response.data.message);
@@ -195,6 +192,11 @@ const Cart = () => {
             console.error(error);
         }
     };
+
+    useEffect(() => {
+        fetchCartItems();
+    }, []);
+
 
     const calculateTotalPrice = (items) => {
         const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
