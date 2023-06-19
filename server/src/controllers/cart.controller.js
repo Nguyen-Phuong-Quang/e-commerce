@@ -108,8 +108,8 @@ exports.deleteItem = async (req, res, next) => {
             await cartService.deleteItem(
                 req.user.email,
                 req.params.productId,
-                req.body.color,
-                req.body.size
+                req.params.sizeId,
+                req.params.colorId
             );
 
         if (type === statusType.error)
@@ -137,15 +137,15 @@ exports.deleteItem = async (req, res, next) => {
  * @returns   { JSON } - A JSON object representing the type, message, and the cart
  */
 exports.increaseOne = async (req, res, next) => {
-    const { productId } = req.params;
-    const { color, size } = req.body;
+
+    const { productId, sizeId, colorId } = req.params;
     try {
         const { type, statusCode, message, cart } =
             await cartService.increaseOne(
                 req.user.email,
                 productId,
-                color,
-                size
+                colorId,
+                sizeId
             );
 
         if (type === statusType.error)
@@ -173,15 +173,15 @@ exports.increaseOne = async (req, res, next) => {
  * @returns   { JSON } - A JSON object representing the type, message, and the cart
  */
 exports.decreaseOne = async (req, res, next) => {
-    const { productId } = req.params;
-    const { color, size } = req.body;
+    const { productId, sizeId, colorId } = req.params;
+
     try {
         const { type, statusCode, message, cart } =
             await cartService.decreaseOne(
                 req.user.email,
                 productId,
-                color,
-                size
+                colorId,
+                sizeId
             );
 
         if (type === statusType.error)

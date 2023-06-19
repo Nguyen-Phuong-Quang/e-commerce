@@ -15,18 +15,18 @@ const cartApi = {
         const url = `${PREFIX}`;
         return axiosClient.delete(url);
     },
-    deleteItemInCart: (productId) => {
-        const url = `${PREFIX}/${productId}`;
+    deleteItemInCart: (productId, sizeId, colorId) => {
+        const url = `${PREFIX}/${productId}/${sizeId}/${colorId}`;
         return axiosClient.delete(url);
     },
 
-    decreaseOne: (productId) => {
-        const url = `${PREFIX}/decrease-one/${productId}`;
+    decreaseOne: (productId, sizeId, colorId) => {
+        const url = `${PREFIX}/decrease-one/${productId}/${sizeId}/${colorId}`;
         return axiosClient.patch(url);
     },
 
-    increaseOne: (productId) => {
-        const url = `${PREFIX}/increase-one/${productId}`;
+    increaseOne: (productId, sizeId, colorId) => {
+        const url = `${PREFIX}/increase-one/${productId}/${sizeId}/${colorId}`;
         return axiosClient.patch(url);
     },
 };
