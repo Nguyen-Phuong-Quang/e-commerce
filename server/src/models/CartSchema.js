@@ -79,14 +79,14 @@ CartSchema.pre(/^find/, function (next) {
             path: "items.product",
             select: "name",
         },
-        // {
-        //     path: "items.color",
-        //     select: "color",
-        // },
-        // {
-        //     path: "items.size",
-        //     select: "size",
-        // },
+        {
+            path: "items.color",
+            select: "color",
+        },
+        {
+            path: "items.size",
+            select: "size",
+        },
     ]);
 
     next();

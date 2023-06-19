@@ -6,9 +6,9 @@ const router = express.Router();
 
 router.use(authorize);
 
-router.patch("/increase-one/:productId", cartController.increaseOne);
-router.patch("/decrease-one/:productId", cartController.decreaseOne);
-router.delete("/:productId", cartController.deleteItem);
+router.patch("/increase-one/:productId/:sizeId/:colorId", cartController.increaseOne);
+router.patch("/decrease-one/:productId/:sizeId/:colorId", cartController.decreaseOne);
+router.delete("/:productId/:sizeId/:colorId", cartController.deleteItem);
 router.delete("/", cartController.deleteCart);
 router.post("/", cartController.addItemToCart);
 router.get("/", cartController.getCart);

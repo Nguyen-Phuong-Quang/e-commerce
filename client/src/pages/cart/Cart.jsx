@@ -39,18 +39,13 @@ const Cart = () => {
         fetchCartItems();
     }, []);
 
-    // const calculateTotalPrice = (items) => {
-    //     const totalPrice = items.reduce((total, item) => total + item.price * item.totalProductQuantity, 0);
-    //     setTotalProductPrice(totalPrice);
-    // };
-
-    const handleDecreaseOne = async (productId) => {
+    const handleDecreaseOne = async (productId, sizeId, colorId) => {
         setLoading(true);
         try {
-            const response = await cartApi.decreaseOne(productId);
+            const response = await cartApi.decreaseOne(productId, sizeId, colorId);
             if (response.data.type === "SUCCESS") {
-                fetchCartItems();
                 toastSuccess(response.data.message);
+                fetchCartItems();
             }
         } catch (error) {
             toastError(error.response.data.message);
@@ -59,13 +54,13 @@ const Cart = () => {
         setLoading(false);
     };
 
-    const handleIncreaseOne = async (productId) => {
+    const handleIncreaseOne = async (productId, sizeId, colorId) => {
         setLoading(true);
         try {
-            const response = await cartApi.increaseOne(productId);
+            const response = await cartApi.increaseOne(productId, sizeId, colorId);
             if (response.data.type === "SUCCESS") {
-                fetchCartItems();
                 toastSuccess(response.data.message);
+                fetchCartItems(response.data);
             }
         } catch (error) {
             toastError(error.response.data.message);
@@ -74,23 +69,14 @@ const Cart = () => {
         setLoading(false);
     };
 
-    // const handleQuantityChange = async (productId, totalProductQuantity) => {
-    //     try {
-    //         const response = await axiosClient.patch(`/cart/${productId}`, { totalProductQuantity });
-    //         if (response.data.type === "SUCCESS") {
-    //             fetchCartItems();
-    //             toastSuccess(response.data.message);
-    //         }
-    //     } catch (error) {
-    //         toastError(error.response.data.message);
-    //         console.error(error);
-    //     }
-    // };
-
-    const handleDeleteItem = async (productId) => {
+    const handleDeleteItem = async (productId, sizeId, colorId) => {
         setLoading(true);
         try {
-            const response = await cartApi.deleteItemInCart(productId);
+            const response = await cartApi.deleteItemInCart(
+                productId,
+                sizeId,
+                colorId
+            );
             if (response.data.type === "SUCCESS") {
                 fetchCartItems();
                 toastSuccess(response.data.message);
@@ -160,27 +146,26 @@ const Cart = () => {
                                                             className="px-2 py-1 border border-gray-300 rounded-md"
                                                             onClick={() =>
                                                                 handleDecreaseOne(
-                                                                    item._id
+                                                                    item.product._id,
+                                                                    item.size._id,
+                                                                    item.color._id
                                                                 )
                                                             }
                                                         >
                                                             -
                                                         </button>
-                                                        <input
-                                                            type="number"
-                                                            className="w-8 mx-2"
-                                                            min={1}
-                                                            max={100}
-                                                            value={
+                                                        <span className="w-8 mx-2 text-center">
+                                                            {
                                                                 item.totalProductQuantity
                                                             }
-                                                            // onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
-                                                        />
+                                                        </span>
                                                         <button
                                                             className="px-2 py-1 border border-gray-300 rounded-md"
                                                             onClick={() =>
                                                                 handleIncreaseOne(
-                                                                    item._id
+                                                                    item.product._id,
+                                                                    item.size._id,
+                                                                    item.color._id
                                                                 )
                                                             }
                                                         >
@@ -194,11 +179,13 @@ const Cart = () => {
                                                 <td className="pl-8 py-2">
                                                     <button
                                                         className="text-red-500 hover:text-red-700"
-                                                        onClick={() =>
+                                                        onClick={() => {
                                                             handleDeleteItem(
-                                                                item._id
-                                                            )
-                                                        }
+                                                                item.product._id,
+                                                                item.size._id,
+                                                                item.color._id
+                                                            );
+                                                        }}
                                                     >
                                                         Remove
                                                     </button>
