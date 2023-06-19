@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const ProductSchema = require("./ProductSchema");
+const CustomErrorHandler = require("../utils/CustomErrorHandler");
 
 const CartSchema = new mongoose.Schema(
     {
@@ -89,6 +91,21 @@ CartSchema.pre(/^find/, function (next) {
         },
     ]);
 
+    next();
+});
+
+CartSchema.pre(/^delete/, async function (next) {
+    await Promise.all(
+        this.items.map(async (item) => {
+            const product = await ProductSchema.findById(item.product);
+
+            if (!product)
+                return next(new CustomErrorHandler(404, "No product found!"));
+
+            product.quantity += item.totalProductQuantity;
+        })
+    );
+    
     next();
 });
 

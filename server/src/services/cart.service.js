@@ -32,6 +32,13 @@ exports.addItemToCart = async (email, productId, quantity, colorId, sizeId) => {
             statusCode: 404,
         };
 
+    if (quantity > product.quantity)
+        return {
+            type: statusType.error,
+            message: "The quantity in stock is not enough!",
+            statusCode: 400,
+        };
+
     const { priceAfterDiscount, mainImage } = product;
 
     const cart = await CartSchema.findOne({ email });
@@ -108,7 +115,9 @@ exports.addItemToCart = async (email, productId, quantity, colorId, sizeId) => {
             image: mainImage,
         });
     }
+    product.quantity -= quantity;
 
+    await product.save();
     await cart.save();
 
     return {
@@ -271,6 +280,13 @@ exports.increaseOne = async (email, productId, colorId, sizeId) => {
             statusCode: 404,
         };
 
+    if (product.quantity <= 0)
+        return {
+            type: statusType.error,
+            message: "Out of stock!",
+            statusCode: 404,
+        };
+
     const colorDoc = await ColorSchema.isExisted(productId, colorId);
 
     // 3. Check product color if not exist in cart
@@ -305,6 +321,8 @@ exports.increaseOne = async (email, productId, colorId, sizeId) => {
         cart.items[indexProductExistedInCart].totalProductQuantity += 1;
         cart.items[indexProductExistedInCart].totalProductPrice +=
             product.priceAfterDiscount;
+        product.quantity -= 1;
+        await product.save();
         await cart.save();
 
         return {
@@ -395,6 +413,8 @@ exports.decreaseOne = async (email, productId, colorId, sizeId) => {
                 updatetotalProductPrice;
         }
 
+        product.quantity += 1;
+        await product.save();
         await cart.save();
 
         return {
