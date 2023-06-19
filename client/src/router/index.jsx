@@ -12,6 +12,7 @@ import Cart from "../pages/cart/Cart";
 import Discountpage from "../pages/discount/DiscountPage";
 import Order from "../pages/order/Order";
 import Detail from "../pages/home/Detail";
+import OrderHistory from "../pages/order-history/OrderHistory";
 
 const router = createBrowserRouter([
     {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
             {
                 path: route.ORDER,
                 element: <Order />,
+            },
+            {
+                path: route.ORDERHISTORY,
+                element: <OrderHistory />,
             },
         ],
     },
