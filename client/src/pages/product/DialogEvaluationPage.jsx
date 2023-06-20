@@ -1,39 +1,3 @@
-// import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
-
-// const Reviews = () => {
-//   const [reviews, setReviews] = useState([]);
-
-//   useEffect(() => {
-//     axios.get('/api/reviews')
-//       .then(response => {
-//         setReviews(response.data);
-//       })
-//       .catch(error => {
-//         console.log(error);
-//       });
-//   }, []);
-
-//   return (
-//     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-//       <div className="px-4 py-6 sm:px-0">
-//         <h1 className="text-3xl font-bold mb-4">Reviews</h1>
-//         {reviews.map(review => (
-//           <div key={review.id} className="bg-white shadow overflow-hidden sm:rounded-lg mb-4">
-//             <div className="px-4 py-5 sm:px-6">
-//               <h3 className="text-lg leading-6 font-medium text-gray-900">{review.comment}</h3>
-//               <p className="mt-1 max-w-2xl text-sm text-gray-500">{review.rating} stars</p>
-//               <p className="mt-1 max-w-2xl text-sm text-gray-500">{review.createdAt}</p>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Reviews;
-
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { useEffect, useState } from 'react';
@@ -42,6 +6,7 @@ import userApi from '../../api/userApi';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Rating } from "primereact/rating";
 import { Avatar } from 'primereact/avatar';
+import { toastContext } from "./../../contexts/ToastProvider";
 
 
 const formatDate = (dateTimeString) => {
@@ -60,6 +25,8 @@ const EvaluationDialog = ({ visible, setVisible, productId, onHide }) => {
   const  [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState([]);
 
+  const { toastSuccess } = toastContext();
+
   //get review of product
   useEffect(() => {
     const fetchReivew = async () => {
@@ -68,7 +35,7 @@ const EvaluationDialog = ({ visible, setVisible, productId, onHide }) => {
         const response = await reviewApi.getAllReviews(productId);
         if (response.data.type === "SUCCESS") {
           setReviews(response.data.reviews);
-          toastSuccess(response.data.message);
+          // toastSuccess(response.data.message);
         }
       } catch (err) {
         // toastError(err.response.data.message);

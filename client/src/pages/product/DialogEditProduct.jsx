@@ -47,12 +47,8 @@ const DialogEditProduct = ({
       try {
         const response = await productApi.getProductById(productId);
         if (response.data.type === "SUCCESS") {
-          console.log("category options: ");
-          console.log(categoryOptions);
           const productCurrent = response.data.product;
-          console.log(response.data.product);
           setProducts(productCurrent);
-          // setSelectedCategory({_id: productCurrent.category, name: categoryOptions.find(item => item._id === productCurrent.category)?.name});
           setSelectedCategory(
             categoryOptions.find((item) => item._id === productCurrent.category)
           );
@@ -64,6 +60,9 @@ const DialogEditProduct = ({
     };
 
     fetchData();
+
+    console.log("Selected category: ", selectedCategory);
+    console.log("products selected colors: ", products.sizes);
   }, [visible]);
 
   //update another fields of products
@@ -75,11 +74,8 @@ const DialogEditProduct = ({
     formData.append("description", products.description);
     formData.append("price", products.price);
     formData.append("priceAfterDiscount", products.priceAfterDiscount);
-    // formData.append("colors", products.colors);
-    // formData.append("sizes", products.sizes);
-    products.colors.forEach((color) => formData.append("colors", color));
-    products.sizes.forEach((size) => formData.append("sizes", size));
-
+    formData.append("colors", products.colors);
+    formData.append("sizes", products.sizes);
     formData.append("quantity", products.quantity);
 
     console.log("Form data: ");
@@ -107,6 +103,7 @@ const DialogEditProduct = ({
     const value = event.target.value;
     setProducts((values) => ({ ...values, [name]: value }));
   };
+  
 
   const handleSaveClick = () => {
     handleUpdateProduct();
