@@ -182,10 +182,7 @@ exports.signin = async (email, password) => {
             statusCode: 404,
         };
 
-    // 3. Delete token schema of previous sign in in db
-    await TokenSchema.deleteMany({ userId: user._id });
-
-    // 4. Check password is correct or not
+    // 3. Check password is correct or not
     const isMatchPassword = await user.isMatchPassword(password);
 
     // If not
@@ -195,6 +192,9 @@ exports.signin = async (email, password) => {
             message: "Password is wrong!",
             statusCode: 400,
         };
+        
+    // 4. Delete token schema of previous sign in in db
+    await TokenSchema.deleteMany({ userId: user._id });
 
     // 5. Generate token
     const tokens = await generateAuthToken(user);
