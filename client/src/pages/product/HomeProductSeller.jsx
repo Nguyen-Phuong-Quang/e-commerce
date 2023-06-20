@@ -8,8 +8,8 @@ import EvaluationDialog from "./DialogEvaluationPage";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import DialogAddProduct from "./DialogAddProduct";
-import { userStateContext } from "../../contexts/StateProvider";
-import { toastContext } from "../../contexts/ToastProvider";
+import { useSearchContext } from "../../contexts/SearchProvider";
+import useDebounce from "../../hooks/useDebounce";
 
 function HomeProductSeller() {
     const [loading, setLoading] = useState(false);
@@ -22,11 +22,7 @@ function HomeProductSeller() {
     const [productName, setProductName] = useState("");
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showDialog, setShowDialog] = useState(false);
-    const { currentUser } = userStateContext();
-    const [review, setReview] = useState([]);
-    const [category, setCategory] = useState([]);
-
-    const { toastSuccess, toastError } = toastContext();
+    const { searchText } = useSearchContext();
 
     const onProductSelect = (product) => {
         setSelectedProduct(product);
@@ -38,12 +34,14 @@ function HomeProductSeller() {
         setShowDialog(false);
     };
 
+    const debouncedValue = useDebounce(searchText);
+
     useEffect(() => {
         const fetchApi = async () => {
             setLoading(true);
             try {
                 const response = await productApi.getSellerProducts(
-                    currentUser._id
+                    debouncedValue
                 );
                 if (response.data.type === "SUCCESS") {
                     setProducts(response.data.products);
@@ -54,7 +52,6 @@ function HomeProductSeller() {
                 }
                 // setProducts(dataTrain);
             } catch (err) {
-                // toastError(err.response.data.message);
                 console.log(err);
                 setProducts([]);
             }
@@ -62,14 +59,15 @@ function HomeProductSeller() {
         };
 
         fetchApi();
-    }, [visibleAddDialog, visibleDeleteDialog, visibleEditDialog]);
+    }, [
+        visibleAddDialog,
+        visibleDeleteDialog,
+        visibleEditDialog,
+        debouncedValue,
+    ]);
 
     const handleAdd = () => {
         setvisibleAddDialog(true);
-    };
-
-    const rightToolbarTemplate = () => {
-        return <></>;
     };
 
     return (
@@ -161,9 +159,6 @@ function HomeProductSeller() {
                                                     <div
                                                         className="text-red-500 cursor-pointer px-2 py-1 rounded border border-transparent hover:border-red-500 flex justify-center items-center"
                                                         onClick={() => {
-                                                            setVisibleEvaluation(
-                                                                true
-                                                            );
                                                             setProductId(
                                                                 product._id
                                                             );

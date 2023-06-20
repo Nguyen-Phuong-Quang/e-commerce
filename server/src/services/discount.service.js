@@ -25,7 +25,6 @@ exports.getAllDiscountCodes = async (req) => {
         statusCode: 200,
         discounts,
     };
-
 };
 
 /**
@@ -33,8 +32,8 @@ exports.getAllDiscountCodes = async (req) => {
  * @param   { Array } codes - Discount codes
  * @return  { object<type|message|statusCode|discounts> }
  */
-exports.getDiscountCode = async (codes) => {
-    const discounts = await DiscountSchema.find({ code: { $in: codes } });
+exports.getDiscountCode = async (discountId) => {
+    const discounts = await DiscountSchema.findById(discountId);
 
     if (!discounts || discounts.length === 0)
         return {
@@ -57,22 +56,15 @@ exports.getDiscountCode = async (codes) => {
  * @param   { object } user - User object data
  * @returns { object<type|message|statusCode> }
  */
-exports.verifyDiscountCode = async (discountCode, user) => {
-    if (!discountCode)
+exports.verifyDiscountCode = async (discountId) => {
+    if (!discountId)
         return {
             type: statusType.error,
             message: "Missing discount code on url params",
             statusCode: 400,
         };
 
-    if (user.discountCodes.includes(discountCode))
-        return {
-            type: statusType.error,
-            message: "Just 1 code only!",
-            statusCode: 400,
-        };
-
-    const discount = await DiscountSchema.findOne({ code: discountCode });
+    const discount = await DiscountSchema.findById(discountId);
 
     if (!discount)
         return {
@@ -84,10 +76,6 @@ exports.verifyDiscountCode = async (discountCode, user) => {
     discount.available -= 1;
 
     await discount.save();
-
-    await UserSchema.findByIdAndUpdate(user._id, {
-        $push: { discountCodes: discountCode },
-    });
 
     return {
         type: statusType.success,
@@ -103,7 +91,6 @@ exports.verifyDiscountCode = async (discountCode, user) => {
  */
 exports.generateDiscountCode = async (body) => {
     const {
-        codeLength,
         available,
         discountValue,
         discountUnit,
@@ -113,7 +100,6 @@ exports.generateDiscountCode = async (body) => {
     } = body;
 
     if (
-        !codeLength ||
         !available ||
         !discountValue ||
         !discountUnit ||
@@ -127,20 +113,7 @@ exports.generateDiscountCode = async (body) => {
             statusCode: 400,
         };
 
-    const characters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    const charactersLength = characters.length;
-    let code;
-    // for (let i = 0; i < codeLength; ++i)
-    //     code += characters[Math.floor(charactersLength * Math.random())];
-    do {
-        code = "";
-        for (let i = 0; i < codeLength; ++i)
-            code += characters[Math.floor(charactersLength * Math.random())];
-    } while (await DiscountSchema.find({ code }));
-
     const discount = await DiscountSchema.create({
-        code,
         discountValue,
         discountUnit,
         validUntil: moment(validUntil).unix(),
@@ -172,10 +145,6 @@ exports.deleteDiscountCode = async (discountId) => {
             statusCode: 404,
         };
 
-    await UserSchema.findByIdAndUpdate(user._id, {
-        $pull: { discountCodes: success.code },
-    });
-
     return {
         type: statusType.success,
         message: "Delete discount code successfully!",
@@ -189,7 +158,7 @@ exports.deleteDiscountCode = async (discountId) => {
  * @param   { String } userId - ID of user
  * @return  { object<type|message|statusCode> }
  */
-exports.cancelDiscountCode = async (discountCode, user) => {
+exports.cancelDiscountCode = async (discountCode) => {
     const discount = await DiscountSchema.findOne({ code: discountCode });
 
     if (!discount)
@@ -199,19 +168,9 @@ exports.cancelDiscountCode = async (discountCode, user) => {
             statusCode: 404,
         };
 
-    if (!user.discountCodes.includes(discountCode))
-        return {
-            type: statusType.error,
-            message: "This discount code not belonging to you!",
-            statusCode: 400,
-        };
-
     discount.available += 1;
 
     await discount.save();
-    await UserSchema.findByIdAndUpdate(user._id, {
-        $pull: { discountCodes: discountCode },
-    });
 
     return {
         type: statusType.success,

@@ -143,7 +143,6 @@ export default function Detail() {
     }, [review]);
 
     const handleAddCart = () => {
-        console.log("handle add product to cart");
         setVisibleCart(true);
     };
 

@@ -193,25 +193,25 @@ exports.deleteItem = async (email, productId, sizeId, colorId) => {
             statusCode: 404,
         };
 
-    const colorDoc = await ColorSchema.isExisted(productId, colorId);
+    // const colorDoc = await ColorSchema.isExisted(productId, colorId);
 
-    // 2. Check product color not exist
-    if (!colorDoc)
-        return {
-            type: statusType.error,
-            message: "This color does not exist!",
-            statusCode: 404,
-        };
+    // // 2. Check product color not exist
+    // if (!colorDoc)
+    //     return {
+    //         type: statusType.error,
+    //         message: "This color of product does not exist!",
+    //         statusCode: 404,
+    //     };
 
-    const sizeDoc = await SizeSchema.isExisted(productId, sizeId);
+    // const sizeDoc = await SizeSchema.isExisted(productId, sizeId);
 
-    // 3. Check product size not exist
-    if (!sizeDoc)
-        return {
-            type: statusType.error,
-            message: "This size does not exist!",
-            statusCode: 404,
-        };
+    // // 3. Check product size not exist
+    // if (!sizeDoc)
+    //     return {
+    //         type: statusType.error,
+    //         message: "This size of product does not exist!",
+    //         statusCode: 404,
+    //     };
 
     // 4. Find product that match color and size
     const product = cart.items.find((item) => {
@@ -287,25 +287,25 @@ exports.increaseOne = async (email, productId, colorId, sizeId) => {
             statusCode: 404,
         };
 
-    const colorDoc = await ColorSchema.isExisted(productId, colorId);
+    // const colorDoc = await ColorSchema.isExisted(productId, colorId);
 
-    // 3. Check product color if not exist in cart
-    if (!colorDoc)
-        return {
-            type: statusType.error,
-            message: "This color does not exist!",
-            statusCode: 404,
-        };
+    // // 3. Check product color if not exist in cart
+    // if (!colorDoc)
+    //     return {
+    //         type: statusType.error,
+    //         message: "This color does not exist!",
+    //         statusCode: 404,
+    //     };
 
-    const sizeDoc = await SizeSchema.isExisted(productId, sizeId);
+    // const sizeDoc = await SizeSchema.isExisted(productId, sizeId);
 
-    // 4. Check product size if not exist in cart
-    if (!sizeDoc)
-        return {
-            type: statusType.error,
-            message: "This size does not exist!",
-            statusCode: 404,
-        };
+    // // 4. Check product size if not exist in cart
+    // if (!sizeDoc)
+    //     return {
+    //         type: statusType.error,
+    //         message: "This size does not exist!",
+    //         statusCode: 404,
+    //     };
 
     // 5. Find product index in cart that match id, color and size
     const indexProductExistedInCart = cart.items.findIndex((item) => {
@@ -369,25 +369,25 @@ exports.decreaseOne = async (email, productId, colorId, sizeId) => {
             statusCode: 404,
         };
 
-    const colorDoc = await ColorSchema.isExisted(productId, colorId);
+    // const colorDoc = await ColorSchema.isExisted(productId, colorId);
 
-    // 3. Check product color if not exist in cart
-    if (!colorDoc)
-        return {
-            type: statusType.error,
-            message: "This color does not exist!",
-            statusCode: 404,
-        };
+    // // 3. Check product color if not exist in cart
+    // if (!colorDoc)
+    //     return {
+    //         type: statusType.error,
+    //         message: "This color does not exist!",
+    //         statusCode: 404,
+    //     };
 
-    const sizeDoc = await SizeSchema.isExisted(productId, sizeId);
+    // const sizeDoc = await SizeSchema.isExisted(productId, sizeId);
 
-    // 4. Check product size if not exist in cart
-    if (!sizeDoc)
-        return {
-            type: statusType.error,
-            message: "This size does not exist!",
-            statusCode: 404,
-        };
+    // // 4. Check product size if not exist in cart
+    // if (!sizeDoc)
+    //     return {
+    //         type: statusType.error,
+    //         message: "This size does not exist!",
+    //         statusCode: 404,
+    //     };
 
     const indexProductExistedInCart = cart.items.findIndex((item) => {
         return (

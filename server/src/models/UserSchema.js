@@ -50,17 +50,17 @@ const UserSchema = new mongoose.Schema(
         phone: String,
         profileImage: {
             type: String,
-            required: true
+            required: true,
         },
         profileImageId: {
             type: String,
-            required: true
-        },
-        discountCodes: [
-            {
-                type: String,
-            },
-        ],
+            required: true,
+        }
+        // discountCodes: [
+        //     {
+        //         type: String,
+        //     },
+        // ],
     },
     {
         timestamps: true,

@@ -21,9 +21,9 @@ const SizeSchema = new mongoose.Schema(
 
 SizeSchema.index({ size: 1 }, { unique: true });
 
-SizeSchema.statics.isExisted = async function (productId, sizeId) {
+SizeSchema.statics.isExisted = async function (productId, size) {
     return await this.findOne({
-        _id: sizeId,
+        size,
         product: { $in: productId },
     });
 };

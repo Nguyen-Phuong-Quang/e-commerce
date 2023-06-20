@@ -63,10 +63,7 @@ exports.getDiscountCode = async (req, res, next) => {
 exports.verifyDiscountCode = async (req, res, next) => {
     try {
         const { type, message, statusCode } =
-            await discountService.verifyDiscountCode(
-                req.params.discountCode,
-                req.user
-            );
+            await discountService.verifyDiscountCode(req.params.discountId);
 
         if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
@@ -142,10 +139,7 @@ exports.deleteDiscountCode = async (req, res, next) => {
 exports.cancelDiscountCode = async (req, res, next) => {
     try {
         const { type, message, statusCode } =
-            await discountService.cancelDiscountCode(
-                req.params.discountCode,
-                req.user
-            );
+            await discountService.cancelDiscountCode(req.params.discountId);
 
         if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));

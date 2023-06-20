@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { userStateContext } from "../contexts/StateProvider";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import route from "../constants/route";
 import { InputText } from "primereact/inputtext";
 import { Avatar } from "primereact/avatar";
@@ -11,9 +11,14 @@ import { useSearchContext } from "../contexts/SearchProvider";
 export default function MenuBar() {
     const [visibleChangePassword, setVisibleChangePassword] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
     const { currentUser, setCurrentUser } = userStateContext();
 
     const { searchText, setSearchText } = useSearchContext();
+
+    useEffect(() => {
+        setSearchText("");
+    }, [location]);
 
     const handleSignOut = () => {
         const signOut = async () => {
@@ -54,9 +59,9 @@ export default function MenuBar() {
                 type="text"
                 className="my-2 w-full rounded-full"
                 value={searchText}
-                onChange={setSearchText}
+                onChange={(e) => setSearchText(e.target.value)}
             />
-            <i className="pi pi-spin pi-spinner" />
+            {/* <i className="pi pi-spin pi-spinner" /> */}
         </span>
     );
 

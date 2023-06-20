@@ -242,7 +242,7 @@ exports.deleteColor = async (req, res, next) => {
         const { type, message, statusCode } = await productService.deleteColor(
             req.params.productId,
             req.user._id,
-            req.body.color
+            req.query.color
         );
 
         if (type === statusType.error)
@@ -304,7 +304,7 @@ exports.deleteSize = async (req, res, next) => {
         const { type, message, statusCode } = await productService.deleteSize(
             req.params.productId,
             req.user._id,
-            req.body.size
+            req.query.size
         );
 
         if (type === statusType.error)

@@ -6,15 +6,14 @@ const router = express.Router();
 
 router.use(authorize);
 
-router.post("/verify/:discountCode", discountController.verifyDiscountCode);
-
-router.get("/find", discountController.getDiscountCode);
-
-router.delete("/cancel/:discountCode", discountController.cancelDiscountCode);
-
-router.use(restrictTo("ADMIN"));
+router.post("/verify/:discountId", discountController.verifyDiscountCode);
 
 router.get("/", discountController.getAllDiscountCodes);
+// router.get("/find", discountController.getDiscountCode);
+
+// router.delete("/cancel/:discountId", discountController.cancelDiscountCode);
+
+router.use(restrictTo("ADMIN"));
 
 router.post("/generate", discountController.generateDiscountCode);
 

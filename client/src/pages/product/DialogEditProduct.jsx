@@ -422,7 +422,7 @@ const onSelectFile = (e) => {
                 placeholder="Enter quantity"
                 value={products.quantity}
                 onValueChange={handleChange}
-                integeronly
+                // integeronly
                 className="basis-2/3 mr-4"
               />
             </div>

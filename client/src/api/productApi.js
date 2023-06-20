@@ -17,9 +17,13 @@ const productApi = {
     //     return axiosClient.get(url);
     // },
 
-    getSellerProducts: (userId) => {
+    getSellerProducts: (name) => {
         const url = `${PREFIX}/seller-product`;
-        return axiosClient.get(url, userId);
+        return axiosClient.get(url, {
+            params: {
+                name,
+            },
+        });
     },
 
     getProductById: (id) => {
@@ -56,6 +60,30 @@ const productApi = {
     deleteProduct: (id) => {
         const url = `${PREFIX}/${id}`;
         return axiosClient.delete(url);
+    },
+    addColor: (productId, color) => {
+        const url = `${PREFIX}/color/${productId}`;
+        return axiosClient.post(url, { color });
+    },
+    deleteColor: (productId, color) => {
+        const url = `${PREFIX}/color/${productId}`;
+        return axiosClient.delete(url, {
+            params: {
+                color,
+            },
+        });
+    },
+    addSize: (productId, size) => {
+        const url = `${PREFIX}/size/${productId}`;
+        return axiosClient.post(url, { size });
+    },
+    deleteSize: (productId, size) => {
+        const url = `${PREFIX}/size/${productId}`;
+        return axiosClient.delete(url, {
+            params: {
+                size,
+            },
+        });
     },
 };
 
