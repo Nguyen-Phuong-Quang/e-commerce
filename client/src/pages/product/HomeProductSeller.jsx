@@ -10,6 +10,9 @@ import { Dialog } from "primereact/dialog";
 import DialogAddProduct from "./DialogAddProduct";
 import { useSearchContext } from "../../contexts/SearchProvider";
 import useDebounce from "../../hooks/useDebounce";
+import { userStateContext } from "../../contexts/StateProvider";
+import { toastContext } from "../../contexts/ToastProvider";
+import categoryApi from "../../api/categoryApi";
 
 function HomeProductSeller() {
     const [loading, setLoading] = useState(false);
@@ -23,7 +26,11 @@ function HomeProductSeller() {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showDialog, setShowDialog] = useState(false);
     const { searchText } = useSearchContext();
+    const [review, setReview] = useState([]);
+    const [category, setCategory] = useState([]);
+    const [categoryOptions, setCategoryOptions] = useState([]);
 
+    
     const onProductSelect = (product) => {
         setSelectedProduct(product);
         setShowDialog(true);
@@ -34,7 +41,7 @@ function HomeProductSeller() {
         setShowDialog(false);
     };
 
-    const debouncedValue = useDebounce(searchText);
+    const debouncedValue = useDebounce(searchText, 500);
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -67,25 +74,25 @@ function HomeProductSeller() {
     ]);
 
     useEffect(() => {
-  const fetchCategoryOptions = async () => {
-    try {
-      const response = await categoryApi.query();
-        if (response.data.type === "SUCCESS") {
-          // const reponseCategories = response.data.categories;
-          // setCategoryOptions(reponseCategories.map(({ _id, name }) => ({ _id, name })));
-          // console.log("category option: ");
-          // console.log(categoryOptions);
-          const responseCategories = response.data.categories;
-        //   const newCategoryOptions = responseCategories.map(({ _id, name }) => ({ _id, name }));
-          setCategoryOptions(responseCategories);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
+        const fetchCategoryOptions = async () => {
+            try {
+                const response = await categoryApi.query();
+                if (response.data.type === "SUCCESS") {
+                    // const reponseCategories = response.data.categories;
+                    // setCategoryOptions(reponseCategories.map(({ _id, name }) => ({ _id, name })));
+                    // console.log("category option: ");
+                    // console.log(categoryOptions);
+                    const responseCategories = response.data.categories;
+                    //   const newCategoryOptions = responseCategories.map(({ _id, name }) => ({ _id, name }));
+                    setCategoryOptions(responseCategories);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        };
 
-  fetchCategoryOptions();
-}, []);
+        fetchCategoryOptions();
+    }, []);
 
     const handleAdd = () => {
         setvisibleAddDialog(true);

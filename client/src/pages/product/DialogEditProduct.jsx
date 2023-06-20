@@ -13,130 +13,131 @@ import { toastContext } from "./../../contexts/ToastProvider";
 import { Dropdown } from "primereact/dropdown";
 
 const DialogEditProduct = ({
-  visible,
-  setVisible,
-  productId,
-  categoryOptions,
+    visible,
+    setVisible,
+    productId,
+    categoryOptions,
 }) => {
-  const { toastSuccess, toastError } = toastContext();
-  const [loading, setLoading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(null)
-  const [mainImage, setMainImage] = useState(null);
-  const [images, setImages] = useState([]);
-  const [mainImageUpdated, setMainImageUpdated] = useState(false);
-  const [preview, setPreview] = useState(undefined);
-  const [category, setCategory] = useState(null);
-  const [products, setProducts] = useState({
-    name: "",
-    description: "",
-    price: 0,
-    priceAfterDiscount: 0,
-    colors: [],
-    sizes: [],
-    quantities: 0,
-  });
-  const navigate = useNavigate();
+    const { toastSuccess, toastError } = toastContext();
+    const [loading, setLoading] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [mainImage, setMainImage] = useState(null);
+    const [images, setImages] = useState([]);
+    const [mainImageUpdated, setMainImageUpdated] = useState(false);
+    const [preview, setPreview] = useState(undefined);
+    const [category, setCategory] = useState(null);
+    const [products, setProducts] = useState({
+        name: "",
+        description: "",
+        price: 0,
+        priceAfterDiscount: 0,
+        colors: [],
+        sizes: [],
+        quantities: 0,
+    });
+    const navigate = useNavigate();
 
-  const colorOptions = ["red", "blue", "green", "yellow"];
-  const sizeOptions = ["S", "M", "L", "XL"];
+    const colorOptions = ["red", "blue", "green", "yellow"];
+    const sizeOptions = ["S", "M", "L", "XL"];
 
-  //get product by id
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await productApi.getProductById(productId);
-        if (response.data.type === "SUCCESS") {
-          const productCurrent = response.data.product;
-          setProducts(productCurrent);
-          setSelectedCategory(
-            categoryOptions.find((item) => item._id === productCurrent.category)
-          );
+    //get product by id
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const response = await productApi.getProductById(productId);
+                if (response.data.type === "SUCCESS") {
+                    const productCurrent = response.data.product;
+                    setProducts(productCurrent);
+                    setSelectedCategory(
+                        categoryOptions.find(
+                            (item) => item._id === productCurrent.category
+                        )
+                    );
+                }
+            } catch (err) {
+                console.log(err);
+            }
+            setLoading(false);
+        };
+
+        fetchData();
+
+        console.log("Selected category: ", selectedCategory);
+        console.log("products selected colors: ", products.sizes);
+    }, [visible]);
+
+    //update another fields of products
+    const handleUpdateProduct = async () => {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append("name", products.name);
+        formData.append("category", category);
+        formData.append("description", products.description);
+        formData.append("price", products.price);
+        formData.append("priceAfterDiscount", products.priceAfterDiscount);
+        formData.append("colors", products.colors);
+        formData.append("sizes", products.sizes);
+        formData.append("quantity", products.quantity);
+
+        console.log("Form data: ");
+        console.log(formData);
+
+        try {
+            const response = await productApi.updateProductDetail(
+                productId,
+                formData
+            );
+
+            if (response.data.type === "SUCCESS") {
+                toastSuccess("Product detail updated  successfully");
+                setVisible(false);
+            }
+        } catch (err) {
+            toastError("error", "Failed to update product");
         }
-      } catch (err) {
-        console.log(err);
-      }
-      setLoading(false);
+
+        setLoading(false);
     };
 
-    fetchData();
+    const handleChange = (event) => {
+        const name = event.target.name;
+        const value = event.target.value;
+        setProducts((values) => ({ ...values, [name]: value }));
+    };
 
-    console.log("Selected category: ", selectedCategory);
-    console.log("products selected colors: ", products.sizes);
-  }, [visible]);
+    const handleSaveClick = () => {
+        handleUpdateProduct();
+    };
 
-  //update another fields of products
-  const handleUpdateProduct = async () => {
-    setLoading(true);
-    const formData = new FormData();
-    formData.append("name", products.name);
-    formData.append("category", category);
-    formData.append("description", products.description);
-    formData.append("price", products.price);
-    formData.append("priceAfterDiscount", products.priceAfterDiscount);
-    formData.append("colors", products.colors);
-    formData.append("sizes", products.sizes);
-    formData.append("quantity", products.quantity);
-
-    console.log("Form data: ");
-    console.log(formData);
-
-    try {
-      const response = await productApi.updateProductDetail(
-        productId,
-        formData
-      );
-
-      if (response.data.type === "SUCCESS") {
-        toastSuccess("Product detail updated  successfully");
+    const handleCancelClick = () => {
         setVisible(false);
-      }
-    } catch (err) {
-      toastError("error", "Failed to update product");
-    }
+    };
 
-    setLoading(false);
-  };
+    const handleCategoryChange = (event) => {
+        setSelectedCategory(event.value);
+        // setCategory(event.value._id);
+        setCategory(event.value ? event.value._id : null);
+    };
 
-  const handleChange = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setProducts((values) => ({ ...values, [name]: value }));
-  };
-  
-
-  const handleSaveClick = () => {
-    handleUpdateProduct();
-  };
-
-  const handleCancelClick = () => {
-    setVisible(false);
-  };
-
-  const handleCategoryChange = (event) => {
-    setSelectedCategory(event.value);
-    // setCategory(event.value._id);
-    setCategory(event.value ? event.value._id : null);
-  };
-
-  return (
-    <>
-      <Dialog
-        visible={visible} //pass params as addVisible.
-        className="sm:w-full md:w-10/12 lg:w-3/4 xl:w-2/3 2xl:w-1/2 mx-auto"
-        footer={
-          <ProductDialogFooter
-            Cancel={handleCancelClick}
-            Save={handleSaveClick}
-          />
-        }
-        onHide={() => {
-          setVisible(false);
-        }}
-        header="Edit Product Detail"
-      >
-        {/* <div className="flex flex-col md:flex-row "> */}
-        {/* <div className="w-full md:w-1/2 text-center mt-4">
+    return (
+        <>
+            <Dialog
+                visible={visible} //pass params as addVisible.
+                className="sm:w-full md:w-10/12 lg:w-3/4 xl:w-2/3 2xl:w-1/2 mx-auto"
+                footer={
+                    <ProductDialogFooter
+                        Cancel={handleCancelClick}
+                        Save={handleSaveClick}
+                    />
+                }
+                onHide={() => {
+                    setVisible(false);
+                }}
+                header="Edit Product Detail"
+            >
+                {/* <div className="flex flex-col md:flex-row "> */}
+                {/* <div className="w-full md:w-1/2 text-center mt-4">
             <div className="mb-4 flex-col items-center">
               <label
                 htmlFor="mainImage"
@@ -177,7 +178,7 @@ const DialogEditProduct = ({
               </label>
 
               {/* --------------------- */}
-        {/* <div className=" flex flex-col  w-full  rounded-lg  mr-4 p-4   h-auto ">
+                {/* <div className=" flex flex-col  w-full  rounded-lg  mr-4 p-4   h-auto ">
                 <input
                   type="file"
                   multiple
@@ -214,161 +215,160 @@ const DialogEditProduct = ({
             </div>
           </div>  */}
 
-        <div className="w-full  mt-4">
-          <div className="mb-6 flex flex-row ">
-            <label
-              htmlFor="name"
-              className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
-            >
-              Name
-            </label>
-            <InputText
-              id="name"
-              name="name"
-              placeholder="Enter name"
-              value={products.name}
-              onChange={handleChange}
-              className="basis-2/3 mr-4"
-            />
-          </div>
-          <div className="mb-6 flex flex-row">
-            <label
-              htmlFor="category"
-              className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
-            >
-              Category
-            </label>
-            <Dropdown
-              className="basis-2/3 mr-4"
-              id="category"
-              name="category"
-              options={categoryOptions}
-              value={selectedCategory}
-              onChange={handleCategoryChange}
-              optionLabel="name"
-              // placeholder="Select a category"
-            />
-          </div>
+                <div className="w-full  mt-4">
+                    <div className="mb-6 flex flex-row ">
+                        <label
+                            htmlFor="name"
+                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+                        >
+                            Name
+                        </label>
+                        <InputText
+                            id="name"
+                            name="name"
+                            placeholder="Enter name"
+                            value={products.name}
+                            onChange={handleChange}
+                            className="basis-2/3 mr-4"
+                        />
+                    </div>
+                    <div className="mb-6 flex flex-row">
+                        <label
+                            htmlFor="category"
+                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+                        >
+                            Category
+                        </label>
+                        <Dropdown
+                            className="basis-2/3 mr-4"
+                            id="category"
+                            name="category"
+                            options={categoryOptions}
+                            value={selectedCategory}
+                            onChange={handleCategoryChange}
+                            optionLabel="name"
+                            // placeholder="Select a category"
+                        />
+                    </div>
 
-          {/* --------------- --------------------------------------- */}
+                    {/* --------------- --------------------------------------- */}
 
-          <div className="mb-6 flex flex-row ">
-            <label
-              htmlFor="description"
-              className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
-            >
-              Description
-            </label>
-            <InputTextarea
-              id="description"
-              name="description"
-              placeholder="Enter description"
-              value={products.description}
-              onChange={handleChange}
-              className="basis-2/3 mr-4"
-              rows={3}
-              cols={30}
-            />
-          </div>
-          <div className="mb-6 flex flex-row ">
-            <label
-              htmlFor="price"
-              className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
-            >
-              Price
-            </label>
-            <InputNumber
-              id="price"
-              name="price"
-              placeholder="Enter price"
-              value={products.price}
-              onValueChange={handleChange}
-              className="basis-2/3 mr-4"
-            />
-          </div>
-          <div className="mb-6 flex flex-row ">
-            <label
-              htmlFor="priceAfterDiscount "
-              className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
-            >
-              Price After Discount
-            </label>
-            <InputNumber
-              id="priceAfterDiscount"
-              name="priceAfterDiscount"
-              placeholder="Enter price after discount"
-              value={products.priceAfterDiscount}
-              onValueChange={handleChange}
-              className="basis-2/3 mr-4"
-            />
-          </div>
+                    <div className="mb-6 flex flex-row ">
+                        <label
+                            htmlFor="description"
+                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+                        >
+                            Description
+                        </label>
+                        <InputTextarea
+                            id="description"
+                            name="description"
+                            placeholder="Enter description"
+                            value={products.description}
+                            onChange={handleChange}
+                            className="basis-2/3 mr-4"
+                            rows={3}
+                            cols={30}
+                        />
+                    </div>
+                    <div className="mb-6 flex flex-row ">
+                        <label
+                            htmlFor="price"
+                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+                        >
+                            Price
+                        </label>
+                        <InputNumber
+                            id="price"
+                            name="price"
+                            placeholder="Enter price"
+                            value={products.price}
+                            onValueChange={handleChange}
+                            className="basis-2/3 mr-4"
+                        />
+                    </div>
+                    <div className="mb-6 flex flex-row ">
+                        <label
+                            htmlFor="priceAfterDiscount "
+                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+                        >
+                            Price After Discount
+                        </label>
+                        <InputNumber
+                            id="priceAfterDiscount"
+                            name="priceAfterDiscount"
+                            placeholder="Enter price after discount"
+                            value={products.priceAfterDiscount}
+                            onValueChange={handleChange}
+                            className="basis-2/3 mr-4"
+                        />
+                    </div>
 
-          <div className="mb-6 flex flex-row ">
-            <label
-              htmlFor="colors"
-              className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
-            >
-              Colors
-            </label>
-            <MultiSelect
-              filter
-              id="colors"
-              name="colors"
-              options={colorOptions}
-              value={products.colors}
-              onChange={handleChange}
-              placeholder="Select Colors"
-              display="chip"
-              className="w-2/3 md:w-20rem  mr-4"
-              style={{ overflow: "auto" }}
-            />
-          </div>
+                    <div className="mb-6 flex flex-row ">
+                        <label
+                            htmlFor="colors"
+                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
+                        >
+                            Colors
+                        </label>
+                        <MultiSelect
+                            filter
+                            id="colors"
+                            name="colors"
+                            options={colorOptions}
+                            value={products.colors}
+                            onChange={handleChange}
+                            placeholder="Select Colors"
+                            display="chip"
+                            className="w-2/3 md:w-20rem  mr-4"
+                            style={{ overflow: "auto" }}
+                        />
+                    </div>
 
-          <div className="mb-6 flex flex-row ">
-            <label
-              htmlFor="sizes"
-              className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
-            >
-              Sizes
-            </label>
-            <MultiSelect
-              filter
-              id="sizes"
-              name="sizes"
-              options={sizeOptions}
-              value={products.sizes}
-              onChange={handleChange}
-              //optionLabel="name"
-              placeholder="Select Sizes"
-              display="chip"
-              className="basis-2/3 md:w-20rem mr-4"
-              style={{ overflow: "auto" }}
-            />
-          </div>
+                    <div className="mb-6 flex flex-row ">
+                        <label
+                            htmlFor="sizes"
+                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
+                        >
+                            Sizes
+                        </label>
+                        <MultiSelect
+                            filter
+                            id="sizes"
+                            name="sizes"
+                            options={sizeOptions}
+                            value={products.sizes}
+                            onChange={handleChange}
+                            //optionLabel="name"
+                            placeholder="Select Sizes"
+                            display="chip"
+                            className="basis-2/3 md:w-20rem mr-4"
+                            style={{ overflow: "auto" }}
+                        />
+                    </div>
 
-          <div className="mb-6 flex flex-row ">
-            <label
-              htmlFor="quantity"
-              className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
-            >
-              Quantity
-            </label>
-            <InputNumber
-              id="quantity"
-              name="quantity"
-              placeholder="Enter quantity"
-              value={products.quantity}
-              onValueChange={handleChange}
-              integeronly
-              className="basis-2/3 mr-4"
-            />
-          </div>
-        </div>
-        {/* </div> */}
-      </Dialog>
- 
-    </>
-  );
+                    <div className="mb-6 flex flex-row ">
+                        <label
+                            htmlFor="quantity"
+                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
+                        >
+                            Quantity
+                        </label>
+                        <InputNumber
+                            id="quantity"
+                            name="quantity"
+                            placeholder="Enter quantity"
+                            value={products.quantity}
+                            onValueChange={handleChange}
+                            integeronly
+                            className="basis-2/3 mr-4"
+                        />
+                    </div>
+                </div>
+                {/* </div> */}
+            </Dialog>
+        </>
+    );
 };
 
 export default DialogEditProduct;
