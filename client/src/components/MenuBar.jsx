@@ -82,7 +82,10 @@ export default function MenuBar() {
         if (localStorage.getItem("TOKEN")) {
             return (
                 <div className="flex h-full items-center">
-                    <Link className="px-4 hover:cursor-pointer hover:text-blue-400" to={route.CART}>
+                    <Link
+                        className="px-4 hover:cursor-pointer hover:text-blue-400"
+                        to={route.CART}
+                    >
                         <i className="pi pi-shopping-cart text-2xl"></i>
                     </Link>
                     <div className="hover:cursor-pointer relative group px-4">
@@ -100,13 +103,22 @@ export default function MenuBar() {
                                     Profile
                                 </Link>
                             </div>
+                            <div className="border-b-2 border-x py-2 hover:bg-gray-200 overflow-hidden">
+                                <Link
+                                    className="flex items-center w-fit"
+                                    to={route.ORDER_HISTORY}
+                                >
+                                    <span className="pi pi-book mx-2"></span>{" "}
+                                    Orders
+                                </Link>
+                            </div>
                             <div
-                                className="border-b-2 border-x py-2 hover:bg-gray-200 overflow-hidden"
+                                className="border-x py-2 hover:bg-gray-200 overflow-hidden"
                                 onClick={() => {
                                     setVisibleChangePassword(true);
                                 }}
                             >
-                                <div className="w-fit">
+                                <div className="flex items-center w-fit">
                                     <span className="pi pi-key mx-2"></span>{" "}
                                     Change password
                                 </div>
@@ -115,7 +127,7 @@ export default function MenuBar() {
                                 className="border-b-2 border-x py-2 hover:bg-gray-200 rounded-b-lg overflow-hidden"
                                 onClick={() => handleSignOut()}
                             >
-                                <div className="w-fit">
+                                <div className="flex items-center w-fit">
                                     <span className="pi pi-sign-out mx-2"></span>{" "}
                                     Sign out
                                 </div>

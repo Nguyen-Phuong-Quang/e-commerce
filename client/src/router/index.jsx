@@ -52,7 +52,7 @@ const router = createBrowserRouter([
                 element: <Order />,
             },
             {
-                path: route.ORDERHISTORY,
+                path: route.ORDER_HISTORY,
                 element: <OrderHistory />,
             },
         ],
