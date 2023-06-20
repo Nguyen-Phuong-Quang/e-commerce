@@ -18,6 +18,9 @@ export const StateProvider = ({ children }) => {
                         setCurrentUser(response.data.user);
                     }
                 } catch (err) {
+                    setCurrentUser({});
+                    localStorage.removeItem("TOKEN");
+                    localStorage.removeItem("REFRESH_TOKEN");
                     console.log(err);
                 }
             };
