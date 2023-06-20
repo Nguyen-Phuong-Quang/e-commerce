@@ -3,23 +3,28 @@ import axiosClient from "./axiosClient";
 const PREFIX = "/discount";
 
 const discountApi = {
-    getAllDiscount: () => {
+    getAllDiscount: (minOrderValue) => {
         const url = `${PREFIX}`;
-        return axiosClient.get(url);
-    },
-
-    getDiscountById: (id) => {
-        const url = `${PREFIX}/${id}`;
-        return axiosClient.get(url);
+        return axiosClient.get(url, {
+            params: {
+                minOrderValue,
+            },
+        });
     },
 
     addDiscount: (discount) => {
         const url = `${PREFIX}/generate`;
-        return axiosClient.post(url, discount, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
+        return axiosClient.post(url, discount);
+    },
+
+    deleteDiscount: (discountId) => {
+        const url = `${PREFIX}/delete/${discountId}`;
+        return axiosClient.delete(url);
+    },
+
+    verifyDiscount: (discountId) => {
+        const url = `${PREFIX}/verify/${discountId}`;
+        return axiosClient.post(url);
     },
 };
 

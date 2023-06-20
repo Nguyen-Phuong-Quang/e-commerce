@@ -2,18 +2,13 @@ const mongoose = require("mongoose");
 
 const DiscountSchema = new mongoose.Schema(
     {
-        code: {
-            type: String,
-            required: true,
-            unique: true,
-        },
         discountValue: {
             type: Number,
             required: true,
         },
         discountUnit: {
             type: String,
-            enum: ["percent", "dolar"],
+            enum: ["percent", "VND"],
         },
         validUntil: {
             type: Date,

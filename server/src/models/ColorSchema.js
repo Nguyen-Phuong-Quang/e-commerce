@@ -21,9 +21,9 @@ const ColorSchema = new mongoose.Schema(
 
 ColorSchema.index({ color: 1 }, { unique: true });
 
-ColorSchema.statics.isExisted = async function (productId, colorId) {
+ColorSchema.statics.isExisted = async function (productId, color) {
     return await this.findOne({
-        _id: colorId,
+        color,
         product: { $in: productId },
     });
 };

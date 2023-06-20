@@ -31,8 +31,8 @@ function Home() {
     const [colorOptions, setColorOptions] = useState([]);
     const [sizeOptions, setSizeOptions] = useState([]);
     const [productId, setProductId] = useState(null);
-    const { currentUser, setCurrentUser } = userStateContext();
     const [loadingAddToCart, setLoadingAddToCart] = useState(false);
+    const { currentUser, setCurrentUser } = userStateContext();
 
     const handleSaveAddCart = () => {
         // Kiểm tra xem người dùng đã đăng nhập hay chưa

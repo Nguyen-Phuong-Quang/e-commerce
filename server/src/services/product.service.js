@@ -67,8 +67,6 @@ exports.getAllProductsByQuery = async (req) => {
 
 //Lấy ra các prodcuts của người bán
 exports.getSellerProducts = async (req, userId) => {
-    if (!req.query.limit) req.query.limit = 20;
-
     req.query.seller = userId;
 
     const populate = [{ path: "category", select: "name" }];
@@ -120,7 +118,7 @@ exports.createProduct = async (body, files, sellerId) => {
         !colors ||
         !sizes ||
         !quantity ||
-        !mainImage|| 
+        !mainImage ||
         mainImage.length === 0 ||
         images.length === 0
     )
@@ -167,8 +165,11 @@ exports.createProduct = async (body, files, sellerId) => {
         mainImageId: mainImageResult.public_id,
     });
 
-    const colorsArray = colors.split(",").map((color) => color.trim());
-    const sizesArray = sizes.split(",").map((size) => size.trim());
+    // const colorsArray = colors.split(",").map((color) => color.trim());
+    // const sizesArray = sizes.split(",").map((size) => size.trim());
+
+    const colorsArray = colors;
+    const sizesArray = sizes;
 
     const colorsId = [];
     const sizesId = [];
@@ -245,7 +246,7 @@ exports.updateProductDetail = async (productId, sellerId, body) => {
             message: "This is not your product!",
             statusCode: 403,
         };
-
+        
     const newProduct = await ProductSchema.findByIdAndUpdate(productId, body, {
         new: true,
         runValidators: true,
@@ -571,7 +572,6 @@ exports.deleteSize = async (productId, sellerId, size) => {
         statusCode: 200,
     };
 };
-
 
 //lấy thống kê về các sản phẩm.
 exports.getProductStatics = async () => {
