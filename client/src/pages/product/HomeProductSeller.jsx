@@ -66,6 +66,27 @@ function HomeProductSeller() {
         debouncedValue,
     ]);
 
+    useEffect(() => {
+  const fetchCategoryOptions = async () => {
+    try {
+      const response = await categoryApi.query();
+        if (response.data.type === "SUCCESS") {
+          // const reponseCategories = response.data.categories;
+          // setCategoryOptions(reponseCategories.map(({ _id, name }) => ({ _id, name })));
+          // console.log("category option: ");
+          // console.log(categoryOptions);
+          const responseCategories = response.data.categories;
+        //   const newCategoryOptions = responseCategories.map(({ _id, name }) => ({ _id, name }));
+          setCategoryOptions(responseCategories);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  fetchCategoryOptions();
+}, []);
+
     const handleAdd = () => {
         setvisibleAddDialog(true);
     };
@@ -343,12 +364,14 @@ function HomeProductSeller() {
                         productId={productId}
                         visible={visibleEditDialog}
                         setVisible={setvisibleEditDialog}
+                        categoryOptions={categoryOptions}
                     />
                 )}
                 {visibleAddDialog && (
                     <DialogAddProduct
                         visible={visibleAddDialog}
                         setVisible={setvisibleAddDialog}
+                        categoryOptions={categoryOptions}
                     />
                 )}
 
