@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import cartApi from "../../api/cartApi";
-import { Button } from "primereact/button";
 import { toastContext } from "../../contexts/ToastProvider";
 import { ProgressSpinner } from "primereact/progressspinner";
 
@@ -111,7 +110,7 @@ const Cart = () => {
                             <table className="table-auto w-full">
                                 <thead>
                                     <tr>
-                                        <th className="px-4 py-2">Image</th>
+                                        <th className="px-4 py-2 w-32">Image</th>
                                         <th className="px-4 py-2">Name</th>
                                         <th className="px-4 py-2">Size</th>
                                         <th className="px-4 py-2">Color</th>
@@ -124,23 +123,23 @@ const Cart = () => {
                                     {items &&
                                         items.map((item) => (
                                             <tr className="" key={item._id}>
-                                                <td className="pl-8 py-2">
+                                                <td className="px-8 py-2">
                                                     <img
                                                         src={item.image}
                                                         alt={item.product.name}
                                                         className="h-16 w-16"
                                                     />
                                                 </td>
-                                                <td className="pl-8 py-2">
+                                                <td className="px-4 py-2 text-center">
                                                     {item.product.name}
                                                 </td>
-                                                <td className="pl-8 py-2">
+                                                <td className="px-4 py-2 text-center">
                                                     {item.size.size}
                                                 </td>
-                                                <td className="pl-8 py-2">
+                                                <td className="px-4 py-2 text-center">
                                                     {item.color.color}
                                                 </td>
-                                                <td className="pl-8 py-2">
+                                                <td className="pl-4 py-2 text-center">
                                                     <div className="flex items-center">
                                                         <button
                                                             className="px-2 py-1 border border-gray-300 rounded-md"
@@ -173,10 +172,10 @@ const Cart = () => {
                                                         </button>
                                                     </div>
                                                 </td>
-                                                <td className="pl-8 py-2">
+                                                <td className="px-4 py-2 text-center">
                                                     ${item.totalProductPrice}
                                                 </td>
-                                                <td className="pl-8 py-2">
+                                                <td className="px-4 py-2 text-center">
                                                     <button
                                                         className="text-red-500 hover:text-red-700"
                                                         onClick={() => {
@@ -194,12 +193,12 @@ const Cart = () => {
                                         ))}
                                 </tbody>
                             </table>
-                            <div className="flex justify-between items-center mt-4">
+                            <div className="flex justify-between items-center mt-4 ml-4">
                                 <span className="text-2xl ml-4">
                                     Total Price: ${cart.totalPrice}
                                 </span>
                                 <button
-                                    className="mr-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+                                    className="mr-10 px-4 py-4 bg-blue-500 text-white rounded hover:bg-blue-700"
                                     onClick={handlePlaceOrder}
                                 >
                                     Place Order
