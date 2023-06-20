@@ -190,21 +190,20 @@ function Home() {
 
                                         <div className="flex items-center justify-start mt-4 ">
                                             <span className="text-3xl font-bold text-red-700">
-                                                {" "}
-                                                <span className="text-sm text-red-500 pb-2">
-                                                    đ
-                                                </span>
                                                 {new Intl.NumberFormat().format(
                                                     product.priceAfterDiscount
                                                 )}
-                                            </span>
-                                            <span className="text-gray-400 text-sm line-through ml-2">
-                                                <span className="text-xs text-red-500">
+                                                <span className="text-sm text-red-500 pb-2">
                                                     đ
                                                 </span>
+                                            </span>
+                                            <span className="text-gray-400 text-sm line-through ml-2">
                                                 {new Intl.NumberFormat().format(
                                                     product.price
                                                 )}
+                                                <span className="text-xs text-red-500">
+                                                    đ
+                                                </span>
                                             </span>
                                         </div>
                                     </Card>
