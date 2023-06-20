@@ -10,6 +10,7 @@ import { Dialog } from "primereact/dialog";
 import DialogAddProduct from "./DialogAddProduct";
 import { userStateContext } from "../../contexts/StateProvider";
 import { toastContext } from "../../contexts/ToastProvider";
+import categoryApi from "../../api/categoryApi";
 
 function HomeProductSeller() {
     const [loading, setLoading] = useState(false);
@@ -25,6 +26,7 @@ function HomeProductSeller() {
     const { currentUser } = userStateContext();
     const [review, setReview] = useState([]);
     const [category, setCategory] = useState([]);
+    const [categoryOptions, setCategoryOptions] = useState([]);
 
     const { toastSuccess, toastError } = toastContext();
 
@@ -63,6 +65,27 @@ function HomeProductSeller() {
 
         fetchApi();
     }, [visibleAddDialog, visibleDeleteDialog, visibleEditDialog]);
+
+    useEffect(() => {
+  const fetchCategoryOptions = async () => {
+    try {
+      const response = await categoryApi.query();
+        if (response.data.type === "SUCCESS") {
+          // const reponseCategories = response.data.categories;
+          // setCategoryOptions(reponseCategories.map(({ _id, name }) => ({ _id, name })));
+          // console.log("category option: ");
+          // console.log(categoryOptions);
+          const responseCategories = response.data.categories;
+        //   const newCategoryOptions = responseCategories.map(({ _id, name }) => ({ _id, name }));
+          setCategoryOptions(responseCategories);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  fetchCategoryOptions();
+}, []);
 
     const handleAdd = () => {
         setvisibleAddDialog(true);
@@ -349,12 +372,14 @@ function HomeProductSeller() {
                         productId={productId}
                         visible={visibleEditDialog}
                         setVisible={setvisibleEditDialog}
+                        categoryOptions={categoryOptions}
                     />
                 )}
                 {visibleAddDialog && (
                     <DialogAddProduct
                         visible={visibleAddDialog}
                         setVisible={setvisibleAddDialog}
+                        categoryOptions={categoryOptions}
                     />
                 )}
 

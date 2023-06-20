@@ -12,11 +12,11 @@ import { toastContext } from "./../../contexts/ToastProvider";
 import { Dropdown } from "primereact/dropdown";
 import { ProgressSpinner } from "primereact/progressspinner";
 
-const DialogAddProduct = ({ visible, setVisible }) => {
+const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
   const [loading, setLoading] = useState(false);
   const [mainImage, setMainImage] = useState(undefined);
   const [preview, setPreview] = useState(undefined);
-  const [categoryOptions, setCategoryOptions] = useState([]);
+  // const [categoryOptions, setCategoryOptions] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [category, setCategory] = useState(null);
 
@@ -37,22 +37,6 @@ const DialogAddProduct = ({ visible, setVisible }) => {
 
   const colorOptions = ["red", "blue", "green", "yellow"];
   const sizeOptions = ["S", "M", "L", "XL"];
-
-  // fetch category ---------------------------------
-  useEffect(() => {
-    const fetchCategoryOptions = async () => {
-      try {
-        const response = await categoryApi.query();
-        if (response.data.type === "SUCCESS") {
-          setCategoryOptions(response.data.categories);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchCategoryOptions();
-  }, [visible]);
 
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.value);
@@ -103,7 +87,6 @@ const DialogAddProduct = ({ visible, setVisible }) => {
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
-    // const fileURLs = files.map((file) => URL.createObjectURL(file));
     setImages((prevImages) => [...prevImages, ...files]);
   };
 
@@ -123,20 +106,6 @@ const DialogAddProduct = ({ visible, setVisible }) => {
     // I've kept this example simple by using the first image instead of multiple
     setMainImage(e.target.files[0]);
   };
-
-  // const uploadHandler = (event) => {
-  //   const uploadedFiles = event.target.files;
-
-  //   const fileURLs = uploadedFiles.map((file) => URL.createObjectURL(file));
-
-  //   setImages((prevSubImages) => [...prevSubImages, ...fileURLs]);
-  // };
-  // const uploadHandler = (event) => {
-  //   const files = event.target.files;
-  //   const fileURLs = files.map((file) => URL.createObjectURL(file));
-  //   setUploadedFiles(files);
-  //   setImages(fileURLs);
-  // };
 
   const handleCancelClick = () => {
     setVisible(false);
@@ -366,18 +335,17 @@ const DialogAddProduct = ({ visible, setVisible }) => {
                   Colors
                 </label>
                 <MultiSelect
-                                    filter
-                                    id="colors"
-                                    name="colors"
-                                    options={colorOptions}
-                                    value={products.colors}
-                                    onChange={handleChange}
-                                    placeholder="Select Colors"
-                                    display="chip"
-                                    className="w-2/3 md:w-20rem  mr-4"
-                                    style={{ overflow: "auto" }}
-                                />
-
+                  filter
+                  id="colors"
+                  name="colors"
+                  options={colorOptions}
+                  value={products.colors}
+                  onChange={handleChange}
+                  placeholder="Select Colors"
+                  display="chip"
+                  className="w-2/3 md:w-20rem  mr-4"
+                  style={{ overflow: "auto" }}
+                />
               </div>
 
               <div className="mb-6 flex flex-row ">
