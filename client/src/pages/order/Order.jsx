@@ -124,7 +124,7 @@ const Order = () => {
                     </Dialog>
 
                     <div className="">
-                        <h2 className="m-5 pl-10 text-xl">Products</h2>
+                        <h2 className="m-2 pl-10 text-xl">Products</h2>
                         <table className="min-w-full">
                             <thead>
                                 <tr>
@@ -173,20 +173,18 @@ const Order = () => {
                             </tbody>
                         </table>
 
-                        <h2 className="m-5 pl-10 text-xl">
-                            Order Price: {cart.totalPrice}
-                        </h2>
-                        <h2 className="m-5 pl-10 text-xl">Tax Price: </h2>
-                        <h2 className="m-5 pl-10 text-xl">Shipping Price: </h2>
-                        <h2 className="m-5 pl-10 text-xl">Final Price: </h2>
-                        {/* <h2 className="m-5 pl-10 text-xl">Is Paid</h2>
-                        <h2 className="m-5 pl-10 text-xl">Paid At</h2>
-                        <h2 className="m-5 pl-10 text-xl">Is Delivery</h2>
-                        <h2 className="m-5 pl-10 text-xl">Status</h2> */}
+                        <h2 className="m-2 pl-10 text-xl">Order Price: {cart.totalPrice}</h2>
+                        <h2 className="m-2 pl-10 text-xl">Tax Price: </h2>
+                        <h2 className="m-2 pl-10 text-xl">Shipping Price: </h2>
+                        <h2 className="m-2 pl-10 text-xl">Final Price: </h2>
+                        {/* <h2 className="m-2 pl-10 text-xl">Is Paid</h2>
+                        <h2 className="m-2 pl-10 text-xl">Paid At</h2>
+                        <h2 className="m-2 pl-10 text-xl">Is Delivery</h2>
+                        <h2 className="m-2 pl-10 text-xl">Status</h2> */}
 
-                        {/* <h2 className="m-5 pl-10 text-xl">User</h2> */}
-                        {/* <div className="p-fluid m-5">
-                            <div className="p-field m-5">    
+                        {/* <h2 className="m-2 pl-10 text-xl">User</h2> */}
+                        {/* <div className="p-fluid m-2">
+                            <div className="p-field m-2">    
                                 <InputText
                                     id="user"
                                     // value={user}
@@ -196,10 +194,13 @@ const Order = () => {
                                 />
                             </div>
                         </div> */}
-                        <h2 className="m-5 pl-10 text-xl">Discount code</h2>
-                        <div className="p-fluid m-5">
-                            <div className="p-field m-5">
+
+                        <h2 className="ml-2 pl-10 text-xl">Discount code</h2>
+                        <div className="p-fluid">
+                            <div className="p-field ml-10 w-5/6">    
+
                                 <InputText
+                                    className='m-2 h-8'
                                     id="discountCode"
                                     onChange={(e) =>
                                         setDiscountCode(e.target.value)
@@ -207,13 +208,14 @@ const Order = () => {
                                 />
                             </div>
                         </div>
-                        <h2 className="m-5 pl-10 text-xl">Shipping Address</h2>
-                        <div className="p-fluid m-5">
-                            <div className="p-field m-5">
-                                <label htmlFor="address">Address</label>
+                        <h2 className="ml-2 pl-10 text-xl">Shipping Address</h2>
+                        <div className="p-fluid ml-10 w-5/6">
+                            <div className="p-field">
+                                <label htmlFor="address" className='ml-4'>Address</label>
                                 <InputText
                                     id="address"
                                     value={shippingAddress.address}
+                                    className='m-2 h-8'
                                     required
                                     onChange={(e) =>
                                         setShippingAddress((prevState) => ({
@@ -223,11 +225,12 @@ const Order = () => {
                                     }
                                 />
                             </div>
-                            <div className="p-field m-5">
-                                <label htmlFor="city">City</label>
+                            <div className="p-field">
+                                <label htmlFor="city" className='ml-4'>City</label>
                                 <InputText
                                     id="city"
                                     value={shippingAddress.city}
+                                    className='m-2 h-8'
                                     required
                                     onChange={(e) =>
                                         setShippingAddress((prevState) => ({
@@ -237,11 +240,12 @@ const Order = () => {
                                     }
                                 />
                             </div>
-                            <div className="p-field m-5">
-                                <label htmlFor="postalCode">Postal Code</label>
+                            <div className="p-field">
+                                <label htmlFor="postalCode" className='ml-4'>Postal Code</label>
                                 <InputText
                                     id="postalCode"
                                     value={shippingAddress.postalCode}
+                                    className='m-2 h-8'
                                     required
                                     onChange={(e) =>
                                         setShippingAddress((prevState) => ({
@@ -251,11 +255,12 @@ const Order = () => {
                                     }
                                 />
                             </div>
-                            <div className="p-field m-5">
-                                <label htmlFor="country">Country</label>
+                            <div className="p-field">
+                                <label htmlFor="country" className='ml-4'>Country</label>
                                 <InputText
                                     id="country"
                                     value={shippingAddress.country}
+                                    className='m-2 h-8'
                                     required
                                     onChange={(e) =>
                                         setShippingAddress((prevState) => ({
@@ -267,23 +272,29 @@ const Order = () => {
                             </div>
                         </div>
 
-                        <h2 className="m-5 pl-10 text-xl">Payment Method</h2>
-                        <div className="p-field m-5 pl-5">
+                        <h2 className="ml-2 pl-10 text-xl">Contact Phone</h2>
+                        <div className="p-field ml-5 pl-5">
+                            <InputText
+                                id="phone"
+                                className='m-2 h-8'
+                                value={phone}
+                                required
+                                onChange={(e) => setPhone(e.target.value)}
+                            />
+                        </div>
+                        
+                        <h2 className="m-2 pl-10 text-xl">Payment Method</h2>
+                        <div className="p-field">
                             <Dropdown
                                 id="paymentMethod"
                                 value={paymentMethod}
+                                className='ml-12 mb-2 w-1/4'
                                 options={[
-                                    { label: "Cash", value: "cash" },
-                                    { label: "Debit Card", value: "debitCard" },
-                                    {
-                                        label: "Credit Card",
-                                        value: "creditCard",
-                                    },
-                                    {
-                                        label: "Mobile Payment",
-                                        value: "mobilePayment",
-                                    },
-                                    { label: "E-Banking", value: "e-banking" },
+                                    { label: 'Cash', value: 'cash' },
+                                    { label: 'Debit Card', value: 'debitCard' },
+                                    { label: 'Credit Card', value: 'creditCard' },
+                                    { label: 'Mobile Payment', value: 'mobilePayment' },
+                                    { label: 'E-Banking', value: 'e-banking' },
                                 ]}
                                 onChange={(e) => setPaymentMethod(e.value)}
                                 placeholder="Select a payment method"
@@ -291,19 +302,10 @@ const Order = () => {
                             />
                         </div>
 
-                        <h2 className="m-5 pl-10 text-xl">Contact Phone</h2>
-                        <div className="p-field m-5 pl-5">
-                            <InputText
-                                id="phone"
-                                value={phone}
-                                required
-                                onChange={(e) => setPhone(e.target.value)}
-                            />
-                        </div>
-                        <div className="flex justify-center m-5">
+                        <div className='flex justify-center ml-2'>
                             <Button
                                 label="Confirm Order"
-                                className="p-button-success ml-10"
+                                className="p-button-success m-8"
                                 onClick={() => setShowConfirmationDialog(true)}
                             />
                         </div>
