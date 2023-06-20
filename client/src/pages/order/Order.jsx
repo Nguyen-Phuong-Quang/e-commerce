@@ -85,9 +85,12 @@ const Order = () => {
         navigate("/order-history");
     };
 
+    const shippingFee = 30000;
+    const total = totalPrice + 30000;
+
     return (
         <div className="order-container">
-            <h1 className="flex justify-center items-center text-4xl my-6">
+            <h1 className="flex justify-center items-center text-4xl m1/2 mt-6">
                 Order
             </h1>
 
@@ -123,8 +126,7 @@ const Order = () => {
                         <p>Are you sure you want to place this order?</p>
                     </Dialog>
 
-                    <div className="">
-                        <h2 className="m-2 pl-10 text-xl">Products</h2>
+                    <div className="mt-4">
                         <table className="min-w-full">
                             <thead>
                                 <tr>
@@ -141,8 +143,8 @@ const Order = () => {
                                     <tr
                                         key={item._id}
                                         className={`h-24 ${
-                                            index % 2 == 1
-                                                ? "bg-yellow-100"
+                                            index % 2 == 0
+                                                ? "bg-yellow-100/50"
                                                 : ""
                                         }`}
                                     >
@@ -166,17 +168,46 @@ const Order = () => {
                                             {item.totalProductQuantity}
                                         </td>
                                         <td className="px-4 h-full text-center">
-                                            {item.totalProductPrice}
+                                            {new Intl.NumberFormat().format(
+                                                item.totalProductPrice
+                                            )}
+                                            <span className="text-red-600">
+                                                đ
+                                            </span>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
 
-                        <h2 className="m-2 pl-10 text-xl">Order Price: {cart.totalPrice}</h2>
-                        <h2 className="m-2 pl-10 text-xl">Tax Price: </h2>
-                        <h2 className="m-2 pl-10 text-xl">Shipping Price: </h2>
-                        <h2 className="m-2 pl-10 text-xl">Final Price: </h2>
+                        <h2 className="m-2 pl-10 text-xl">
+                            <span className="font-semibold">Price</span>:{" "}
+                            <span className=" font-bold text-red-700">
+                                {new Intl.NumberFormat().format(totalPrice)}
+                                <span className="text-sm text-red-500 pb-2">
+                                    đ
+                                </span>
+                            </span>
+                        </h2>
+                        {/* <h2 className="m-2 pl-10 text-xl">Tax Price: </h2> */}
+                        <h2 className="m-2 pl-10 text-xl">
+                            <span className="font-semibold">Shipping fee</span>:{" "}
+                            <span className=" font-bold text-red-700">
+                                {new Intl.NumberFormat().format(shippingFee)}
+                                <span className="text-sm text-red-500 pb-2">
+                                    đ
+                                </span>
+                            </span>
+                        </h2>
+                        <h2 className="m-2 pl-10 text-xl">
+                            <span className="font-semibold">Total</span>:{" "}
+                            <span className=" font-bold text-red-700">
+                                {new Intl.NumberFormat().format(total)}
+                                <span className="text-sm text-red-500 pb-2">
+                                    đ
+                                </span>
+                            </span>
+                        </h2>
                         {/* <h2 className="m-2 pl-10 text-xl">Is Paid</h2>
                         <h2 className="m-2 pl-10 text-xl">Paid At</h2>
                         <h2 className="m-2 pl-10 text-xl">Is Delivery</h2>
@@ -195,114 +226,156 @@ const Order = () => {
                             </div>
                         </div> */}
 
-                        <h2 className="ml-2 pl-10 text-xl">Discount code</h2>
-                        <div className="p-fluid">
-                            <div className="p-field ml-10 w-5/6">    
-
+                        {/* <h2 className="flex m-2 pl-10 text-xl">
+                            Discount code
+                            <div className="p-field ml-60">
                                 <InputText
-                                    className='m-2 h-8'
+                                    className="h-8 w-96 ml-8"
                                     id="discountCode"
                                     onChange={(e) =>
                                         setDiscountCode(e.target.value)
                                     }
                                 />
                             </div>
-                        </div>
-                        <h2 className="ml-2 pl-10 text-xl">Shipping Address</h2>
-                        <div className="p-fluid ml-10 w-5/6">
-                            <div className="p-field">
-                                <label htmlFor="address" className='ml-4'>Address</label>
+                        </h2> */}
+
+                        <h2 className="flex m-2 pl-10 text-xl">
+                            <span className="text-xl font-semibold">
+                                Contact Phone
+                            </span>
+                            <div className="p-field ml-3">
                                 <InputText
-                                    id="address"
-                                    value={shippingAddress.address}
-                                    className='m-2 h-8'
+                                    id="phone"
+                                    className="h-8 w-96 ml-6"
+                                    value={phone}
                                     required
-                                    onChange={(e) =>
-                                        setShippingAddress((prevState) => ({
-                                            ...prevState,
-                                            address: e.target.value,
-                                        }))
-                                    }
+                                    onChange={(e) => setPhone(e.target.value)}
                                 />
                             </div>
-                            <div className="p-field">
-                                <label htmlFor="city" className='ml-4'>City</label>
-                                <InputText
-                                    id="city"
-                                    value={shippingAddress.city}
-                                    className='m-2 h-8'
-                                    required
-                                    onChange={(e) =>
-                                        setShippingAddress((prevState) => ({
-                                            ...prevState,
-                                            city: e.target.value,
-                                        }))
-                                    }
+                        </h2>
+                        <h2 className="flex ml-2 my-6 pl-10 text-xl items-center">
+                            <span className="font-semibold">
+                                Payment Method
+                            </span>
+                            <div className="p-field ml-2">
+                                <Dropdown
+                                    id="paymentMethod"
+                                    value={paymentMethod}
+                                    className="ml-1 w-60"
+                                    options={[
+                                        { label: "Cash", value: "cash" },
+                                        {
+                                            label: "Debit Card",
+                                            value: "debitCard",
+                                        },
+                                        {
+                                            label: "Credit Card",
+                                            value: "creditCard",
+                                        },
+                                        {
+                                            label: "Mobile Payment",
+                                            value: "mobilePayment",
+                                        },
+                                        {
+                                            label: "E-Banking",
+                                            value: "e-banking",
+                                        },
+                                    ]}
+                                    onChange={(e) => setPaymentMethod(e.value)}
+                                    placeholder="Select a payment method"
+                                    optionLabel="label"
                                 />
                             </div>
-                            <div className="p-field">
-                                <label htmlFor="postalCode" className='ml-4'>Postal Code</label>
-                                <InputText
-                                    id="postalCode"
-                                    value={shippingAddress.postalCode}
-                                    className='m-2 h-8'
-                                    required
-                                    onChange={(e) =>
-                                        setShippingAddress((prevState) => ({
-                                            ...prevState,
-                                            postalCode: e.target.value,
-                                        }))
-                                    }
-                                />
+                        </h2>
+                        <h2 className="ml-2 pl-10 text-xl font-semibold">
+                            Shipping Address
+                        </h2>
+                        <div className="p-fluid ml-10">
+                            <div className="p-field my-4 flex">
+                                <label htmlFor="address" className="ml-14 w-24">
+                                    Address
+                                </label>
+                                <div className="p-field w-96">
+                                    <InputText
+                                        id="address"
+                                        value={shippingAddress.address}
+                                        className="ml-6 h-8"
+                                        required
+                                        onChange={(e) =>
+                                            setShippingAddress((prevState) => ({
+                                                ...prevState,
+                                                address: e.target.value,
+                                            }))
+                                        }
+                                    />
+                                </div>
                             </div>
-                            <div className="p-field">
-                                <label htmlFor="country" className='ml-4'>Country</label>
-                                <InputText
-                                    id="country"
-                                    value={shippingAddress.country}
-                                    className='m-2 h-8'
-                                    required
-                                    onChange={(e) =>
-                                        setShippingAddress((prevState) => ({
-                                            ...prevState,
-                                            country: e.target.value,
-                                        }))
-                                    }
-                                />
+
+                            <div className="p-field my-4 flex">
+                                <label htmlFor="city" className="ml-14 w-24">
+                                    City
+                                </label>
+                                <div className="p-field w-96">
+                                    <InputText
+                                        id="city"
+                                        value={shippingAddress.city}
+                                        className="ml-6 h-8"
+                                        required
+                                        onChange={(e) =>
+                                            setShippingAddress((prevState) => ({
+                                                ...prevState,
+                                                city: e.target.value,
+                                            }))
+                                        }
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="p-field my-4 flex">
+                                <label
+                                    htmlFor="postalCode"
+                                    className="ml-14 w-24"
+                                >
+                                    Postal code
+                                </label>
+                                <div className="p-field w-96">
+                                    <InputText
+                                        id="postalCode"
+                                        value={shippingAddress.postalCode}
+                                        className="ml-6 h-8"
+                                        required
+                                        onChange={(e) =>
+                                            setShippingAddress((prevState) => ({
+                                                ...prevState,
+                                                postalCode: e.target.value,
+                                            }))
+                                        }
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="p-field my-4 flex">
+                                <label htmlFor="country" className="ml-14 w-24">
+                                    Country
+                                </label>
+                                <div className="p-field w-96">
+                                    <InputText
+                                        id="country"
+                                        value={shippingAddress.country}
+                                        className="ml-6 h-8"
+                                        required
+                                        onChange={(e) =>
+                                            setShippingAddress((prevState) => ({
+                                                ...prevState,
+                                                country: e.target.value,
+                                            }))
+                                        }
+                                    />
+                                </div>
                             </div>
                         </div>
 
-                        <h2 className="ml-2 pl-10 text-xl">Contact Phone</h2>
-                        <div className="p-field ml-5 pl-5">
-                            <InputText
-                                id="phone"
-                                className='m-2 h-8'
-                                value={phone}
-                                required
-                                onChange={(e) => setPhone(e.target.value)}
-                            />
-                        </div>
-                        
-                        <h2 className="m-2 pl-10 text-xl">Payment Method</h2>
-                        <div className="p-field">
-                            <Dropdown
-                                id="paymentMethod"
-                                value={paymentMethod}
-                                className='ml-12 mb-2 w-1/4'
-                                options={[
-                                    { label: 'Cash', value: 'cash' },
-                                    { label: 'Debit Card', value: 'debitCard' },
-                                    { label: 'Credit Card', value: 'creditCard' },
-                                    { label: 'Mobile Payment', value: 'mobilePayment' },
-                                    { label: 'E-Banking', value: 'e-banking' },
-                                ]}
-                                onChange={(e) => setPaymentMethod(e.value)}
-                                placeholder="Select a payment method"
-                                optionLabel="label"
-                            />
-                        </div>
-
-                        <div className='flex justify-center ml-2'>
+                        <div className="flex justify-center ml-2">
                             <Button
                                 label="Confirm Order"
                                 className="p-button-success m-8"
