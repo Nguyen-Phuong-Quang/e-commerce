@@ -8,7 +8,7 @@ const route = {
     PRODUCT: "/product",
     CART: "/cart",
     ORDER: "/order",
-    ORDERHISTORY: "/order-history",
+    ORDER_HISTORY: "/order-history",
     DISCOUNT:"/discount",
 };
 

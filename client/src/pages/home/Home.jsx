@@ -32,41 +32,42 @@ function Home() {
     const [sizeOptions, setSizeOptions] = useState([]);
     const [productId, setProductId] = useState(null);
     const { currentUser, setCurrentUser } = userStateContext();
+    const [loadingAddToCart, setLoadingAddToCart] = useState(false);
 
     const handleSaveAddCart = () => {
         // Kiểm tra xem người dùng đã đăng nhập hay chưa
         const isLoggedIn = currentUser;
         /* Kiểm tra logic đăng nhập ở đây */ false;
-    
-        if (isLoggedIn) {
-          console.log("Product added to cart:", selectedSize, selectedColor);
-          // call api add to cart
-          handleCallApiCart();
-        } else {
-          // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
-          navigate(route.SIGNIN);
-        }
-      };
 
-      const handleCallApiCart = async () => {
-        setLoading(true);
+        if (isLoggedIn) {
+            console.log("Product added to cart:", selectedSize, selectedColor);
+            // call api add to cart
+            handleCallApiCart();
+        } else {
+            // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+            navigate(route.SIGNIN);
+        }
+    };
+
+    const handleCallApiCart = async () => {
+        setLoadingAddToCart(true);
         try {
-          const formData = new FormData();
-          formData.append("quantity", quantity);
-          formData.append(" colorId", selectedColor._id);
-          formData.append("sizeId", selectedSize._id);
-          formData.append("productId", productId);
-          const response = await cartApi.add(formData);
-          if(response.data.type === "SUCCESS"){
-            toastSuccess(response.data.message);
-            setVisibleCart(false);
-          }
+            const formData = new FormData();
+            formData.append("quantity", quantity);
+            formData.append(" colorId", selectedColor._id);
+            formData.append("sizeId", selectedSize._id);
+            formData.append("productId", productId);
+            const response = await cartApi.add(formData);
+            if (response.data.type === "SUCCESS") {
+                toastSuccess(response.data.message);
+                setVisibleCart(false);
+            }
         } catch (err) {
             // toastError(err.response.data.message);
             console.log(err);
         }
-        setLoading(false);
-      };
+        setLoadingAddToCart(false);
+    };
 
     const handleAddCart = (id) => {
         console.log("handle add product to cart");
@@ -74,7 +75,7 @@ function Home() {
         setSizeOptions(products.find((item) => item._id === id)?.sizes);
         setColorOptions(products.find((item) => item._id === id)?.colors);
         setProductId(id);
-      };
+    };
 
     const onHideDialog = () => {
         setSelectedProduct(null);
@@ -165,8 +166,10 @@ function Home() {
                                                     </div>
                                                     <div className="flex justify-between text-[16px]">
                                                         <span
-                                                            onClick={
-                                                                () => handleAddCart(product._id)
+                                                            onClick={() =>
+                                                                handleAddCart(
+                                                                    product._id
+                                                                )
                                                             }
                                                             className="rounded-lg border-blue-600  px-2 py-2 font-bold  text-blue-600 hover:opacity-60 flex items-center hover:cursor-pointer"
                                                         >
@@ -214,84 +217,101 @@ function Home() {
                         )}
                     </>
                 )}
-                
-      {visibleCart && (
-        <Dialog
-          className="w-1/4 h-auto"
-          visible={visibleCart}
-          onHide={() => {
-            setVisibleCart(false);
-            setColorOptions([]);
-            setSizeOptions([]);
-            setSelectedColor(null);
-            setSelectedSize(null);
-          }}
-          header="Add to Cart"
-          footer={
-            <ProductDialogFooter
-              Cancel={() => {
-                setVisibleCart(false);
-                setColorOptions([]);
-                setSizeOptions([]);
-                setSelectedColor(null);
-                setSelectedSize(null);
-              }}
-              Save={handleSaveAddCart}
-            />
-          }
-        >
-          <div className="flex flex-col space-y-6">
-            <div>
-              <label
-                htmlFor="sizess"
-                className=" block text-gray-700 font-bold mb-4 text-left mr-4"
-              >
-                Size
-              </label>
-              <Dropdown
-                id="sizess"
-                value={selectedSize}
-                options={sizeOptions}
-                onChange={(e) => setSelectedSize(e.value)}
-                optionLabel="size"
-                className="w-full"
-                placeholder="Select Size"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="coloss"
-                className=" block text-gray-700 font-bold mb-4 text-left mr-4"
-              >
-                Color
-              </label>
-              <Dropdown
-                id="coloss"
-                value={selectedColor}
-                options={colorOptions}
-                onChange={(e) => setSelectedColor(e.value)}
-                className="w-full"
-                placeholder="Select color"
-                optionLabel="color"
-              />
-            </div>
-            <label
-              htmlFor="quantity"
-              className=" block text-gray-700 font-bold mb-4 text-left mr-4"
-            >
-              Quantity
-            </label>
-            <InputNumber
-              id="quantity"
-              name="quantity"
-              placeholder="Enter quantity"
-              value={quantity}
-              onValueChange={(e) => setQuantity(e.target.value)}
-              className=""
-            />
-          </div>
-        </Dialog>
-      )}
+
+                {visibleCart && (
+                    <Dialog
+                        className="w-1/4 h-auto"
+                        visible={visibleCart}
+                        onHide={() => {
+                            setVisibleCart(false);
+                            setColorOptions([]);
+                            setSizeOptions([]);
+                            setSelectedColor(null);
+                            setSelectedSize(null);
+                        }}
+                        header="Add to Cart"
+                        footer={
+                            loadingAddToCart ? (
+                                <></>
+                            ) : (
+                                <ProductDialogFooter
+                                    Cancel={() => {
+                                        setVisibleCart(false);
+                                        setColorOptions([]);
+                                        setSizeOptions([]);
+                                        setSelectedColor(null);
+                                        setSelectedSize(null);
+                                    }}
+                                    Save={handleSaveAddCart}
+                                />
+                            )
+                        }
+                    >
+                        {loadingAddToCart && (
+                            <div className="w-full flex justify-center items-center h-40">
+                                <ProgressSpinner />
+                            </div>
+                        )}
+                        {!loadingAddToCart && (
+                            <div className="flex flex-col space-y-6">
+                                <div>
+                                    <label
+                                        htmlFor="sizess"
+                                        className=" block text-gray-700 font-bold mb-4 text-left mr-4"
+                                    >
+                                        Size
+                                    </label>
+                                    <Dropdown
+                                        id="sizess"
+                                        value={selectedSize}
+                                        options={sizeOptions}
+                                        onChange={(e) =>
+                                            setSelectedSize(e.value)
+                                        }
+                                        optionLabel="size"
+                                        className="w-full"
+                                        placeholder="Select Size"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor="coloss"
+                                        className=" block text-gray-700 font-bold mb-4 text-left mr-4"
+                                    >
+                                        Color
+                                    </label>
+                                    <Dropdown
+                                        id="coloss"
+                                        value={selectedColor}
+                                        options={colorOptions}
+                                        onChange={(e) =>
+                                            setSelectedColor(e.value)
+                                        }
+                                        className="w-full"
+                                        placeholder="Select color"
+                                        optionLabel="color"
+                                    />
+                                </div>
+                                <label
+                                    htmlFor="quantity"
+                                    className=" block text-gray-700 font-bold mb-4 text-left mr-4"
+                                >
+                                    Quantity
+                                </label>
+                                <InputNumber
+                                    id="quantity"
+                                    name="quantity"
+                                    placeholder="Enter quantity"
+                                    value={quantity}
+                                    onValueChange={(e) =>
+                                        setQuantity(e.target.value)
+                                    }
+                                    className=""
+                                />
+                            </div>
+                        )}
+                    </Dialog>
+                )}
 
                 {visibleEvaluation && (
                     <EvaluationDialog
