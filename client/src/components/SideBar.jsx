@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { userStateContext } from "../contexts/StateProvider";
 import route from "../constants/route";
 
@@ -16,7 +16,7 @@ export default function SideBar() {
                 navigate(route.CATEGORY);
             },
         },
-        { separator: true},
+        { separator: true },
         {
             label: "Discount",
             command: () => {

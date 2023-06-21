@@ -22,8 +22,8 @@ function Home() {
     const [products, setProducts] = useState([]);
     const [category, setCategory] = useState([]);
     const [visibleEvaluation, setVisibleEvaluation] = useState(false);
-    const [selectedProduct, setSelectedProduct] = useState(null);
-    const [showDialog, setShowDialog] = useState(false);
+    // const [selectedProduct, setSelectedProduct] = useState(null);
+    // const [showDialog, setShowDialog] = useState(false);
     const { toastError, toastSuccess } = toastContext();
     const { searchText } = useSearchContext();
     const [visibleCart, setVisibleCart] = useState(false);

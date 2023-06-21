@@ -32,8 +32,6 @@ function HomeProductSeller() {
     const [category, setCategory] = useState([]);
     const [categoryOptions, setCategoryOptions] = useState([]);
 
-
-    
     const onProductSelect = (product) => {
         setSelectedProduct(product);
         setShowDialog(true);
@@ -313,17 +311,20 @@ function HomeProductSeller() {
                                 </div>
                                 <div className="flex items-center">
                                     <span className="text-3xl font-bold">
-                                        {" "}
+                                        {new Intl.NumberFormat().format(
+                                            selectedProduct.priceAfterDiscount
+                                        )}
                                         <span className="text-xs text-red-500">
                                             ₫
                                         </span>
-                                        {selectedProduct.priceAfterDiscount}
                                     </span>
                                     <span className="text-gray-400 text-sm line-through ml-2">
+                                        {new Intl.NumberFormat().format(
+                                            selectedProduct.price
+                                        )}
                                         <span className="text-xs text-red-500">
                                             ₫
                                         </span>
-                                        {selectedProduct.price}
                                     </span>
                                 </div>
                                 <div className="flex items-center">

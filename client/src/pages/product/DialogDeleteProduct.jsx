@@ -45,7 +45,7 @@ export default function DeleteDialog({ id, name, visible, setVisible
     return (
         <div className="card flex justify-content-center">
             <Dialog
-                header="Delete Video"
+                header="Delete product"
                 visible={visible}
                 style={{ width: "50vw", height: "30vh" }}
                 onHide={() => setVisible(false)}

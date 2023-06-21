@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { toastContext } from "../../contexts/ToastProvider";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { Route, useNavigate, useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import orderApi from "../../api/orderApi";
 import convertFirstLetterToUpperCase from "../../helpers/convertFirstLetterToUpperCase";
 import route from "../../constants/route";
