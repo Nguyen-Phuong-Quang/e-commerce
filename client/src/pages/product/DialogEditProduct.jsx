@@ -31,14 +31,11 @@ const DialogEditProduct = ({
         description: "",
         price: 0,
         priceAfterDiscount: 0,
-        colors: [],
-        sizes: [],
+        // colors: [],
+        // sizes: [],
         quantities: 0,
     });
     const navigate = useNavigate();
-
-    const colorOptions = ["red", "blue", "green", "yellow"];
-    const sizeOptions = ["S", "M", "L", "XL"];
 
     //get product by id
     useEffect(() => {
@@ -76,8 +73,8 @@ const DialogEditProduct = ({
         formData.append("description", products.description);
         formData.append("price", products.price);
         formData.append("priceAfterDiscount", products.priceAfterDiscount);
-        formData.append("colors", products.colors);
-        formData.append("sizes", products.sizes);
+        // formData.append("colors", products.colors);
+        // formData.append("sizes", products.sizes);
         formData.append("quantity", products.quantity);
 
         console.log("Form data: ");
@@ -304,7 +301,7 @@ const DialogEditProduct = ({
                         />
                     </div>
 
-                    <div className="mb-6 flex flex-row ">
+                    {/* <div className="mb-6 flex flex-row ">
                         <label
                             htmlFor="colors"
                             className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
@@ -323,9 +320,9 @@ const DialogEditProduct = ({
                             className="w-2/3 md:w-20rem  mr-4"
                             style={{ overflow: "auto" }}
                         />
-                    </div>
+                    </div> */}
 
-                    <div className="mb-6 flex flex-row ">
+                    {/* <div className="mb-6 flex flex-row ">
                         <label
                             htmlFor="sizes"
                             className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
@@ -345,7 +342,7 @@ const DialogEditProduct = ({
                             className="basis-2/3 md:w-20rem mr-4"
                             style={{ overflow: "auto" }}
                         />
-                    </div>
+                    </div> */}
 
                     <div className="mb-6 flex flex-row ">
                         <label
