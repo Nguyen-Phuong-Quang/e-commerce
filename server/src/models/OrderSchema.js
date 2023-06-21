@@ -80,7 +80,7 @@ const OrderSchema = new mongoose.Schema(
         shippingPrice: {
             type: Number,
             // required: true,
-            default: 0.0,
+            default: 30000.0,
         },
         phone: {
             type: String,
