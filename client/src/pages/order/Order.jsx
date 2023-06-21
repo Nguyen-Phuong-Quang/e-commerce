@@ -6,6 +6,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Dialog } from "primereact/dialog";
 import orderApi from "../../api/orderApi";
 import cartApi from "../../api/cartApi";
+import discountApi from "../../api/discountApi";
 import { toastContext } from "../../contexts/ToastProvider";
 import { ProgressSpinner } from "primereact/progressspinner";
 import convertFirstLetterToUpperCase from "../../helpers/convertFirstLetterToUpperCase";
@@ -21,12 +22,14 @@ const Order = () => {
     const [paymentMethod, setPaymentMethod] = useState("");
     const [phone, setPhone] = useState("");
     const [shippingPrice, setShippingPrice] = useState(30000);
+    const [discounts, setDiscounts] = useState([]);
 
     const [loading, setLoading] = useState(false);
     const { toastError, toastSuccess } = toastContext();
     const [cart, setCart] = useState({});
     const [items, setItems] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
+    const [discountSelected, setDiscountSelected] = useState({});
     const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
     const navigate = useNavigate();
 
@@ -45,9 +48,27 @@ const Order = () => {
         }
         setLoading(false);
     };
+        
+    const fetchDiscountCode = async (total) => {
+        setLoading(true);
+        try {
+            const response = await discountApi.getAllDiscount(total);
+            if (response.data.type === "SUCCESS") {
+                setDiscounts(response.data.discounts);
+                setTotalPrice(response.data.totalPrice);
+                console.log(response.data.discounts);
+            }
+        } catch (error) {
+            toastError(error.response.data.message);
+            console.log(error.response);
+        }
+        setLoading(false);
+    };
 
     useEffect(() => {
         fetchCartItems();
+        fetchDiscountCode();
+        console.log(total);
     }, []);
 
     const createOrder = async () => {
@@ -82,6 +103,7 @@ const Order = () => {
     };
 
     const total = totalPrice + shippingPrice;
+
 
     return (
         <div className="order-container">
@@ -210,6 +232,7 @@ const Order = () => {
                                 </span>
                             </span>
                         </h2>
+
                         <h2 className="flex m-2 pl-10 text-xl">
                             <span className="text-xl font-semibold">
                                 Contact Phone
@@ -224,6 +247,27 @@ const Order = () => {
                                 />
                             </div>
                         </h2>
+
+                        <h2 className="flex ml-2 my-6 pl-10 text-xl items-center">
+                            <span className="font-semibold">
+                                Discount
+                            </span>
+                            <div className="p-field ml-2">
+                                <Dropdown
+                                    id="discounts"
+                                    value={discountSelected}
+                                    className="ml-1 w-60"
+                                    options={discounts.map(discount => 
+                                        {return { label: `${discount.discountValue} ${discount.discountUnit}`, value: discount._id }}
+                                        )
+                                    }
+                                    onChange={(e) => setDiscountSelected(e.value)}
+                                    placeholder="Choose a discount"
+                                    optionLabel="label"
+                                />
+                            </div>
+                        </h2>
+
                         <h2 className="flex ml-2 my-6 pl-10 text-xl items-center">
                             <span className="font-semibold">
                                 Payment Method
@@ -258,6 +302,7 @@ const Order = () => {
                                 />
                             </div>
                         </h2>
+
                         <h2 className="ml-2 pl-10 text-xl font-semibold">
                             Shipping Address
                         </h2>
