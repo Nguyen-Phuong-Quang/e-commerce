@@ -16,6 +16,13 @@ export default function SideBar() {
                 navigate(route.CATEGORY);
             },
         },
+        { separator: true},
+        {
+            label: "Discount",
+            command: () => {
+                navigate(route.DISCOUNT);
+            },
+        },
     ];
 
     const sellerItems = [

@@ -48,7 +48,7 @@ exports.createOrder = async (body, user) => {
     // 4. Check user use discount code
     if (discountCode) {
         // Check discount code exist
-        const discount = await DiscountSchema.findOne({ code: discountCode });
+        const discount = await DiscountSchema.findById(discountCode);
 
         // If no discount found
         if (!discount)
