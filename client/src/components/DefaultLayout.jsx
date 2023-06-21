@@ -8,7 +8,7 @@ export default function DefaultLayout() {
     const { currentUser } = userStateContext();
 
     const main = () => {
-        if (currentUser.role === "CUSTOMER")
+        if (currentUser.role === "CUSTOMER" || !localStorage.getItem("TOKEN"))
             return (
                 <div className="w-full shadow-xl bg-white rounded-xl">
                     <Outlet />

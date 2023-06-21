@@ -1,3 +1,6 @@
-const convertFirstLetterToUpperCase = (str) => str.charAt(0).toUpperCase() + str.slice(1) 
+const convertFirstLetterToUpperCase = (str) => {
+    if (str) return str.charAt(0).toUpperCase() + str.slice(1);
+    else return str;
+};
 
-export default convertFirstLetterToUpperCase
+export default convertFirstLetterToUpperCase;

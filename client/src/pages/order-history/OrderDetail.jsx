@@ -1,51 +1,70 @@
 import React, { useState, useEffect } from "react";
 import { toastContext } from "../../contexts/ToastProvider";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { useNavigate, useParams } from "react-router-dom";
+import { Route, useNavigate, useParams } from "react-router-dom";
 import orderApi from "../../api/orderApi";
 import convertFirstLetterToUpperCase from "../../helpers/convertFirstLetterToUpperCase";
+import route from "../../constants/route";
 
+const paymentOption = [
+    { label: "Cash", value: "cash" },
+    {
+        label: "Debit Card",
+        value: "debitCard",
+    },
+    {
+        label: "Credit Card",
+        value: "creditCard",
+    },
+    {
+        label: "Mobile Payment",
+        value: "mobilePayment",
+    },
+    {
+        label: "E-Banking",
+        value: "e-banking",
+    },
+];
+
+const formatDate = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
 
 const OrderDetail = () => {
-
     const { id } = useParams();
-    const [order,setOrder] = useState({});
-    const [products,setProducts] = useState([])
-    const [shippingAddress,setShippingAddress] = useState("");
-
+    const [order, setOrder] = useState({});
+    const [products, setProducts] = useState([]);
+    const [shippingAddress, setShippingAddress] = useState("");
     const { toastError } = toastContext();
-    const [loading,setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-    const formatDate = (dateTimeString) => {
-        const date = new Date(dateTimeString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        const hours = String(date.getHours()).padStart(2, "0");
-        const minutes = String(date.getMinutes()).padStart(2, "0");
-
-        return `${year}-${month}-${day} ${hours}:${minutes}`;
-    };
-
-    
     useEffect(() => {
         fetchDetail();
-    },[]);
+    }, []);
 
     const fetchDetail = async () => {
         setLoading(true);
         try {
-        const response = await orderApi.getById(id);
-        if(response.data.type === "SUCCESS"){
-            setOrder(response.data.order);
-            setProducts(response.data.order.products);
-            setShippingAddress(response.data.order.shippingAddress);
-        }
-        } catch(error){
+            const response = await orderApi.getById(id);
+            if (response.data.type === "SUCCESS") {
+                setOrder(response.data.order);
+                setProducts(response.data.order.products);
+                setShippingAddress(response.data.order.shippingAddress);
+            }
+        } catch (error) {
             toastError(error.response.data.message);
         }
         setLoading(false);
-    } 
+    };
 
     return (
         <div className="order-container">
@@ -77,17 +96,18 @@ const OrderDetail = () => {
                                 {products.map((item, index) => (
                                     <tr
                                         key={item._id}
-                                        className={`h-24 ${
-                                            index % 2 == 0
-                                                ? "bg-yellow-100/50"
-                                                : ""
-                                        }`}
+                                        className={`h-24 border-t last:border-b hover:bg-cyan-400/40 hover:cursor-pointer`}
+                                        onClick={() =>
+                                            navigate(
+                                                `${route.DETAIL}/${item.product._id}`
+                                            )
+                                        }
                                     >
                                         <td className="flex justify-center pt-2">
                                             <img
                                                 src={item.image}
                                                 alt={item.product.name}
-                                                className="w-20 h-20 rounded-lg"
+                                                className="w-20 h-20 rounded-lg object-cover"
                                             />
                                         </td>
                                         <td className="px-4 h-full text-center ">
@@ -97,7 +117,9 @@ const OrderDetail = () => {
                                             {item.size.size.toUpperCase()}
                                         </td>
                                         <td className="px-4 h-full text-center">
-                                            {convertFirstLetterToUpperCase(item.color.color)}
+                                            {convertFirstLetterToUpperCase(
+                                                item.color.color
+                                            )}
                                         </td>
                                         <td className="px-4 h-full text-center">
                                             {item.totalProductQuantity}
@@ -118,17 +140,24 @@ const OrderDetail = () => {
                         <h2 className="m-2 pl-10 text-xl">
                             <span className="font-semibold">Price</span>:{" "}
                             <span className=" font-bold text-red-700">
-                                {new Intl.NumberFormat().format(order.orderPrice)}
+                                {new Intl.NumberFormat().format(
+                                    order.orderPrice
+                                )}
                                 <span className="text-sm text-red-500 pb-2">
                                     đ
                                 </span>
                             </span>
                         </h2>
-                        
+
                         <h2 className="m-2 pl-10 text-xl">
-                            <span className="font-semibold">Shipping price</span>:{" "}
+                            <span className="font-semibold">
+                                Shipping price
+                            </span>
+                            :{" "}
                             <span className=" font-bold text-red-700">
-                                {new Intl.NumberFormat().format(order.shippingPrice)}
+                                {new Intl.NumberFormat().format(
+                                    order.shippingPrice
+                                )}
                                 <span className="text-sm text-red-500 pb-2">
                                     đ
                                 </span>
@@ -144,11 +173,13 @@ const OrderDetail = () => {
                                 </span>
                             </span>
                         </h2> */}
-                        
+
                         <h2 className="m-2 pl-10 text-xl">
                             <span className="font-semibold">Total</span>:{" "}
                             <span className=" font-bold text-red-700">
-                                {new Intl.NumberFormat().format(order.totalPrice)}
+                                {new Intl.NumberFormat().format(
+                                    order.totalPrice
+                                )}
                                 <span className="text-sm text-red-500 pb-2">
                                     đ
                                 </span>
@@ -156,7 +187,8 @@ const OrderDetail = () => {
                         </h2>
 
                         <h2 className="m-2 pl-10 text-xl">
-                            <span className="font-semibold">Contact Phone</span>:{" "}
+                            <span className="font-semibold">Contact Phone</span>
+                            :{" "}
                             <span className=" font-bold text-red-700">
                                 {order.phone}
                             </span>
@@ -196,21 +228,29 @@ const OrderDetail = () => {
                                 {order.status}
                             </span>
                         </h2>
-                        
+
                         <h2 className="m-2 pl-10 text-xl">
                             <span className="font-semibold">Time</span>:{" "}
                             <span className=" font-bold text-red-700">
                                 {formatDate(order.createdAt)}
                             </span>
                         </h2>
-                        
+
                         <h2 className="m-2 pl-10 text-xl">
-                            <span className="font-semibold">Payment Method</span>:{" "}
+                            <span className="font-semibold">
+                                Payment Method
+                            </span>
+                            :{" "}
                             <span className=" font-bold text-red-700">
-                                {order.paymentMethod && order.paymentMethod.toUpperCase()}
+                                {order.paymentMethod &&
+                                    paymentOption.find(
+                                        (option) =>
+                                            option.value === order.paymentMethod
+                                    ).label}
+                                {/* {order.paymentMethod &&
+                                    order.paymentMethod.toUpperCase()} */}
                             </span>
                         </h2>
-                        
                     </div>
                 </>
             )}

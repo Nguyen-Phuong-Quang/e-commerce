@@ -6,7 +6,7 @@ import { Card } from "primereact/card";
 import EvaluationDialog from "../product/DialogEvaluationPage";
 import { userStateContext } from "../../contexts/StateProvider";
 import { toastContext } from "./../../contexts/ToastProvider";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useDebounce from "../../hooks/useDebounce";
 import { useSearchContext } from "../../contexts/SearchProvider";
 import { Dialog } from "primereact/dialog";
@@ -15,6 +15,7 @@ import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
 import cartApi from "../../api/cartApi";
 import convertFirstLetterToUpperCase from "../../helpers/convertFirstLetterToUpperCase";
+import route from "../../constants/route";
 
 function Home() {
     const [loading, setLoading] = useState(false);
@@ -33,7 +34,8 @@ function Home() {
     const [sizeOptions, setSizeOptions] = useState([]);
     const [productId, setProductId] = useState(null);
     const [loadingAddToCart, setLoadingAddToCart] = useState(false);
-    const { currentUser, setCurrentUser } = userStateContext();
+    const { currentUser } = userStateContext();
+    const navigate = useNavigate();
 
     const handleSaveAddCart = () => {
         // Kiểm tra xem người dùng đã đăng nhập hay chưa
@@ -48,6 +50,31 @@ function Home() {
             navigate(route.SIGNIN);
         }
     };
+    const debouncedValue = useDebounce(searchText, 500);
+
+    const fetchApi = async () => {
+        setLoading(true);
+        try {
+            const response = await productApi.getAllProduct(debouncedValue);
+            if (response.data.type === "SUCCESS") {
+                setProducts(response.data.products);
+            }
+
+            if (response.data.products.length < 1) {
+                console.log("No product foundddd!");
+            }
+            // setProducts(dataTrain);
+        } catch (err) {
+            setProducts([]);
+            // toastError(err.response.data.message);
+            console.log(err);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        fetchApi();
+    }, [debouncedValue]);
 
     const handleCallApiCart = async () => {
         setLoadingAddToCart(true);
@@ -61,6 +88,7 @@ function Home() {
             if (response.data.type === "SUCCESS") {
                 toastSuccess(response.data.message);
                 setVisibleCart(false);
+                fetchApi();
             }
         } catch (err) {
             toastError(err.response.data.message);
@@ -70,42 +98,17 @@ function Home() {
     };
 
     const handleAddCart = (id) => {
-        setVisibleCart(true);
+        if (!localStorage.getItem("TOKEN")) navigate(route.SIGNIN);
         setSizeOptions(products.find((item) => item._id === id)?.sizes);
         setColorOptions(products.find((item) => item._id === id)?.colors);
         setProductId(id);
+        setVisibleCart(true);
     };
 
     const onHideDialog = () => {
         setSelectedProduct(null);
         setShowDialog(false);
     };
-
-    const debouncedValue = useDebounce(searchText, 500);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            setLoading(true);
-            try {
-                const response = await productApi.getAllProduct(debouncedValue);
-                if (response.data.type === "SUCCESS") {
-                    setProducts(response.data.products);
-                }
-
-                if (response.data.products.length < 1) {
-                    console.log("No product foundddd!");
-                }
-                // setProducts(dataTrain);
-            } catch (err) {
-                setProducts([]);
-                // toastError(err.response.data.message);
-                console.log(err);
-            }
-            setLoading(false);
-        };
-
-        fetchApi();
-    }, [debouncedValue, loadingAddToCart]);
 
     useEffect(() => {
         const fetchCategory = async () => {
@@ -155,7 +158,7 @@ function Home() {
                                                 <div className="flex flex-row justify-between">
                                                     <div className="flex justify-between text-[16px]">
                                                         <Link
-                                                            to={`/detail/${product._id}`}
+                                                            to={`${route.DETAIL}/${product._id}`}
                                                             className="rounded-lg border-blue-600  px-2 py-2 font-bold  text-blue-600 hover:opacity-60 flex items-center"
                                                         >
                                                             <i className="pi pi-eye mr-2" />{" "}
