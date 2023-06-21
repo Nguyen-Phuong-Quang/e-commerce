@@ -103,7 +103,7 @@ export default function MenuBar() {
                         <div className="absolute right-0 invisible group-hover:visible pt-2 shadow-md rounded-lg bg-transparent bg-white w-48">
                             <div className="border-b-2 border-x py-2 hover:bg-gray-200 border-t-2 rounded-t-lg overflow-hidden border-transparent">
                                 <Link
-                                    className="flex items-center w-fit"
+                                    className="flex items-center w-full h-full"
                                     to={route.PROFILE}
                                 >
                                     <span className="pi pi-user mx-2"></span>{" "}
@@ -113,7 +113,7 @@ export default function MenuBar() {
                             {currentUser.role === "CUSTOMER" && (
                                 <div className="border-x py-2 hover:bg-gray-200 overflow-hidden">
                                     <Link
-                                        className="flex items-center w-fit"
+                                        className="flex items-center w-full h-full"
                                         to={route.ORDER_HISTORY}
                                     >
                                         <span className="pi pi-book mx-2"></span>{" "}
@@ -127,7 +127,7 @@ export default function MenuBar() {
                                     setVisibleChangePassword(true);
                                 }}
                             >
-                                <div className="flex items-center w-fit">
+                                <div className="flex items-center w-full h-full">
                                     <span className="pi pi-key mx-2"></span>{" "}
                                     Change password
                                 </div>
@@ -136,7 +136,7 @@ export default function MenuBar() {
                                 className="border-b-2 border-x py-2 hover:bg-gray-200 rounded-b-lg overflow-hidden"
                                 onClick={() => handleSignOut()}
                             >
-                                <div className="flex items-center w-fit">
+                                <div className="flex items-center w-full h-full">
                                     <span className="pi pi-sign-out mx-2"></span>{" "}
                                     Sign out
                                 </div>
