@@ -13,6 +13,7 @@ import useDebounce from "../../hooks/useDebounce";
 import { userStateContext } from "../../contexts/StateProvider";
 import { toastContext } from "../../contexts/ToastProvider";
 import categoryApi from "../../api/categoryApi";
+import DialogUpdateColorSize from "./DialogUpdateColorSize";
 
 function HomeProductSeller() {
     const [loading, setLoading] = useState(false);
@@ -21,6 +22,7 @@ function HomeProductSeller() {
     const [visibleEditDialog, setvisibleEditDialog] = useState(false);
     const [visibleAddDialog, setvisibleAddDialog] = useState(false);
     const [visibleEvaluation, setVisibleEvaluation] = useState(false);
+    const [visibleUpdateSizeColor, setVisibleUpdateSizeColor] = useState(false);
     const [productId, setProductId] = useState(null);
     const [productName, setProductName] = useState("");
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -29,6 +31,7 @@ function HomeProductSeller() {
     const [review, setReview] = useState([]);
     const [category, setCategory] = useState([]);
     const [categoryOptions, setCategoryOptions] = useState([]);
+
 
     
     const onProductSelect = (product) => {
@@ -183,6 +186,23 @@ function HomeProductSeller() {
                                                         }}
                                                     >
                                                         <i className="pi pi-info-circle" />
+                                                    </div>
+                                                    {/* view update size and color */}
+                                                    <div
+                                                        className="text-red-500 cursor-pointer px-2 py-1 rounded border border-transparent hover:border-red-500 flex justify-center items-center"
+                                                        onClick={() => {
+                                                            setProductId(
+                                                                product._id
+                                                            );
+                                                            setProductName(
+                                                                product.title
+                                                            );
+                                                            setVisibleUpdateSizeColor(
+                                                                true
+                                                            );
+                                                        }}
+                                                    >
+                                                        <i className="pi pi-info" />
                                                     </div>
                                                     <div
                                                         className="text-red-500 cursor-pointer px-2 py-1 rounded border border-transparent hover:border-red-500 flex justify-center items-center"
@@ -386,6 +406,14 @@ function HomeProductSeller() {
                     <EvaluationDialog
                         visible={visibleEvaluation}
                         setVisible={setVisibleEvaluation}
+                        productId={productId}
+                        // onHide={onHideDialog}
+                    />
+                )}
+                {visibleUpdateSizeColor && (
+                    <DialogUpdateColorSize
+                        visible={visibleUpdateSizeColor}
+                        setVisible={setVisibleUpdateSizeColor}
                         productId={productId}
                         // onHide={onHideDialog}
                     />
