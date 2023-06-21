@@ -10,6 +10,7 @@ const route = {
     ORDER: "/order",
     ORDER_HISTORY: "/order-history",
     DISCOUNT:"/discount",
+    DETAIL: "/detail"
 };
 
 export default route;

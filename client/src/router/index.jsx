@@ -25,8 +25,8 @@ const router = createBrowserRouter([
                 element: <Home />,
             },
             {
-                path: '/detail/:id',
-                element : <Detail/>
+                path: `${route.DETAIL}/:id`,
+                element: <Detail />,
             },
             {
                 path: route.PRODUCT,
@@ -46,7 +46,7 @@ const router = createBrowserRouter([
             },
             {
                 path: route.DISCOUNT,
-                element: <Discountpage/>,
+                element: <Discountpage />,
             },
             {
                 path: route.ORDER,
