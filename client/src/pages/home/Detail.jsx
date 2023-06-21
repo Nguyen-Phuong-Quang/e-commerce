@@ -57,7 +57,7 @@ export default function Detail() {
                 setVisibleCart(false);
             }
         } catch (err) {
-            // toastError(err.response.data.message);
+            toastError(err.response.data.message);
             console.log(err);
         }
         setLoadingAddToCart(false);
@@ -89,8 +89,6 @@ export default function Detail() {
                     setData(productData);
                     setColorOptions(productData.colors);
                     setSizeOptions(productData.sizes);
-                    console.log("color options: ");
-                    console.log(colorOptions);
 
                     // toastSuccess(response.data.message);
                 }
@@ -205,17 +203,16 @@ export default function Detail() {
                             {/* price  */}
                             <div className="flex items-center ">
                                 <span className="text-3xl font-bold">
-                                    {" "}
+                                    {data.priceAfterDiscount}
                                     <span className="text-xs text-red-500">
                                         ₫
                                     </span>
-                                    {data.priceAfterDiscount}
                                 </span>
                                 <span className="text-gray-400 text-sm line-through ml-2">
+                                    {data.price}
                                     <span className="text-xs text-red-500">
                                         ₫
                                     </span>
-                                    {data.price}
                                 </span>
                             </div>
                             {/* colorsss  */}
@@ -255,8 +252,8 @@ export default function Detail() {
                             </div>
                             {/* quantity   */}
                             <div className="flex items-center space-x-2 pt-2 mb-8">
-                                <span className="font-semibold">Quantity</span>
-                                <span>{data.quantity}</span>
+                                <span className="font-semibold">Quantity:</span>
+                                <span className="text-blue-700">{data.quantity}</span>
                             </div>
                         </div>
                     </div>

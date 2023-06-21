@@ -108,8 +108,8 @@ exports.deleteItem = async (req, res, next) => {
             await cartService.deleteItem(
                 req.user.email,
                 req.params.productId,
-                req.params.sizeId,
-                req.params.colorId
+                req.query.size,
+                req.query.color
             );
 
         if (type === statusType.error)

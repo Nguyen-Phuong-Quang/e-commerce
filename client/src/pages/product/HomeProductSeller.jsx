@@ -59,7 +59,7 @@ function HomeProductSeller() {
                 }
                 // setProducts(dataTrain);
             } catch (err) {
-                console.log(err);
+                // console.log(err);
                 setProducts([]);
             }
             setLoading(false);

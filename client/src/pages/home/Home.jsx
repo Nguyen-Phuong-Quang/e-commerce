@@ -14,6 +14,7 @@ import ProductDialogFooter from "../product/Components/ProductDialogFooter";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
 import cartApi from "../../api/cartApi";
+import convertFirstLetterToUpperCase from "../../helpers/convertFirstLetterToUpperCase";
 
 function Home() {
     const [loading, setLoading] = useState(false);
@@ -40,7 +41,6 @@ function Home() {
         /* Kiểm tra logic đăng nhập ở đây */ false;
 
         if (isLoggedIn) {
-            console.log("Product added to cart:", selectedSize, selectedColor);
             // call api add to cart
             handleCallApiCart();
         } else {
@@ -54,7 +54,7 @@ function Home() {
         try {
             const formData = new FormData();
             formData.append("quantity", quantity);
-            formData.append(" colorId", selectedColor._id);
+            formData.append("colorId", selectedColor._id);
             formData.append("sizeId", selectedSize._id);
             formData.append("productId", productId);
             const response = await cartApi.add(formData);
@@ -63,14 +63,13 @@ function Home() {
                 setVisibleCart(false);
             }
         } catch (err) {
-            // toastError(err.response.data.message);
+            toastError(err.response.data.message);
             console.log(err);
         }
         setLoadingAddToCart(false);
     };
 
     const handleAddCart = (id) => {
-        console.log("handle add product to cart");
         setVisibleCart(true);
         setSizeOptions(products.find((item) => item._id === id)?.sizes);
         setColorOptions(products.find((item) => item._id === id)?.colors);
@@ -90,7 +89,6 @@ function Home() {
             try {
                 const response = await productApi.getAllProduct(debouncedValue);
                 if (response.data.type === "SUCCESS") {
-                    const dataProduct = response.data.products;
                     setProducts(response.data.products);
                 }
 
@@ -107,7 +105,7 @@ function Home() {
         };
 
         fetchApi();
-    }, [debouncedValue]);
+    }, [debouncedValue, loadingAddToCart]);
 
     useEffect(() => {
         const fetchCategory = async () => {
@@ -189,6 +187,12 @@ function Home() {
                                         </div>
 
                                         <div className="flex items-center justify-start mt-4 ">
+                                            In stock:
+                                            <span className="text-blue-600 ml-2">
+                                                {product.quantity}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-start mt-4 ">
                                             <span className="text-3xl font-bold text-red-700">
                                                 {new Intl.NumberFormat().format(
                                                     product.priceAfterDiscount
@@ -255,15 +259,18 @@ function Home() {
                             <div className="flex flex-col space-y-6">
                                 <div>
                                     <label
-                                        htmlFor="sizess"
+                                        htmlFor="sizes"
                                         className=" block text-gray-700 font-bold mb-4 text-left mr-4"
                                     >
                                         Size
                                     </label>
                                     <Dropdown
-                                        id="sizess"
+                                        id="sizes"
                                         value={selectedSize}
-                                        options={sizeOptions}
+                                        options={sizeOptions.map((item) => {
+                                            item.size = item.size.toUpperCase();
+                                            return item;
+                                        })}
                                         onChange={(e) =>
                                             setSelectedSize(e.value)
                                         }
@@ -282,7 +289,13 @@ function Home() {
                                     <Dropdown
                                         id="coloss"
                                         value={selectedColor}
-                                        options={colorOptions}
+                                        options={colorOptions.map((item) => {
+                                            item.color =
+                                                convertFirstLetterToUpperCase(
+                                                    item.color
+                                                );
+                                            return item;
+                                        })}
                                         onChange={(e) =>
                                             setSelectedColor(e.value)
                                         }

@@ -15,9 +15,14 @@ const cartApi = {
         const url = `${PREFIX}`;
         return axiosClient.delete(url);
     },
-    deleteItemInCart: (productId, sizeId, colorId) => {
-        const url = `${PREFIX}/${productId}/${sizeId}/${colorId}`;
-        return axiosClient.delete(url);
+    deleteItemInCart: (productId, size, color) => {
+        const url = `${PREFIX}/${productId}`;
+        return axiosClient.delete(url, {
+            params: {
+                size,
+                color,
+            },
+        });
     },
 
     decreaseOne: (productId, sizeId, colorId) => {

@@ -32,6 +32,13 @@ exports.addItemToCart = async (email, productId, quantity, colorId, sizeId) => {
             statusCode: 404,
         };
 
+    if (product.isOutOfStock)
+        return {
+            type: statusType.error,
+            message: "Out of stock!",
+            statusCode: 400,
+        };
+
     if (quantity > product.quantity)
         return {
             type: statusType.error,
@@ -117,6 +124,8 @@ exports.addItemToCart = async (email, productId, quantity, colorId, sizeId) => {
     }
     product.quantity -= quantity;
 
+    if (product.quantity <= 0) product.isOutOfStock = true;
+
     await product.save();
     await cart.save();
 
@@ -182,7 +191,7 @@ exports.deleteCart = async (email) => {
  * @param   { String } Size - Size
  * @returns { object<type|message|statusCode|cart> }
  */
-exports.deleteItem = async (email, productId, sizeId, colorId) => {
+exports.deleteItem = async (email, productId, size, color) => {
     const cart = await CartSchema.findOne({ email });
 
     // 1. Check cart if not exist
@@ -193,32 +202,32 @@ exports.deleteItem = async (email, productId, sizeId, colorId) => {
             statusCode: 404,
         };
 
-    // const colorDoc = await ColorSchema.isExisted(productId, colorId);
+    const colorDoc = await ColorSchema.isExisted(productId, color);
 
-    // // 2. Check product color not exist
-    // if (!colorDoc)
-    //     return {
-    //         type: statusType.error,
-    //         message: "This color of product does not exist!",
-    //         statusCode: 404,
-    //     };
+    // 2. Check product color not exist
+    if (!colorDoc)
+        return {
+            type: statusType.error,
+            message: "This color of product does not exist!",
+            statusCode: 404,
+        };
 
-    // const sizeDoc = await SizeSchema.isExisted(productId, sizeId);
+    const sizeDoc = await SizeSchema.isExisted(productId, size);
 
-    // // 3. Check product size not exist
-    // if (!sizeDoc)
-    //     return {
-    //         type: statusType.error,
-    //         message: "This size of product does not exist!",
-    //         statusCode: 404,
-    //     };
+    // 3. Check product size not exist
+    if (!sizeDoc)
+        return {
+            type: statusType.error,
+            message: "This size of product does not exist!",
+            statusCode: 404,
+        };
 
     // 4. Find product that match color and size
     const product = cart.items.find((item) => {
         return (
             item.product._id.toString() === productId.toString() &&
-            item.color._id.toString() === colorId.toString() &&
-            item.size._id.toString() === sizeId.toString()
+            item.color.color.toString() === color.toString() &&
+            item.size.size.toString() === size.toString()
         );
     });
 
@@ -229,6 +238,10 @@ exports.deleteItem = async (email, productId, sizeId, colorId) => {
             message: "This product does not exist in your cart!",
             statusCode: 404,
         };
+
+    const productDoc = await ProductSchema.findById(productId);
+    productDoc.quantity += product.totalProductQuantity;
+    await productDoc.save();
 
     // 6. Update cart (delete item)
     const newCart = await cart.updateOne({
@@ -280,7 +293,7 @@ exports.increaseOne = async (email, productId, colorId, sizeId) => {
             statusCode: 404,
         };
 
-    if (product.quantity <= 0)
+    if (product.isOutOfStock)
         return {
             type: statusType.error,
             message: "Out of stock!",
@@ -322,6 +335,7 @@ exports.increaseOne = async (email, productId, colorId, sizeId) => {
         cart.items[indexProductExistedInCart].totalProductPrice +=
             product.priceAfterDiscount;
         product.quantity -= 1;
+        if (product.quantity <= 0) product.isOutOfStock = true;
         await product.save();
         await cart.save();
 
@@ -414,6 +428,7 @@ exports.decreaseOne = async (email, productId, colorId, sizeId) => {
         }
 
         product.quantity += 1;
+        product.isOutOfStock = false;
         await product.save();
         await cart.save();
 

@@ -3,6 +3,7 @@ import { toastContext } from "../../contexts/ToastProvider";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { useNavigate, useParams } from "react-router-dom";
 import orderApi from "../../api/orderApi";
+import convertFirstLetterToUpperCase from "../../helpers/convertFirstLetterToUpperCase";
 
 
 const OrderDetail = () => {
@@ -25,6 +26,7 @@ const OrderDetail = () => {
 
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     };
+
     
     useEffect(() => {
         fetchDetail();
@@ -92,10 +94,10 @@ const OrderDetail = () => {
                                             {item.product.name}
                                         </td>
                                         <td className="px-4 h-full text-center">
-                                            {item.size.size}
+                                            {item.size.size.toUpperCase()}
                                         </td>
                                         <td className="px-4 h-full text-center">
-                                            {item.color.color}
+                                            {convertFirstLetterToUpperCase(item.color.color)}
                                         </td>
                                         <td className="px-4 h-full text-center">
                                             {item.totalProductQuantity}
@@ -205,7 +207,7 @@ const OrderDetail = () => {
                         <h2 className="m-2 pl-10 text-xl">
                             <span className="font-semibold">Payment Method</span>:{" "}
                             <span className=" font-bold text-red-700">
-                                {order.paymentMethod}
+                                {order.paymentMethod && order.paymentMethod.toUpperCase()}
                             </span>
                         </h2>
                         
