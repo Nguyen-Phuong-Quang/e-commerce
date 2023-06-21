@@ -12,6 +12,7 @@ const statusType = require("../constants/statusType");
 exports.getAllDiscountCodes = async (req) => {
     const minValue = req.query.minOrderValue;
     req.query.minOrderValue = { $lte: minValue };
+    req.query.available = { $gte: 0 };
 
     const discounts = await apiFeatures(req, DiscountSchema);
 

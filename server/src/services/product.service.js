@@ -109,14 +109,16 @@ exports.createProduct = async (body, files, sellerId) => {
         isOutOfStock,
     } = body;
 
+    console.log(body);
+
     const mainImage = files.find((image) => image.fieldname === "mainImage");
     const images = files.filter((image) => image.fieldname === "images");
 
     if (
         !name ||
         !price ||
-        !colors ||
-        !sizes ||
+        // !colors ||
+        // !sizes ||
         !quantity ||
         !mainImage ||
         mainImage.length === 0 ||
@@ -165,50 +167,63 @@ exports.createProduct = async (body, files, sellerId) => {
         mainImageId: mainImageResult.public_id,
     });
 
-    // const colorsArray = colors.split(",").map((color) => color.trim());
-    // const sizesArray = sizes.split(",").map((size) => size.trim());
-
-    const colorsArray = colors;
-    const sizesArray = sizes;
-
     const colorsId = [];
     const sizesId = [];
 
-    await Promise.all(
-        colorsArray.map(async (color) => {
-            const colorDocument = await ColorSchema.findOne({ color });
+    if (colors) {
+        const colorsArray = colors
+            .split(",")
+            .map((color) => color.trim().toLowerCase());
 
-            if (!colorDocument) {
-                const newColor = await ColorSchema.create({
-                    product: newProduct._id,
-                    color,
+        // const colorsArray = colors;
+
+        await Promise.all(
+            colorsArray.map(async (color) => {
+                const colorDocument = await ColorSchema.findOne({
+                    color: color.toLowerCase(),
                 });
-                colorsId.push(newColor._id);
-            } else {
-                colorsId.push(colorDocument._id);
-                colorDocument.product.push(newProduct._id);
-                await colorDocument.save();
-            }
-        })
-    );
 
-    await Promise.all(
-        sizesArray.map(async (size) => {
-            const sizeDocument = await SizeSchema.findOne({ size });
+                if (!colorDocument) {
+                    const newColor = await ColorSchema.create({
+                        product: newProduct._id,
+                        color,
+                    });
+                    colorsId.push(newColor._id);
+                } else {
+                    colorsId.push(colorDocument._id);
+                    colorDocument.product.push(newProduct._id);
+                    await colorDocument.save();
+                }
+            })
+        );
+    }
+    if (sizes) {
+        const sizesArray = sizes
+            .split(",")
+            .map((size) => size.trim().toLowerCase());
 
-            if (!sizeDocument) {
-                const newSize = await SizeSchema.create({
-                    product: newProduct._id,
-                    size,
+        // const sizesArray = sizes;
+
+        await Promise.all(
+            sizesArray.map(async (size) => {
+                const sizeDocument = await SizeSchema.findOne({
+                    size: size.toLowerCase(),
                 });
-                sizesId.push(newSize._id);
-            } else {
-                sizesId.push(sizeDocument._id);
-                sizeDocument.product.push(newProduct._id);
-                await sizeDocument.save();
-            }
-        })
-    );
+
+                if (!sizeDocument) {
+                    const newSize = await SizeSchema.create({
+                        product: newProduct._id,
+                        size,
+                    });
+                    sizesId.push(newSize._id);
+                } else {
+                    sizesId.push(sizeDocument._id);
+                    sizeDocument.product.push(newProduct._id);
+                    await sizeDocument.save();
+                }
+            })
+        );
+    }
 
     newProduct.colors = colorsId;
     newProduct.sizes = sizesId;
@@ -231,6 +246,7 @@ exports.createProduct = async (body, files, sellerId) => {
  * @returns { Object<type|message|statusCode|product> }
  */
 exports.updateProductDetail = async (productId, sellerId, body) => {
+    console.log(body);
     const product = await ProductSchema.findById(productId);
 
     if (!product)
@@ -246,7 +262,7 @@ exports.updateProductDetail = async (productId, sellerId, body) => {
             message: "This is not your product!",
             statusCode: 403,
         };
-        
+
     const newProduct = await ProductSchema.findByIdAndUpdate(productId, body, {
         new: true,
         runValidators: true,
@@ -420,6 +436,23 @@ exports.addColor = async (productId, seller, color) => {
             statusCode: 401,
         };
 
+    const colorDoc = await ColorSchema.findOne({ color: color.toLowerCase() });
+
+    if (colorDoc) {
+        product.colors.push(colorDoc._id);
+        colorDoc.product.push(productId);
+        await colorDoc.save();
+
+        await product.save();
+
+        return {
+            type: statusType.success,
+            message: "Add color successfully!",
+            statusCode: 200,
+            color: colorDoc,
+        };
+    }
+
     const newColor = await ColorSchema.create({ product: productId, color });
 
     product.colors.push(newColor._id);
@@ -512,6 +545,22 @@ exports.addSize = async (productId, seller, size) => {
             statusCode: 401,
         };
 
+    const sizeDoc = await SizeSchema.findOne({ size: size.toLowerCase() });
+
+    if (sizeDoc) {
+        product.sizes.push(sizeDoc._id);
+        sizeDoc.product.push(productId);
+        await sizeDoc.save();
+
+        await product.save();
+
+        return {
+            type: statusType.success,
+            message: "Add size successfully!",
+            statusCode: 200,
+            size: sizeDoc,
+        };
+    }
     const newSize = await SizeSchema.create({ product: productId, size });
 
     product.sizes.push(newSize._id);

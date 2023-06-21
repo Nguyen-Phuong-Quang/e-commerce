@@ -33,7 +33,7 @@ const DialogEditProduct = ({
         priceAfterDiscount: 0,
         // colors: [],
         // sizes: [],
-        quantities: 0,
+        quantity: 0,
     });
     const navigate = useNavigate();
 
@@ -59,9 +59,6 @@ const DialogEditProduct = ({
         };
 
         fetchData();
-
-        console.log("Selected category: ", selectedCategory);
-        console.log("products selected colors: ", products.sizes);
     }, [visible]);
 
     //update another fields of products
@@ -73,12 +70,7 @@ const DialogEditProduct = ({
         formData.append("description", products.description);
         formData.append("price", products.price);
         formData.append("priceAfterDiscount", products.priceAfterDiscount);
-        // formData.append("colors", products.colors);
-        // formData.append("sizes", products.sizes);
         formData.append("quantity", products.quantity);
-
-        console.log("Form data: ");
-        console.log(formData);
 
         try {
             const response = await productApi.updateProductDetail(
@@ -301,49 +293,6 @@ const DialogEditProduct = ({
                         />
                     </div>
 
-                    {/* <div className="mb-6 flex flex-row ">
-                        <label
-                            htmlFor="colors"
-                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
-                        >
-                            Colors
-                        </label>
-                        <MultiSelect
-                            filter
-                            id="colors"
-                            name="colors"
-                            options={colorOptions}
-                            value={products.colors}
-                            onChange={handleChange}
-                            placeholder="Select Colors"
-                            display="chip"
-                            className="w-2/3 md:w-20rem  mr-4"
-                            style={{ overflow: "auto" }}
-                        />
-                    </div> */}
-
-                    {/* <div className="mb-6 flex flex-row ">
-                        <label
-                            htmlFor="sizes"
-                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
-                        >
-                            Sizes
-                        </label>
-                        <MultiSelect
-                            filter
-                            id="sizes"
-                            name="sizes"
-                            options={sizeOptions}
-                            value={products.sizes}
-                            onChange={handleChange}
-                            //optionLabel="name"
-                            placeholder="Select Sizes"
-                            display="chip"
-                            className="basis-2/3 md:w-20rem mr-4"
-                            style={{ overflow: "auto" }}
-                        />
-                    </div> */}
-
                     <div className="mb-6 flex flex-row ">
                         <label
                             htmlFor="quantity"
@@ -357,7 +306,7 @@ const DialogEditProduct = ({
                             placeholder="Enter quantity"
                             value={products.quantity}
                             onValueChange={handleChange}
-                            integeronly
+                            // integerOnly 
                             className="basis-2/3 mr-4"
                         />
                     </div>

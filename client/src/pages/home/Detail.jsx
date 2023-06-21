@@ -14,6 +14,8 @@ import ProductDialogFooter from "../product/Components/ProductDialogFooter";
 import { userStateContext } from "./../../contexts/StateProvider";
 import cartApi from "../../api/cartApi";
 import { InputNumber } from "primereact/inputnumber";
+import { InputTextarea } from "primereact/inputtextarea";
+import { Button } from "primereact/button";
 
 export default function Detail() {
     const navigate = useNavigate();
@@ -31,6 +33,12 @@ export default function Detail() {
     const [sizeOptions, setSizeOptions] = useState([]);
     const { currentUser, setCurrentUser } = userStateContext();
     const [loadingAddToCart, setLoadingAddToCart] = useState(false);
+    const [comment, setComment] = useState("");
+    const [rating, setRating] = useState(0);
+    const [updatedReview, setUpdatedReivew] = useState(false);
+    const [visibleRemoveReview, setVisibleRemoveReview] = useState(false);
+    const [loadingRemoveReview, setLoadingRemoveReview] = useState(false);
+    const [currentReviewId, setCurrentReviewId] = useState(null);
 
     const formatDate = (dateTimeString) => {
         const date = new Date(dateTimeString);
@@ -42,6 +50,73 @@ export default function Detail() {
 
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     };
+
+    const handleRemoveReview = (reviewId) => {
+        console.log(reviewId);
+        setCurrentReviewId(reviewId);
+        setVisibleRemoveReview(true);
+    };
+
+    const handleRemoveReivewApi = async () => {
+        setLoadingRemoveReview(true);
+        try {
+            const response = await reviewApi.delete(id, currentReviewId);
+            if (response.data.type === "SUCCESS") {
+                toastSuccess(response.data.message);
+                setUpdatedReivew(!updatedReview);
+                setVisibleRemoveReview(false);
+            }
+        } catch (err) {
+            toastError(err.response.data.message);
+        }
+        setLoadingRemoveReview(false);
+    };
+
+    const footerContent = (
+        <div>
+            <Button
+                label="Delete"
+                icon="pi pi-trash"
+                onClick={() => handleRemoveReivewApi()}
+                autoFocus
+                severity="danger"
+            />
+            <Button
+                icon="pi pi-times"
+                label="Cancel"
+                onClick={() => setVisibleRemoveReview(false)}
+                className="p-button-text"
+            />
+        </div>
+    );
+
+    const handleCommentChange = (event) => {
+        setComment(event.target.value);
+    };
+
+    const handleSendComment = async () => {
+        setLoading(true);
+        try {
+            const formData = new FormData();
+            formData.append("review", comment);
+            formData.append("rating", rating);
+
+            const response = await reviewApi.add(id, formData);
+            if (response.data.type === "SUCCESS") {
+                toastSuccess(response.data.message);
+                setComment("");
+                setRating(0);
+                setUpdatedReivew(!updatedReview);
+            }
+        } catch (err) {
+            toastError(err.response.data.message);
+            console.log(err);
+        }
+        setLoading(false);
+    };
+    // Xử lý gửi comment, có thể sử dụng API hoặc hàm xử lý tương ứng
+
+    // Sau khi gửi thành công, có thể làm các công việc như cập nhật danh sách đánh giá, xóa nội dung comment đã nhập, vv.
 
     const handleCallApiCart = async () => {
         setLoadingAddToCart(true);
@@ -119,7 +194,7 @@ export default function Detail() {
         };
 
         fetchReivew();
-    }, []);
+    }, [updatedReview]);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -283,11 +358,47 @@ export default function Detail() {
                     </div>
 
                     {/* second----------------- */}
-                    <div className="w-full">
+                    <div className="w-full mt-8">
+                        <div className="flex flex-col justify-start bg-gray-100 rounded-lg mx-8">
+                            <Rating
+                                value={rating}
+                                onChange={(e) => setRating(e.value)}
+                                stars={5}
+                                cancel={false}
+                                className="text-orange-500 hover:text-orange-800  cursor-pointer ml-16 mt-4"
+                            />
+                            <div className="flex  space-x-4 items-center ml-16 mx-8 my-8 ">
+                                {/* ///avatar user  */}
+                                <Avatar
+                                    image={currentUser?.profileImage}
+                                    shape="circle"
+                                    size="large"
+                                    className="mr-2"
+                                />
+                                <div className="relative w-full my-4">
+                                    <InputTextarea
+                                        value={comment}
+                                        onChange={handleCommentChange}
+                                        className="w-full mr-8"
+                                        placeholder="Write a comment..."
+                                        rows={2}
+                                        cols={30}
+                                    />
+                                    <span
+                                        className="absolute top-1/2 text-orange-500 hover:text-red-800 right-6 transform -translate-y-1/2 cursor-pointer"
+                                        onClick={handleSendComment}
+                                    >
+                                        <i className="pi pi-send" />
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* //////////review */}
                         {review.length > 0 &&
                             review.map((item, index) => (
                                 <div
-                                    className="flex items-start space-x-4 ml-16  mx-8 my-8 w-full "
+                                    className="flex items-start space-x-4 ml-16  mx-8 my-8 w-full  "
                                     key={index}
                                 >
                                     {userData[index] && (
@@ -317,8 +428,21 @@ export default function Detail() {
                                             {item.review}
                                         </p>
                                     </div>
+                                    {userData[index] &&
+                                        currentUser._id ===
+                                            userData[index]._id && (
+                                            <span
+                                                className=" mx-8 mt-2 text-red-400 hover:text-red-600 cursor-pointer"
+                                                onClick={() =>
+                                                    handleRemoveReview(item._id)
+                                                }
+                                            >
+                                                <i className="pi pi-trash"></i>
+                                            </span>
+                                        )}
                                 </div>
                             ))}
+
                         {review.length === 0 && (
                             <p className="text-gray-700 p-4 mx-8">
                                 {
@@ -327,6 +451,28 @@ export default function Detail() {
                             </p>
                         )}
                     </div>
+                </div>
+            )}
+
+            {/* // dialog remove review  */}
+            {visibleRemoveReview && (
+                <div className="card flex justify-content-center">
+                    <Dialog
+                        header="Delete Review"
+                        visible={visibleRemoveReview}
+                        style={{ width: "50vw", height: "30vh" }}
+                        onHide={() => setVisibleRemoveReview(false)}
+                        footer={loadingRemoveReview ? <></> : footerContent}
+                    >
+                        {!loadingRemoveReview && (
+                            <span>Are you sure to delete this review</span>
+                        )}
+                        {loadingRemoveReview && (
+                            <div className="w-full h-full flex justify-center items-center">
+                                <ProgressSpinner className="" />
+                            </div>
+                        )}
+                    </Dialog>
                 </div>
             )}
 

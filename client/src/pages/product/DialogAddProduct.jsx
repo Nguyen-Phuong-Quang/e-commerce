@@ -14,53 +14,51 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Button } from "primereact/button";
 
 const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
+    const [loading, setLoading] = useState(false);
+    const [mainImage, setMainImage] = useState(undefined);
+    const [preview, setPreview] = useState(undefined);
+    const [colors, setColors] = useState([]);
+    const [sizes, setSizes] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [category, setCategory] = useState(null);
+    const [images, setImages] = useState([]);
+    const { toastSuccess, toastError } = toastContext();
+    const [newColor, setNewColor] = useState("");
+    const [newSize, setNewSize] = useState("");
+    const [products, setProducts] = useState({
+        name: "",
+        description: "",
+        price: 0,
+        priceAfterDiscount: 0,
+        quantity: null,
+    });
+    const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
-  const [mainImage, setMainImage] = useState(undefined);
-  const [preview, setPreview] = useState(undefined);
-  const [colors, setColors] = useState([]);
-  const [sizes, setSizes] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [category, setCategory] = useState(null);
-  const [images, setImages] = useState([]);
-  const { toastSuccess } = toastContext();
-  const [newColor, setNewColor] = useState("");
-  const [newSize, setNewSize] = useState("");
-  const [products, setProducts] = useState({
-    name: "",
-    description: "",
-    price: 0,
-    priceAfterDiscount: 0,
-    quantity: null,
-  });
-  const navigate = useNavigate();
+    const handleCategoryChange = (event) => {
+        setSelectedCategory(event.value);
+        setCategory(event.value._id);
+    };
 
-  const handleCategoryChange = (event) => {
-    setSelectedCategory(event.value);
-    setCategory(event.value._id);
-  };
+    const handleAddColor = () => {
+        setColors([...colors, newColor]);
+        setNewColor("");
+    };
 
-  const handleAddColor = () => {
-    setColors([...colors, newColor]);
-    setNewColor("");
-  };
+    const handleRemoveColor = (index) => {
+        const updatedColor = [...colors];
+        updatedColor.splice(index, 1);
+        setColors(updatedColor);
+    };
+    const handleAddSize = () => {
+        setSizes([...sizes, newSize]);
+        setNewSize("");
+    };
 
-  const handleRemoveColor = (index) => {
-    const updatedColor = [...colors];
-    updatedColor.splice(index, 1);
-    setColors(updatedColor);
-  };
-  const handleAddSize = () => {
-    setSizes([...sizes, newSize]);
-    setNewSize("");
-  };
-
-  const handleRemoveSize = (index) => {
-    const updatedSize = [...sizes];
-    updatedSize.splice(index, 1);
-    setSizes(updatedSize);
-  };
-
+    const handleRemoveSize = (index) => {
+        const updatedSize = [...sizes];
+        updatedSize.splice(index, 1);
+        setSizes(updatedSize);
+    };
 
     // fetch category ---------------------------------
     // useEffect(() => {
@@ -82,18 +80,18 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
         setLoading(true);
         const formData = new FormData();
 
-    formData.append("mainImage", mainImage);
-    images.forEach((file) => {
-      formData.append("images", file);
-    });
-    formData.append("name", products.name);
-    formData.append("category", category);
-    formData.append("description", products.description);
-    formData.append("price", products.price);
-    formData.append("priceAfterDiscount", products.priceAfterDiscount);
-    formData.append("colors", colors);
-    formData.append("sizes", sizes);
-    formData.append("quantity", products.quantity);
+        formData.append("mainImage", mainImage);
+        images.forEach((file) => {
+            formData.append("images", file);
+        });
+        formData.append("name", products.name);
+        formData.append("category", category);
+        formData.append("description", products.description);
+        formData.append("price", products.price);
+        formData.append("priceAfterDiscount", products.priceAfterDiscount);
+        formData.append("colors", colors);
+        formData.append("sizes", sizes);
+        formData.append("quantity", products.quantity);
 
         try {
             const response = await productApi.addProduct(formData);
@@ -158,7 +156,6 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
         const mainImageUrl = URL.createObjectURL(mainImage);
         setPreview(mainImageUrl);
     }, [mainImage]);
-    
 
     return (
         <>
@@ -365,104 +362,115 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
                                 />
                             </div>
 
-              {/* ------------color------------- */}
-              <div className="mb-6 flex flex-row ">
-                <label
-                  htmlFor="sizes"
-                  className="basis-1/3 block text-gray-700 font-bold mb-2 text-right  mr-4"
-                >
-                  Sizes
-                </label>
-                <div className="basis-2/3 mr-4 ">
-                  <div className="flex flex-row mb-4">
-                    <InputText
-                      value={newSize}
-                      id="sizes"
-                      name="sizes"
-                      onChange={(e) => setNewSize(e.target.value)}
-                      className="mr-2 w-2/3"
-                      placeholder="Enter a size"
-                    />
-                    <Button
-                      label="Add"
-                      onClick={newSize && handleAddSize}
-                      className="p-button-secondary"
-                    />
-                  </div>
-                  {sizes.length > 0 &&
-                    sizes.map((size, index) => (
-                      <div
-                        key={index}
-                        className="ml-2 w-1/2 flex flex-row items-center justify-between mb-2  "
-                      >
-                        {/* <span className="flex-grow-1 mr-2">{size.toUpperCase()}</span> */}
-                        <span
-                          key={index}
-                          className={`flex justify-center items-center h-8 w-8 rounded-full bg-gray-300 border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
+                            {/* ------------color------------- */}
+                            <div className="mb-6 flex flex-row ">
+                                <label
+                                    htmlFor="sizes"
+                                    className="basis-1/3 block text-gray-700 font-bold mb-2 text-right  mr-4"
+                                >
+                                    Sizes
+                                </label>
+                                <div className="basis-2/3 mr-4 ">
+                                    <div className="flex flex-row mb-4">
+                                        <InputText
+                                            value={newSize}
+                                            id="sizes"
+                                            name="sizes"
+                                            onChange={(e) =>
+                                                setNewSize(e.target.value)
+                                            }
+                                            className="mr-2 w-2/3"
+                                            placeholder="Enter a size"
+                                        />
+                                        <Button
+                                            label="Add"
+                                            onClick={newSize && handleAddSize}
+                                            className="p-button-secondary"
+                                        />
+                                    </div>
+                                    {sizes.length > 0 &&
+                                        sizes.map((size, index) => (
+                                            <div
+                                                key={index}
+                                                className="ml-2 w-1/2 flex flex-row items-center justify-between mb-2  "
+                                            >
+                                                {/* <span className="flex-grow-1 mr-2">{size.toUpperCase()}</span> */}
+                                                <span
+                                                    key={index}
+                                                    className={`flex justify-center items-center h-8 w-8 rounded-full bg-gray-300 border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
                          }`}
-                        >
-                          {size.toUpperCase()}
-                        </span>
-                        <span
-                          className="text-red-400 hover:text-red-600 cursor-pointer"
-                          onClick={() => handleRemoveSize(index)}
-                        >
-                          <i className="pi pi-times-circle"></i>
-                        </span>
-                      </div>
-                    ))}
-                </div>
-              </div>
+                                                >
+                                                    {size.toUpperCase()}
+                                                </span>
+                                                <span
+                                                    className="text-red-400 hover:text-red-600 cursor-pointer"
+                                                    onClick={() =>
+                                                        handleRemoveSize(index)
+                                                    }
+                                                >
+                                                    <i className="pi pi-times-circle"></i>
+                                                </span>
+                                            </div>
+                                        ))}
+                                </div>
+                            </div>
 
-              <div className="mb-6 flex flex-row ">
-                <label
-                  htmlFor="colors"
-                  className="basis-1/3 block text-gray-700 font-bold mb-2 text-right  mr-4"
-                >
-                  Colors
-                </label>
-                <div className="basis-2/3 mr-4 ">
-                  <div className="flex flex-row mb-4">
-                    <InputText
-                      value={newColor}
-                      id="colors"
-                      name="colors"
-                      onChange={(e) => setNewColor(e.target.value)}
-                      className="mr-2 w-2/3"
-                      placeholder="Enter a color"
-                    />
-                    <Button
-                      label="Add"
-                      onClick={newColor && handleAddColor}
-                      className="p-button-secondary"
-                    />
-                  </div>
-                  {colors.length > 0 &&
-                    colors.map((color, index) => (
-                      <div
-                        key={index}
-                        className="ml-2 w-1/2 flex flex-row items-center justify-between mb-2  "
-                      >
-                        <span
-                          key={index}
-                          style={{
-                            backgroundColor: color.toLowerCase(),
-                            opacity: 0.5,
-                          }}
-                          className={`h-8 w-8 rounded-full border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md 
+                            <div className="mb-6 flex flex-row ">
+                                <label
+                                    htmlFor="colors"
+                                    className="basis-1/3 block text-gray-700 font-bold mb-2 text-right  mr-4"
+                                >
+                                    Colors
+                                </label>
+                                <div className="basis-2/3 mr-4 ">
+                                    <div className="flex flex-row mb-4">
+                                        <InputText
+                                            value={newColor}
+                                            id="colors"
+                                            name="colors"
+                                            onChange={(e) =>
+                                                setNewColor(e.target.value)
+                                            }
+                                            className="mr-2 w-2/3"
+                                            placeholder="Enter a color"
+                                        />
+                                        <Button
+                                            label="Add"
+                                            onClick={newColor && handleAddColor}
+                                            className="p-button-secondary"
+                                        />
+                                    </div>
+                                    {colors.length > 0 &&
+                                        colors.map((color, index) => (
+                                            <div
+                                                key={index}
+                                                className="ml-2 w-1/2 flex flex-row items-center justify-between mb-2  "
+                                            >
+                                                <span
+                                                    key={index}
+                                                    style={{
+                                                        backgroundColor:
+                                                            color.toLowerCase(),
+                                                        opacity: 0.5,
+                                                    }}
+                                                    className={`h-8 w-8 rounded-full border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md 
                         }`}
-                        />
-                          <span className="flex-grow-1 mr-2 text-gray-500 font-semibold">{color.toUpperCase()}</span>
-                        <span
-                          className="text-red-400 hover:text-red-600 cursor-pointer"
-                          onClick={() => handleRemoveColor(index)}
-                        >
-                          <i className="pi pi-times-circle"></i>
-                        </span>
-                      </div>
-                    ))}
-                </div>
-              </div>
+                                                />
+                                                <span className="flex-grow-1 mr-2 text-gray-500 font-semibold">
+                                                    {color.toUpperCase()}
+                                                </span>
+                                                <span
+                                                    className="text-red-400 hover:text-red-600 cursor-pointer"
+                                                    onClick={() =>
+                                                        handleRemoveColor(index)
+                                                    }
+                                                >
+                                                    <i className="pi pi-times-circle"></i>
+                                                </span>
+                                            </div>
+                                        ))}
+                                </div>
+                            </div>
 
                             <div className="mb-6 flex flex-row items-center">
                                 <label

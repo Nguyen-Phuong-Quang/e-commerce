@@ -7,152 +7,120 @@ import productApi from "./../../api/productApi";
 import { toastContext } from "./../../contexts/ToastProvider";
 import { Button } from "primereact/button";
 
-const DialogUpdateColorSize = ({
-    visible,
-    setVisible,
-    productId
-}) => {
-    const { toastSuccess, toastError } = toastContext();
-    const [loading, setLoading] = useState(false);
-    const [colors, setColors] = useState([]);
-    const [sizes, setSizes] = useState([]);
-    const [newColor, setNewColor] = useState("");
-    const [newSize, setNewSize] = useState("");
-    const navigate = useNavigate();
+const DialogUpdateColorSize = ({ visible, setVisible, productId }) => {
+  const { toastSuccess, toastError } = toastContext();
+  const [loading, setLoading] = useState(false);
+  const [colors, setColors] = useState([]);
+  const [sizes, setSizes] = useState([]);
+  const [newColor, setNewColor] = useState("");
+  const [newSize, setNewSize] = useState("");
+  const navigate = useNavigate();
 
-    const handleAddColor = async () => {
-        setLoading(true);
-        try{
-            const response = await productApi.addColor(productId, newColor);
-            if(response.data.type === "SUCCESS"){
-                toastSuccess(response.data.message);
-                setColors([...colors, newColor]);
-                setNewColor("");
-            }
-        }
-        catch(err){
-            toastError(err.response.data.message);
-            console.log(err);
-        }
-        setLoading(false);
-      };
-
-    const handleAddSize = async () => {
-        setLoading(true);
-        try{
-            const response = await productApi.addSize(productId, newSize);
-            if(response.data.type === "SUCCESS"){
-                toastSuccess(response.data.message);
-                setSizes([...sizes, newSize]);
-                setNewSize("");
-            }
-        }
-        catch(err){
-            toastError(err.response.data.message);
-            console.log(err);
-        }
-        setLoading(false);
-      };
-
-
-      const handleRemoveColor = async (index) => {
-        setLoading(true);
-        try{
-            const response = await productApi.deleteColor(productId, colors[index]);
-            if(response.data.type === "SUCCESS"){
-                toastSuccess(response.data.message);
-                const updatedColor = [...colors];
-                updatedColor.splice(index, 1);
-                setColors(updatedColor);
-            }
-        }
-        catch(err){
-            toastError(err.response.data.message);
-            console.log(err);
-        }
-        setLoading(false);
+  const handleAddColor = async () => {
+    setLoading(true);
+    try {
+      const response = await productApi.addColor(productId, newColor);
+      if (response.data.type === "SUCCESS") {
+        toastSuccess(response.data.message);
+        setColors([...colors, newColor]);
+        setNewColor("");
       }
+    } catch (err) {
+      toastError(err.response.data.message);
+      console.log(err);
+    }
+    setLoading(false);
+  };
 
-      const handleRemoveSize = async (index) => {
-        setLoading(true);
-        try{
-            const response = await productApi.deleteSize(productId, sizes[index]);
-            if(response.data.type === "SUCCESS"){
-                toastSuccess(response.data.message);
-                const updatedSize = [...sizes];
-                updatedSize.splice(index, 1);
-                setSizes(updatedSize);
-            }
-        }
-        catch(err){
-            toastError(err.response.data.message);
-            console.log(err);
-        }
-        setLoading(false);
+  const handleAddSize = async () => {
+    setLoading(true);
+    try {
+      const response = await productApi.addSize(productId, newSize);
+      if (response.data.type === "SUCCESS") {
+        toastSuccess(response.data.message);
+        setSizes([...sizes, newSize]);
+        setNewSize("");
       }
-    
+    } catch (err) {
+      toastError(err.response.data.message);
+      console.log(err);
+    }
+    setLoading(false);
+  };
 
+  const handleRemoveColor = async (index) => {
+    setLoading(true);
+    try {
+      const response = await productApi.deleteColor(productId, colors[index]);
+      if (response.data.type === "SUCCESS") {
+        toastSuccess(response.data.message);
+        const updatedColor = [...colors];
+        updatedColor.splice(index, 1);
+        setColors(updatedColor);
+      }
+    } catch (err) {
+      toastError(err.response.data.message);
+      console.log(err);
+    }
+    setLoading(false);
+  };
 
-    //get product by id
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const response = await productApi.getProductById(productId);
-                if (response.data.type === "SUCCESS") {
-                    const responseColor = response.data.product.colors;
-                    const responseSize = response.data.product.sizes;
-                    setSizes(responseSize.map(item => item.size));
-                    setColors(responseColor.map(item => item.color));
-                    // setProducts(productCurrent);
-                    // setSelectedCategory(
-                    //     categoryOptions.find(
-                    //         (item) => item._id === productCurrent.category
-                    //     )
-                    // );
-                }
-            } catch (err) {
-                console.log(err);
-            }
-            setLoading(false);
-        };
+  const handleRemoveSize = async (index) => {
+    setLoading(true);
+    try {
+      const response = await productApi.deleteSize(productId, sizes[index]);
+      if (response.data.type === "SUCCESS") {
+        toastSuccess(response.data.message);
+        const updatedSize = [...sizes];
+        updatedSize.splice(index, 1);
+        setSizes(updatedSize);
+      }
+    } catch (err) {
+      toastError(err.response.data.message);
+      console.log(err);
+    }
+    setLoading(false);
+  };
 
-        fetchData();
-    }, [visible]);
-
-    const handleSaveClick = () => {
-        handleUpdateProduct();
+  //get product by id
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await productApi.getProductById(productId);
+        if (response.data.type === "SUCCESS") {
+          const responseColor = response.data.product.colors;
+          const responseSize = response.data.product.sizes;
+          setSizes(responseSize.map((item) => item.size));
+          setColors(responseColor.map((item) => item.color));
+        }
+      } catch (err) {
+        console.log(err);
+      }
+      setLoading(false);
     };
 
-    const handleCancelClick = () => {
-        setVisible(false);
-    };
+    fetchData();
+  }, [visible]);
 
-    const handleCategoryChange = (event) => {
-        setSelectedCategory(event.value);
-        // setCategory(event.value._id);
-        setCategory(event.value ? event.value._id : null);
-    };
-
-    return (
-        <>
-            <Dialog
-                visible={visible} //pass params as addVisible.
-                className="sm:w-full md:w-10/12 lg:w-3/4 xl:w-2/3 2xl:w-1/3 mx-auto h-auto"
-                header="Edit Color and Size Detail"
-                onHide={() => {
-                    setVisible(false);
-                }}
-            >
-
-                <div className="mt-8">
-                {loading ? (
-          <div className="flex justify-center">
-            <ProgressSpinner />
-          </div>
-        ) : (
-          <>
-        <div className="mb-6 flex flex-row ">
+  return (
+    <>
+      <Dialog
+        visible={visible} 
+        className="sm:w-full md:w-10/12 lg:w-3/4 xl:w-2/3 2xl:w-1/3 mx-auto h-auto"
+        header="Edit Color and Size Detail"
+        onHide={() => {
+          setVisible(false);
+        }}
+      >
+        <div className="mt-8">
+          {loading ? (
+            <div className="flex justify-center">
+              <ProgressSpinner />
+            </div>
+          ) : (
+            <>
+              <div className="mb-6 flex flex-row ">
                 <label
                   htmlFor="sizes"
                   className="basis-1/3 block text-gray-700 font-bold mb-2 text-right  mr-4"
@@ -171,7 +139,7 @@ const DialogUpdateColorSize = ({
                     />
                     <Button
                       label="Add"
-                      onClick={newSize && handleAddSize}
+                      onClick={() => newSize && handleAddSize()}
                       className="p-button-secondary"
                     />
                   </div>
@@ -219,7 +187,7 @@ const DialogUpdateColorSize = ({
                     />
                     <Button
                       label="Add"
-                      onClick={newColor && handleAddColor}
+                      onClick={() => newColor && handleAddColor()}
                       className="p-button-secondary"
                     />
                   </div>
@@ -238,7 +206,9 @@ const DialogUpdateColorSize = ({
                           className={`h-8 w-8 rounded-full border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md 
                         }`}
                         />
-                          <span className="flex-grow-1 mr-2 text-gray-500 font-semibold">{color.toUpperCase()}</span>
+                        <span className="flex-grow-1 mr-2 text-gray-500 font-semibold">
+                          {color.toUpperCase()}
+                        </span>
                         <span
                           className="text-red-400 hover:text-red-600 cursor-pointer"
                           onClick={() => handleRemoveColor(index)}
@@ -249,12 +219,12 @@ const DialogUpdateColorSize = ({
                     ))}
                 </div>
               </div>
-          </>
-        )}
-                </div>
-            </Dialog>
-        </>
-    );
+            </>
+          )}
+        </div>
+      </Dialog>
+    </>
+  );
 };
 
 export default DialogUpdateColorSize;

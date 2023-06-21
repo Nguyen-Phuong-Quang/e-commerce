@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { userStateContext } from "../contexts/StateProvider";
-import { Link, Navigate, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import route from "../constants/route";
 import { InputText } from "primereact/inputtext";
 import { Avatar } from "primereact/avatar";
