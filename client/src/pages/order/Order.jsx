@@ -210,20 +210,6 @@ const Order = () => {
                                 </span>
                             </span>
                         </h2>
-
-                        {/* <h2 className="flex m-2 pl-10 text-xl">
-                            Discount code
-                            <div className="p-field ml-60">
-                                <InputText
-                                    className="h-8 w-96 ml-8"
-                                    id="discountCode"
-                                    onChange={(e) =>
-                                        setDiscountCode(e.target.value)
-                                    }
-                                />
-                            </div>
-                        </h2> */}
-
                         <h2 className="flex m-2 pl-10 text-xl">
                             <span className="text-xl font-semibold">
                                 Contact Phone

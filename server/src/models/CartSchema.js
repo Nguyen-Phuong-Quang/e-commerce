@@ -24,12 +24,12 @@ const CartSchema = new mongoose.Schema(
                 color: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "Color",
-                    required: true,
+                    // required: true,
                 },
                 size: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "Size",
-                    required: true,
+                    // required: true,
                 },
                 totalProductQuantity: {
                     type: Number,

@@ -27,7 +27,6 @@ const formatDate = (dateTimeString) => {
 
 export default function Discountpage() {
     const navigate = useNavigate();
-    const { currentUser } = userStateContext();
     const [visibleDialog, setVisibleDialog] = useState(false);
     const { toastError, toastSuccess } = toastContext();
     const [loading, setLoading] = useState(false);
