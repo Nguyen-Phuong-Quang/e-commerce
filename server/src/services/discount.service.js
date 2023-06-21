@@ -10,6 +10,9 @@ const statusType = require("../constants/statusType");
  * @returns { object<type|message|statusCode|discounts> }
  */
 exports.getAllDiscountCodes = async (req) => {
+    const minValue = req.query.minOrderValue;
+    req.query.minOrderValue = { $lte: minValue };
+
     const discounts = await apiFeatures(req, DiscountSchema);
 
     if (!discounts || discounts.length === 0)
@@ -90,6 +93,7 @@ exports.verifyDiscountCode = async (discountId) => {
  * @returns { object<type|message|statusCode|discount> }
  */
 exports.generateDiscountCode = async (body) => {
+    console.log("Hello`");
     const {
         available,
         discountValue,
