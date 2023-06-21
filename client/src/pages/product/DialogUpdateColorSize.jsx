@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
-import { FileUpload } from "primereact/fileupload";
-import { MultiSelect } from "primereact/multiselect";
-import { InputNumber } from "primereact/inputnumber";
-import ProductDialogFooter from "./Components/ProductDialogFooter";
+import { ProgressSpinner } from "primereact/progressspinner";
 import { Dialog } from "primereact/dialog";
 import { useNavigate } from "react-router-dom";
 import productApi from "./../../api/productApi";
@@ -24,26 +20,77 @@ const DialogUpdateColorSize = ({
     const [newSize, setNewSize] = useState("");
     const navigate = useNavigate();
 
-    const handleAddColor = () => {
-        setColors([...colors, newColor]);
-        setNewColor("");
+    const handleAddColor = async () => {
+        setLoading(true);
+        try{
+            const response = await productApi.addColor(productId, newColor);
+            if(response.data.type === "SUCCESS"){
+                toastSuccess(response.data.message);
+                setColors([...colors, newColor]);
+                setNewColor("");
+            }
+        }
+        catch(err){
+            toastError(err.response.data.message);
+            console.log(err);
+        }
+        setLoading(false);
       };
+
+    const handleAddSize = async () => {
+        setLoading(true);
+        try{
+            const response = await productApi.addSize(productId, newSize);
+            if(response.data.type === "SUCCESS"){
+                toastSuccess(response.data.message);
+                setSizes([...sizes, newSize]);
+                setNewSize("");
+            }
+        }
+        catch(err){
+            toastError(err.response.data.message);
+            console.log(err);
+        }
+        setLoading(false);
+      };
+
+
+      const handleRemoveColor = async (index) => {
+        setLoading(true);
+        try{
+            const response = await productApi.deleteColor(productId, colors[index]);
+            if(response.data.type === "SUCCESS"){
+                toastSuccess(response.data.message);
+                const updatedColor = [...colors];
+                updatedColor.splice(index, 1);
+                setColors(updatedColor);
+            }
+        }
+        catch(err){
+            toastError(err.response.data.message);
+            console.log(err);
+        }
+        setLoading(false);
+      }
+
+      const handleRemoveSize = async (index) => {
+        setLoading(true);
+        try{
+            const response = await productApi.deleteSize(productId, sizes[index]);
+            if(response.data.type === "SUCCESS"){
+                toastSuccess(response.data.message);
+                const updatedSize = [...sizes];
+                updatedSize.splice(index, 1);
+                setSizes(updatedSize);
+            }
+        }
+        catch(err){
+            toastError(err.response.data.message);
+            console.log(err);
+        }
+        setLoading(false);
+      }
     
-      const handleRemoveColor = (index) => {
-        const updatedColor = [...colors];
-        updatedColor.splice(index, 1);
-        setColors(updatedColor);
-      };
-      const handleAddSize = () => {
-        setSizes([...sizes, newSize]);
-        setNewSize("");
-      };
-    
-      const handleRemoveSize = (index) => {
-        const updatedSize = [...sizes];
-        updatedSize.splice(index, 1);
-        setSizes(updatedSize);
-      };
 
 
     //get product by id
@@ -53,7 +100,6 @@ const DialogUpdateColorSize = ({
             try {
                 const response = await productApi.getProductById(productId);
                 if (response.data.type === "SUCCESS") {
-                    const productCurrent = response.data.product;
                     const responseColor = response.data.product.colors;
                     const responseSize = response.data.product.sizes;
                     setSizes(responseSize.map(item => item.size));
@@ -74,39 +120,6 @@ const DialogUpdateColorSize = ({
         fetchData();
     }, [visible]);
 
-    //update another fields of products
-    // const handleUpdateProduct = async () => {
-    //     setLoading(true);
-    //     const formData = new FormData();
-    //     formData.append("name", products.name);
-    //     formData.append("category", category);
-    //     formData.append("description", products.description);
-    //     formData.append("price", products.price);
-    //     formData.append("priceAfterDiscount", products.priceAfterDiscount);
-    //     formData.append("colors", products.colors);
-    //     formData.append("sizes", products.sizes);
-    //     formData.append("quantity", products.quantity);
-
-    //     console.log("Form data: ");
-    //     console.log(formData);
-
-    //     try {
-    //         const response = await productApi.updateProductDetail(
-    //             productId,
-    //             formData
-    //         );
-
-    //         if (response.data.type === "SUCCESS") {
-    //             toastSuccess("Product detail updated  successfully");
-    //             setVisible(false);
-    //         }
-    //     } catch (err) {
-    //         toastError("error", "Failed to update product");
-    //     }
-
-    //     setLoading(false);
-    // };
-
     const handleSaveClick = () => {
         handleUpdateProduct();
     };
@@ -125,21 +138,21 @@ const DialogUpdateColorSize = ({
         <>
             <Dialog
                 visible={visible} //pass params as addVisible.
-                className="sm:w-full md:w-10/12 lg:w-3/4 xl:w-2/3 2xl:w-1/2 mx-auto"
-                footer={
-                    <ProductDialogFooter
-                        Cancel={handleCancelClick}
-                        Save={handleSaveClick}
-                    />
-                }
+                className="sm:w-full md:w-10/12 lg:w-3/4 xl:w-2/3 2xl:w-1/3 mx-auto h-auto"
+                header="Edit Color and Size Detail"
                 onHide={() => {
                     setVisible(false);
                 }}
-                header="Edit Color and Size Detail"
             >
 
-                <div>
-                <div className="mb-6 flex flex-row ">
+                <div className="mt-8">
+                {loading ? (
+          <div className="flex justify-center">
+            <ProgressSpinner />
+          </div>
+        ) : (
+          <>
+        <div className="mb-6 flex flex-row ">
                 <label
                   htmlFor="sizes"
                   className="basis-1/3 block text-gray-700 font-bold mb-2 text-right  mr-4"
@@ -236,8 +249,9 @@ const DialogUpdateColorSize = ({
                     ))}
                 </div>
               </div>
+          </>
+        )}
                 </div>
-                {/* </div> */}
             </Dialog>
         </>
     );
