@@ -61,7 +61,6 @@ export default function MenuBar() {
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
             />
-            {/* <i className="pi pi-spin pi-spinner" /> */}
         </span>
     );
 
@@ -87,16 +86,19 @@ export default function MenuBar() {
         if (localStorage.getItem("TOKEN")) {
             return (
                 <div className="flex h-full items-center">
-                    <Link
-                        className="px-4 hover:cursor-pointer hover:text-blue-400"
-                        to={route.CART}
-                    >
-                        <i className="pi pi-shopping-cart text-2xl"></i>
-                    </Link>
+                    {currentUser.role === "CUSTOMER" && (
+                        <Link
+                            className="px-4 hover:cursor-pointer hover:text-blue-400"
+                            to={route.CART}
+                        >
+                            <i className="pi pi-shopping-cart text-2xl"></i>
+                        </Link>
+                    )}
                     <div className="hover:cursor-pointer relative group px-4">
                         <Avatar
                             image={currentUser.profileImage}
                             shape="circle"
+                            className="object-cover"
                         />
                         <div className="absolute right-0 invisible group-hover:visible pt-2 shadow-md rounded-lg bg-transparent bg-white w-48">
                             <div className="border-b-2 border-x py-2 hover:bg-gray-200 border-t-2 rounded-t-lg overflow-hidden border-transparent">
@@ -108,17 +110,19 @@ export default function MenuBar() {
                                     Profile
                                 </Link>
                             </div>
-                            <div className="border-b-2 border-x py-2 hover:bg-gray-200 overflow-hidden">
-                                <Link
-                                    className="flex items-center w-fit"
-                                    to={route.ORDER_HISTORY}
-                                >
-                                    <span className="pi pi-book mx-2"></span>{" "}
-                                    Orders
-                                </Link>
-                            </div>
+                            {currentUser.role === "CUSTOMER" && (
+                                <div className="border-x py-2 hover:bg-gray-200 overflow-hidden">
+                                    <Link
+                                        className="flex items-center w-fit"
+                                        to={route.ORDER_HISTORY}
+                                    >
+                                        <span className="pi pi-book mx-2"></span>{" "}
+                                        Orders
+                                    </Link>
+                                </div>
+                            )}
                             <div
-                                className="border-x py-2 hover:bg-gray-200 overflow-hidden"
+                                className="border-t-2 border-x py-2 hover:bg-gray-200 overflow-hidden"
                                 onClick={() => {
                                     setVisibleChangePassword(true);
                                 }}

@@ -5,6 +5,7 @@ import { toastContext } from "../../contexts/ToastProvider";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Button } from "primereact/button";
 import convertFirstLetterToUpperCase from "../../helpers/convertFirstLetterToUpperCase";
+import route from "../../constants/route";
 
 const Cart = () => {
     const [cart, setCart] = useState({});
@@ -131,12 +132,15 @@ const Cart = () => {
                                 <tbody>
                                     {items &&
                                         items.map((item) => (
-                                            <tr className="" key={item._id}>
+                                            <tr
+                                                className="border-t last:border-b"
+                                                key={item._id}
+                                            >
                                                 <td className="px-8 py-2">
                                                     <img
                                                         src={item.image}
                                                         alt={item.product.name}
-                                                        className="h-16 w-16"
+                                                        className="h-16 w-16 object-cover rounded-lg"
                                                     />
                                                 </td>
                                                 <td className="px-4 py-2 text-center">
@@ -146,12 +150,14 @@ const Cart = () => {
                                                     {item.size.size.toUpperCase()}
                                                 </td>
                                                 <td className="px-4 py-2 text-center">
-                                                    {convertFirstLetterToUpperCase(item.color.color)}
+                                                    {convertFirstLetterToUpperCase(
+                                                        item.color.color
+                                                    )}
                                                 </td>
                                                 <td className="pl-4 py-2 text-center">
                                                     <div className="w-full flex justify-center items-center">
                                                         <button
-                                                            className="px-2 py-1 border border-gray-300 rounded-md"
+                                                            className="px-2 py-1 border border-gray-300 rounded-md flex justify-center items-center border-t last:border-b hover:bg-cyan-400/40 hover:cursor-pointer"
                                                             onClick={() =>
                                                                 handleDecreaseOne(
                                                                     item.product
@@ -171,7 +177,7 @@ const Cart = () => {
                                                             }
                                                         </span>
                                                         <button
-                                                            className="px-2 py-1 border border-gray-300 rounded-md"
+                                                            className="px-2 py-1 border border-gray-300 rounded-md flex justify-center items-center border-t last:border-b hover:bg-cyan-400/40 hover:cursor-pointer"
                                                             onClick={() =>
                                                                 handleIncreaseOne(
                                                                     item.product
@@ -198,7 +204,7 @@ const Cart = () => {
                                                 <td className="px-4 py-2 text-center">
                                                     <Button
                                                         className=""
-                                                        onClick={() => {
+                                                        onClick={(e) => {
                                                             handleDeleteItem(
                                                                 item.product
                                                                     ._id,
@@ -207,7 +213,6 @@ const Cart = () => {
                                                             );
                                                         }}
                                                         severity="danger"
-                                                        outlined
                                                     >
                                                         Remove
                                                     </Button>

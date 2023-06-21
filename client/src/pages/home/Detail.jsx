@@ -141,6 +141,7 @@ export default function Detail() {
     }, [review]);
 
     const handleAddCart = () => {
+        if (!localStorage.getItem("TOKEN")) navigate(route.SIGNIN);
         setVisibleCart(true);
     };
 
@@ -253,7 +254,9 @@ export default function Detail() {
                             {/* quantity   */}
                             <div className="flex items-center space-x-2 pt-2 mb-8">
                                 <span className="font-semibold">Quantity:</span>
-                                <span className="text-blue-700">{data.quantity}</span>
+                                <span className="text-blue-700">
+                                    {data.quantity}
+                                </span>
                             </div>
                         </div>
                     </div>
