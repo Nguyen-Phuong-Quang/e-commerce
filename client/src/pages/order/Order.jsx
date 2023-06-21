@@ -19,13 +19,12 @@ const Order = () => {
     const [discountCode, setDiscountCode] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("");
     const [phone, setPhone] = useState("");
+    const [shippingPrice,setShippingPrice] = useState(30000);
 
     const [loading, setLoading] = useState(false);
     const { toastError, toastSuccess } = toastContext();
     const [cart, setCart] = useState({});
     const [items, setItems] = useState([]);
-    const [totalProductQuantity, setTotalProductQuantity] = useState(0);
-    const [totalProductPrice, setTotalProductPrice] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
     const navigate = useNavigate();
@@ -37,10 +36,6 @@ const Order = () => {
             if (response.data.type === "SUCCESS") {
                 setCart(response.data.cart);
                 setItems(response.data.cart.items);
-                setTotalProductPrice(response.data.cart.totalProductPrice);
-                setTotalProductQuantity(
-                    response.data.cart.totalProductQuantity
-                );
                 setTotalPrice(response.data.cart.totalPrice);
             }
         } catch (error) {
@@ -85,8 +80,7 @@ const Order = () => {
         navigate("/order-history");
     };
 
-    const shippingFee = 30000;
-    const total = totalPrice + 30000;
+    const total = totalPrice + shippingPrice;
 
     return (
         <div className="order-container">
@@ -181,9 +175,9 @@ const Order = () => {
                         </table>
 
                         <h2 className="m-2 pl-10 text-xl">
-                            <span className="font-semibold">Price</span>:{" "}
+                            <span className="font-semibold">Order Price</span>:{" "}
                             <span className=" font-bold text-red-700">
-                                {new Intl.NumberFormat().format(totalPrice)}
+                                {new Intl.NumberFormat().format(cart.totalPrice)}
                                 <span className="text-sm text-red-500 pb-2">
                                     đ
                                 </span>
@@ -191,9 +185,9 @@ const Order = () => {
                         </h2>
                         {/* <h2 className="m-2 pl-10 text-xl">Tax Price: </h2> */}
                         <h2 className="m-2 pl-10 text-xl">
-                            <span className="font-semibold">Shipping fee</span>:{" "}
+                            <span className="font-semibold">Shipping price</span>:{" "}
                             <span className=" font-bold text-red-700">
-                                {new Intl.NumberFormat().format(shippingFee)}
+                                {new Intl.NumberFormat().format(shippingPrice)}
                                 <span className="text-sm text-red-500 pb-2">
                                     đ
                                 </span>
@@ -208,23 +202,6 @@ const Order = () => {
                                 </span>
                             </span>
                         </h2>
-                        {/* <h2 className="m-2 pl-10 text-xl">Is Paid</h2>
-                        <h2 className="m-2 pl-10 text-xl">Paid At</h2>
-                        <h2 className="m-2 pl-10 text-xl">Is Delivery</h2>
-                        <h2 className="m-2 pl-10 text-xl">Status</h2> */}
-
-                        {/* <h2 className="m-2 pl-10 text-xl">User</h2> */}
-                        {/* <div className="p-fluid m-2">
-                            <div className="p-field m-2">    
-                                <InputText
-                                    id="user"
-                                    // value={user}
-                                    required
-                                    // defaultValue={JSON.parse(localStorage.getItem('profile'))}
-                                    onChange={(e) => setUser(e.target.value)}
-                                />
-                            </div>
-                        </div> */}
 
                         {/* <h2 className="flex m-2 pl-10 text-xl">
                             Discount code

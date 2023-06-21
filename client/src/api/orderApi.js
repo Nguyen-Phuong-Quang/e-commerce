@@ -11,10 +11,6 @@ const orderApi = {
         const url = `${PREFIX}`;
         return axiosClient.get(url);
     },
-    delete: (orderId) => {
-        const url = `${PREFIX}/${orderId}`;
-        return axiosClient.delete(url);
-    },
     getById: (orderId) => {
         const url = `${PREFIX}/${orderId}`;
         return axiosClient.get(url);

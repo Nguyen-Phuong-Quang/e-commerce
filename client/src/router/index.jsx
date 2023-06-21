@@ -13,6 +13,7 @@ import Discountpage from "../pages/discount/DiscountPage";
 import Order from "../pages/order/Order";
 import Detail from "../pages/home/Detail";
 import OrderHistory from "../pages/order-history/OrderHistory";
+import OrderDetail from "../pages/order-history/OrderDetail";
 
 const router = createBrowserRouter([
     {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
             {
                 path: route.ORDER_HISTORY,
                 element: <OrderHistory />,
+            },
+            {
+                path: `${route.ORDER}/:id`,
+                element: <OrderDetail />,
             },
         ],
     },

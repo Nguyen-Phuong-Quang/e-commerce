@@ -14,7 +14,7 @@ const statusType = require("../constants/statusType");
  * @returns { object<type|message|statusCode|order> }
  */
 exports.createOrder = async (body, user) => {
-    const { shippingAddress, paymentMethod, phone, discountCode } = body;
+    const { shippingAddress, paymentMethod, phone, discountCode, shippingPrice } = body;
     const { address, city, postalCode, country } = shippingAddress;
 
     // 1. Check if missing field
@@ -103,6 +103,7 @@ exports.createOrder = async (body, user) => {
         shippingAddress,
         phone,
         paymentMethod,
+        shippingPrice,
     };
 
     // 6. Create order

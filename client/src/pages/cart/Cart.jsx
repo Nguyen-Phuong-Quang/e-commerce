@@ -29,7 +29,6 @@ const Cart = () => {
             }
         } catch (error) {
             toastError(error.response.data.message);
-            console.log(error.response);
         }
         setLoading(false);
     };
@@ -48,7 +47,6 @@ const Cart = () => {
             }
         } catch (error) {
             toastError(error.response.data.message);
-            console.error(error);
         }
         setLoading(false);
     };
@@ -63,7 +61,6 @@ const Cart = () => {
             }
         } catch (error) {
             toastError(error.response.data.message);
-            console.error(error);
         }
         setLoading(false);
     };
@@ -82,7 +79,6 @@ const Cart = () => {
             }
         } catch (error) {
             toastError(error.response.data.message);
-            console.error(error);
         }
         setLoading(false);
     };
