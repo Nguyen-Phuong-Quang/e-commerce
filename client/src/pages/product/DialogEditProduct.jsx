@@ -59,9 +59,6 @@ const DialogEditProduct = ({
         };
 
         fetchData();
-
-        console.log("Selected category: ", selectedCategory);
-        console.log("products selected colors: ", products.sizes);
     }, [visible]);
 
     //update another fields of products
@@ -76,9 +73,6 @@ const DialogEditProduct = ({
         // formData.append("colors", products.colors);
         // formData.append("sizes", products.sizes);
         formData.append("quantity", products.quantity);
-
-        console.log("Form data: ");
-        console.log(formData);
 
         try {
             const response = await productApi.updateProductDetail(
@@ -357,7 +351,7 @@ const DialogEditProduct = ({
                             placeholder="Enter quantity"
                             value={products.quantity}
                             onValueChange={handleChange}
-                            integeronly
+                            // integerOnly 
                             className="basis-2/3 mr-4"
                         />
                     </div>
