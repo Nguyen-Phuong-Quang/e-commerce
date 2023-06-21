@@ -47,29 +47,25 @@ export default function Discountpage() {
     const actionBodyTemplate = (rowData) => {
         return (
             <>
-                {/* <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => editDiscount(rowData)} /> {" "} */}
                 <Button
                     icon="pi pi-trash"
                     className="p-button-rounded p-button-warning"
-                    onClick={() => confirmDeleteDiscount(rowData)}
+                    onClick={() => confirmDeleteDiscount(rowData._id)}
                 />
             </>
         );
     };
 
-    const confirmDeleteDiscount = async (rowdata) => {
+    const confirmDeleteDiscount = async (discountId) => {
         setLoading(true);
         try {
-            const response = await discountApi.deleteDiscount({
-                discountCode: rowdata.discountCode,
-                usrId: currentUser._id,
-            });
+            const response = await discountApi.deleteDiscount(discountId);
             if (response.data.type === "SUCCESS") {
-                navigate("/discount");
                 toastSuccess(response.data.message);
+                fetchDiscountCodes();
             }
         } catch (err) {
-            // toastError(err.response.data.message);
+            toastError(err.response.data.message);
             console.log(err);
         }
         setLoading(false);
@@ -167,9 +163,10 @@ export default function Discountpage() {
                                 ></Column>
                                 <Column
                                     // field="validUntil"
+                                    className="w-48"
                                     header="Valid Until"
                                     body={(discount) =>
-                                        formatDate(discount.validUntil)
+                                        <span className="">{formatDate(discount.validUntil)}</span>
                                     }
                                 ></Column>
                                 <Column

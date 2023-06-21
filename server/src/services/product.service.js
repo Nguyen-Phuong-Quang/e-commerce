@@ -246,7 +246,7 @@ exports.updateProductDetail = async (productId, sellerId, body) => {
             message: "This is not your product!",
             statusCode: 403,
         };
-        
+
     const newProduct = await ProductSchema.findByIdAndUpdate(productId, body, {
         new: true,
         runValidators: true,
@@ -419,6 +419,23 @@ exports.addColor = async (productId, seller, color) => {
             message: "Color exists!",
             statusCode: 401,
         };
+
+    const colorDoc = await ColorSchema.findOne({ color: color.toLowerCase() });
+
+    if (colorDoc) {
+        product.colors.push(colorDoc._id);
+        colorDoc.product.push(productId);
+        await colorDoc.save();
+
+        await product.save();
+
+        return {
+            type: statusType.success,
+            message: "Add color successfully!",
+            statusCode: 200,
+            color: colorDoc,
+        };
+    }
 
     const newColor = await ColorSchema.create({ product: productId, color });
 
