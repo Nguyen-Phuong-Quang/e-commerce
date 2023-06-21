@@ -3,7 +3,7 @@ import axiosClient from "./axiosClient";
 const PREFIX = "/discount";
 
 const discountApi = {
-    getAllDiscount: (minOrderValue) => {
+    getAllDiscount: (minOrderValue = Number.MAX_SAFE_INTEGER) => {
         const url = `${PREFIX}`;
         return axiosClient.get(url, {
             params: {
