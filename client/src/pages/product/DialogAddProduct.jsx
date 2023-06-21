@@ -14,6 +14,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Button } from "primereact/button";
 
 const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
+
   const [loading, setLoading] = useState(false);
   const [mainImage, setMainImage] = useState(undefined);
   const [preview, setPreview] = useState(undefined);
@@ -21,12 +22,10 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
   const [sizes, setSizes] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [category, setCategory] = useState(null);
-
   const [images, setImages] = useState([]);
   const { toastSuccess } = toastContext();
   const [newColor, setNewColor] = useState("");
   const [newSize, setNewSize] = useState("");
-
   const [products, setProducts] = useState({
     name: "",
     description: "",
@@ -62,63 +61,27 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
     setSizes(updatedSize);
   };
 
-  const handelAddProduct = async () => {
-    setLoading(true);
-    const formData = new FormData();
-
-    formData.append("mainImage", mainImage);
-    images.forEach((file) => {
-      formData.append("images", file);
-    });
-    formData.append("name", products.name);
-    formData.append("category", category);
-    formData.append("description", products.description);
-    formData.append("price", products.price);
-    formData.append("priceAfterDiscount", products.priceAfterDiscount);
-    formData.append("colors", colors);
-    formData.append("sizes", sizes);
-    formData.append("quantity", products.quantity);
-
-    const colorOptions = ["red", "blue", "green", "yellow"];
-    const sizeOptions = ["S", "M", "L", "XL"];
 
     // fetch category ---------------------------------
-    useEffect(() => {
-        const fetchCategoryOptions = async () => {
-            try {
-                const response = await categoryApi.query();
-                if (response.data.type === "SUCCESS") {
-                    setCategoryOptions(response.data.categories);
-                }
-            } catch (err) {
-                console.log(err);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchCategoryOptions = async () => {
+    //         try {
+    //             const response = await categoryApi.query();
+    //             if (response.data.type === "SUCCESS") {
+    //                 setCategoryOptions(response.data.categories);
+    //             }
+    //         } catch (err) {
+    //             console.log(err);
+    //         }
+    //     };
 
-        fetchCategoryOptions();
-    }, [visible]);
-
-    // const handleCategoryChange = (event) => {
-    //     setSelectedCategory(event.value);
-    //     setCategory(event.value._id);
-    // };
+    //     fetchCategoryOptions();
+    // }, [visible]);
 
     const handelAddProduct = async () => {
         setLoading(true);
         const formData = new FormData();
 
-        formData.append("mainImage", mainImage);
-        images.forEach((file) => {
-            formData.append("images", file);
-        });
-        formData.append("name", products.name);
-        formData.append("category", category);
-        formData.append("description", products.description);
-        formData.append("price", products.price);
-        formData.append("priceAfterDiscount", products.priceAfterDiscount);
-        formData.append("colors", products.colors);
-        formData.append("sizes", products.sizes);
-        formData.append("quantity", products.quantity);
     formData.append("mainImage", mainImage);
     images.forEach((file) => {
       formData.append("images", file);
@@ -195,6 +158,7 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
         const mainImageUrl = URL.createObjectURL(mainImage);
         setPreview(mainImageUrl);
     }, [mainImage]);
+    
 
     return (
         <>
