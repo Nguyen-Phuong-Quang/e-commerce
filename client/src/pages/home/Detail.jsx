@@ -15,6 +15,7 @@ import { userStateContext } from "./../../contexts/StateProvider";
 import cartApi from "../../api/cartApi";
 import { InputNumber } from "primereact/inputnumber";
 import { InputTextarea } from "primereact/inputtextarea";
+import { Button } from "primereact/button";
 
 export default function Detail() {
   const navigate = useNavigate();
@@ -35,6 +36,9 @@ export default function Detail() {
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
   const [updatedReview, setUpdatedReivew] = useState(false);
+  const [visibleRemoveReview, setVisibleRemoveReview] = useState(false);
+  const [loadingRemoveReview, setLoadingRemoveReview] = useState(false);
+  const [currentReviewId, setCurrentReviewId] = useState(null);
 
   const formatDate = (dateTimeString) => {
     const date = new Date(dateTimeString);
@@ -47,34 +51,73 @@ export default function Detail() {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
 
+  const handleRemoveReview = (reviewId) => {
+    console.log(reviewId);
+    setCurrentReviewId(reviewId);
+    setVisibleRemoveReview(true);
+  };
+
+  const handleRemoveReivewApi = async () => {
+    setLoadingRemoveReview(true);
+    try{
+        const response = await reviewApi.delete(id, currentReviewId );
+        if(response.data.type === "SUCCESS"){
+            toastSuccess(response.data.message);
+            setUpdatedReivew(!updatedReview);
+            setVisibleRemoveReview(false);
+        }
+    }
+    catch(err) {
+        toastError(err.response.data.message);
+    }
+    setLoadingRemoveReview(false);
+  }
+
+  const footerContent = (
+    <div>
+        <Button
+            label="Delete"
+            icon="pi pi-trash"
+            onClick={() => handleRemoveReivewApi()}
+            autoFocus
+            severity="danger"
+        />
+        <Button
+            icon="pi pi-times"
+            label="Cancel"
+            onClick={() => setVisibleRemoveReview(false)}
+            className="p-button-text"
+        />
+    </div>
+);
+
   const handleCommentChange = (event) => {
     setComment(event.target.value);
   };
 
   const handleSendComment = async () => {
     setLoading(true);
-    try{
-        const formData = new FormData();
-        formData.append("review", comment);
-        formData.append("rating", rating);
+    try {
+      const formData = new FormData();
+      formData.append("review", comment);
+      formData.append("rating", rating);
 
-        const response = await reviewApi.add(id,formData);
-        if(response.data.type === "SUCCESS"){
-            toastSuccess(response.data.message);
-            setComment("");
-            setRating(0);
-            setUpdatedReivew(true);
-        }
-
+      const response = await reviewApi.add(id, formData);
+      if (response.data.type === "SUCCESS") {
+        toastSuccess(response.data.message);
+        setComment("");
+        setRating(0);
+        setUpdatedReivew(!updatedReview);
+      }
     } catch (err) {
-        toastError(err.response.data.message);
-        console.log(err);
+      toastError(err.response.data.message);
+      console.log(err);
     }
     setLoading(false);
-    }
-    // Xử lý gửi comment, có thể sử dụng API hoặc hàm xử lý tương ứng
+  };
+  // Xử lý gửi comment, có thể sử dụng API hoặc hàm xử lý tương ứng
 
-    // Sau khi gửi thành công, có thể làm các công việc như cập nhật danh sách đánh giá, xóa nội dung comment đã nhập, vv.
+  // Sau khi gửi thành công, có thể làm các công việc như cập nhật danh sách đánh giá, xóa nội dung comment đã nhập, vv.
 
   const handleCallApiCart = async () => {
     setLoadingAddToCart(true);
@@ -338,10 +381,11 @@ export default function Detail() {
               </div>
             </div>
 
+            {/* //////////review */}
             {review.length > 0 &&
               review.map((item, index) => (
                 <div
-                  className="flex items-start space-x-4 ml-16  mx-8 my-8 w-full "
+                  className="flex items-start space-x-4 ml-16  mx-8 my-8 w-full  "
                   key={index}
                 >
                   {userData[index] && (
@@ -369,14 +413,48 @@ export default function Detail() {
                     <p>{formatDate(item.createdAt)}</p>
                     <p className="text-gray-600 mt-1">{item.review}</p>
                   </div>
+                  {userData[index] && currentUser._id === userData[index]._id && (
+                    <span
+                      className=" mx-8 mt-2 text-red-400 hover:text-red-600 cursor-pointer"
+                      onClick={() => handleRemoveReview(item._id)}
+                    >
+                      <i className="pi pi-trash"></i>
+                    </span>
+                  )}
                 </div>
               ))}
+
             {review.length === 0 && (
               <p className="text-gray-700 p-4 mx-8">
                 {"No one has written a review for this product yet. "}
               </p>
             )}
           </div>
+        </div>
+      )}
+
+
+{/* // dialog remove review  */}
+      {visibleRemoveReview && (
+        <div className="card flex justify-content-center">
+          <Dialog
+            header="Delete Review"
+            visible={visibleRemoveReview}
+            style={{ width: "50vw", height: "30vh" }}
+            onHide={() => setVisibleRemoveReview(false)}
+            footer={footerContent}
+          >
+            {!loadingRemoveReview && (
+              <span>
+                Are you sure to delete this review
+              </span>
+            )}
+            {loadingRemoveReview && (
+              <div className="w-full h-full flex justify-center items-center">
+                <ProgressSpinner className="" />
+              </div>
+            )}
+          </Dialog>
         </div>
       )}
 
