@@ -34,9 +34,11 @@ export default function Detail() {
     const { currentUser, setCurrentUser } = userStateContext();
     const [loadingAddToCart, setLoadingAddToCart] = useState(false);
     const [comment, setComment] = useState("");
-    const [loadingComment, setLoadingComment] = useState(false);
     const [rating, setRating] = useState(0);
     const [updatedReview, setUpdatedReivew] = useState(false);
+    const [visibleRemoveReview, setVisibleRemoveReview] = useState(false);
+    const [loadingRemoveReview, setLoadingRemoveReview] = useState(false);
+    const [currentReviewId, setCurrentReviewId] = useState(null);
 
     const formatDate = (dateTimeString) => {
         const date = new Date(dateTimeString);
@@ -49,12 +51,51 @@ export default function Detail() {
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     };
 
+    const handleRemoveReview = (reviewId) => {
+        console.log(reviewId);
+        setCurrentReviewId(reviewId);
+        setVisibleRemoveReview(true);
+    };
+
+    const handleRemoveReivewApi = async () => {
+        setLoadingRemoveReview(true);
+        try {
+            const response = await reviewApi.delete(id, currentReviewId);
+            if (response.data.type === "SUCCESS") {
+                toastSuccess(response.data.message);
+                setUpdatedReivew(!updatedReview);
+                setVisibleRemoveReview(false);
+            }
+        } catch (err) {
+            toastError(err.response.data.message);
+        }
+        setLoadingRemoveReview(false);
+    };
+
+    const footerContent = (
+        <div>
+            <Button
+                label="Delete"
+                icon="pi pi-trash"
+                onClick={() => handleRemoveReivewApi()}
+                autoFocus
+                severity="danger"
+            />
+            <Button
+                icon="pi pi-times"
+                label="Cancel"
+                onClick={() => setVisibleRemoveReview(false)}
+                className="p-button-text"
+            />
+        </div>
+    );
+
     const handleCommentChange = (event) => {
         setComment(event.target.value);
     };
 
     const handleSendComment = async () => {
-        setLoadingComment(true);
+        setLoading(true);
         try {
             const formData = new FormData();
             formData.append("review", comment);
@@ -65,22 +106,17 @@ export default function Detail() {
                 toastSuccess(response.data.message);
                 setComment("");
                 setRating(0);
-                setUpdatedReivew(true);
-                
+                setUpdatedReivew(!updatedReview);
             }
         } catch (err) {
             toastError(err.response.data.message);
             console.log(err);
         }
-        setLoadingComment(false);
-    };
-
-    const handleEnterSendComment = (e) => {
-        if (e.key === "Enter") handleSendComment();
+        setLoading(false);
     };
     // Xử lý gửi comment, có thể sử dụng API hoặc hàm xử lý tương ứng
 
-  // Sau khi gửi thành công, có thể làm các công việc như cập nhật danh sách đánh giá, xóa nội dung comment đã nhập, vv.
+    // Sau khi gửi thành công, có thể làm các công việc như cập nhật danh sách đánh giá, xóa nội dung comment đã nhập, vv.
 
     const handleCallApiCart = async () => {
         setLoadingAddToCart(true);
@@ -143,7 +179,7 @@ export default function Detail() {
 
     useEffect(() => {
         const fetchReivew = async () => {
-            setLoadingComment(true);
+            setLoading(true);
             try {
                 const response = await reviewApi.getAllReviews(id);
                 if (response.data.type === "SUCCESS") {
@@ -154,7 +190,7 @@ export default function Detail() {
                 // toastError(err.response.data.message);
                 console.log(err);
             }
-            setLoadingComment(false);
+            setLoading(false);
         };
 
         fetchReivew();
@@ -339,10 +375,7 @@ export default function Detail() {
                                     size="large"
                                     className="mr-2"
                                 />
-                                <div
-                                    className="relative w-full my-4"
-                                    onKeyDown={handleEnterSendComment}
-                                >
+                                <div className="relative w-full my-4">
                                     <InputTextarea
                                         value={comment}
                                         onChange={handleCommentChange}
@@ -361,63 +394,85 @@ export default function Detail() {
                             </div>
                         </div>
 
-                        {loadingComment && (
-                            <div className="w-full flex justify-center">
-                                <ProgressSpinner />
-                            </div>
-                        )}
-                        {!loadingComment && (
-                            <>
-                                {review.length > 0 &&
-                                    review.map((item, index) => (
-                                        <div
-                                            className="flex items-start space-x-4 ml-16  mx-8 my-8 w-full "
-                                            key={index}
-                                        >
-                                            {userData[index] && (
-                                                <Avatar
-                                                    label={"Avatar"}
-                                                    image={
-                                                        userData[index]
-                                                            .profileImage
-                                                    }
-                                                    shape="circle"
-                                                    size="xlarge"
-                                                />
-                                            )}
-                                            <div className="flex flex-col  ">
-                                                {userData[index] && (
-                                                    <span className="text-2xl font-bold text-gray-700 mb-2">
-                                                        {" "}
-                                                        {userData[index].name}
-                                                    </span>
-                                                )}
-                                                <Rating
-                                                    value={item.rating}
-                                                    readOnly
-                                                    stars={5}
-                                                    cancel={false}
-                                                    className="text-primary-500"
-                                                />
-                                                <p>
-                                                    {formatDate(item.createdAt)}
-                                                </p>
-                                                <p className="text-gray-600 mt-1">
-                                                    {item.review}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                {review.length === 0 && (
-                                    <p className="text-gray-700 p-4 mx-8">
-                                        {
-                                            "No one has written a review for this product yet. "
-                                        }
-                                    </p>
-                                )}
-                            </>
+                        {/* //////////review */}
+                        {review.length > 0 &&
+                            review.map((item, index) => (
+                                <div
+                                    className="flex items-start space-x-4 ml-16  mx-8 my-8 w-full  "
+                                    key={index}
+                                >
+                                    {userData[index] && (
+                                        <Avatar
+                                            label={"Avatar"}
+                                            image={userData[index].profileImage}
+                                            shape="circle"
+                                            size="xlarge"
+                                        />
+                                    )}
+                                    <div className="flex flex-col  ">
+                                        {userData[index] && (
+                                            <span className="text-2xl font-bold text-gray-700 mb-2">
+                                                {" "}
+                                                {userData[index].name}
+                                            </span>
+                                        )}
+                                        <Rating
+                                            value={item.rating}
+                                            readOnly
+                                            stars={5}
+                                            cancel={false}
+                                            className="text-primary-500"
+                                        />
+                                        <p>{formatDate(item.createdAt)}</p>
+                                        <p className="text-gray-600 mt-1">
+                                            {item.review}
+                                        </p>
+                                    </div>
+                                    {userData[index] &&
+                                        currentUser._id ===
+                                            userData[index]._id && (
+                                            <span
+                                                className=" mx-8 mt-2 text-red-400 hover:text-red-600 cursor-pointer"
+                                                onClick={() =>
+                                                    handleRemoveReview(item._id)
+                                                }
+                                            >
+                                                <i className="pi pi-trash"></i>
+                                            </span>
+                                        )}
+                                </div>
+                            ))}
+
+                        {review.length === 0 && (
+                            <p className="text-gray-700 p-4 mx-8">
+                                {
+                                    "No one has written a review for this product yet. "
+                                }
+                            </p>
                         )}
                     </div>
+                </div>
+            )}
+
+            {/* // dialog remove review  */}
+            {visibleRemoveReview && (
+                <div className="card flex justify-content-center">
+                    <Dialog
+                        header="Delete Review"
+                        visible={visibleRemoveReview}
+                        style={{ width: "50vw", height: "30vh" }}
+                        onHide={() => setVisibleRemoveReview(false)}
+                        footer={loadingRemoveReview ? <></> : footerContent}
+                    >
+                        {!loadingRemoveReview && (
+                            <span>Are you sure to delete this review</span>
+                        )}
+                        {loadingRemoveReview && (
+                            <div className="w-full h-full flex justify-center items-center">
+                                <ProgressSpinner className="" />
+                            </div>
+                        )}
+                    </Dialog>
                 </div>
             )}
 
