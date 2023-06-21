@@ -93,7 +93,6 @@ exports.verifyDiscountCode = async (discountId) => {
  * @returns { object<type|message|statusCode|discount> }
  */
 exports.generateDiscountCode = async (body) => {
-    console.log("Hello`");
     const {
         available,
         discountValue,
