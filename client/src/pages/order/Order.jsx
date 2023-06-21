@@ -8,6 +8,7 @@ import orderApi from "../../api/orderApi";
 import cartApi from "../../api/cartApi";
 import { toastContext } from "../../contexts/ToastProvider";
 import { ProgressSpinner } from "primereact/progressspinner";
+import convertFirstLetterToUpperCase from "../../helpers/convertFirstLetterToUpperCase";
 
 const Order = () => {
     const [shippingAddress, setShippingAddress] = useState({
@@ -19,7 +20,7 @@ const Order = () => {
     const [discountCode, setDiscountCode] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("");
     const [phone, setPhone] = useState("");
-    const [shippingPrice,setShippingPrice] = useState(30000);
+    const [shippingPrice, setShippingPrice] = useState(30000);
 
     const [loading, setLoading] = useState(false);
     const { toastError, toastSuccess } = toastContext();
@@ -153,10 +154,12 @@ const Order = () => {
                                             {item.product.name}
                                         </td>
                                         <td className="px-4 h-full text-center">
-                                            {item.size.size}
+                                            {item.size.size.toUpperCase()}
                                         </td>
                                         <td className="px-4 h-full text-center">
-                                            {item.color.color}
+                                            {convertFirstLetterToUpperCase(
+                                                item.color.color
+                                            )}
                                         </td>
                                         <td className="px-4 h-full text-center">
                                             {item.totalProductQuantity}
@@ -177,7 +180,9 @@ const Order = () => {
                         <h2 className="m-2 pl-10 text-xl">
                             <span className="font-semibold">Order Price</span>:{" "}
                             <span className=" font-bold text-red-700">
-                                {new Intl.NumberFormat().format(cart.totalPrice)}
+                                {new Intl.NumberFormat().format(
+                                    cart.totalPrice
+                                )}
                                 <span className="text-sm text-red-500 pb-2">
                                     đ
                                 </span>
@@ -185,7 +190,10 @@ const Order = () => {
                         </h2>
                         {/* <h2 className="m-2 pl-10 text-xl">Tax Price: </h2> */}
                         <h2 className="m-2 pl-10 text-xl">
-                            <span className="font-semibold">Shipping price</span>:{" "}
+                            <span className="font-semibold">
+                                Shipping price
+                            </span>
+                            :{" "}
                             <span className=" font-bold text-red-700">
                                 {new Intl.NumberFormat().format(shippingPrice)}
                                 <span className="text-sm text-red-500 pb-2">

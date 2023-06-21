@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import cartApi from "../../api/cartApi";
 import { toastContext } from "../../contexts/ToastProvider";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { Button } from "primereact/button";
+import convertFirstLetterToUpperCase from "../../helpers/convertFirstLetterToUpperCase";
 
 const Cart = () => {
     const [cart, setCart] = useState({});
@@ -28,7 +30,7 @@ const Cart = () => {
                 setTotalPrice(response.data.cart.totalPrice);
             }
         } catch (error) {
-            toastError(error.response.data.message);
+            // toastError(error.response.data.message);
         }
         setLoading(false);
     };
@@ -40,7 +42,11 @@ const Cart = () => {
     const handleDecreaseOne = async (productId, sizeId, colorId) => {
         setLoading(true);
         try {
-            const response = await cartApi.decreaseOne(productId, sizeId, colorId);
+            const response = await cartApi.decreaseOne(
+                productId,
+                sizeId,
+                colorId
+            );
             if (response.data.type === "SUCCESS") {
                 toastSuccess(response.data.message);
                 fetchCartItems();
@@ -54,7 +60,11 @@ const Cart = () => {
     const handleIncreaseOne = async (productId, sizeId, colorId) => {
         setLoading(true);
         try {
-            const response = await cartApi.increaseOne(productId, sizeId, colorId);
+            const response = await cartApi.increaseOne(
+                productId,
+                sizeId,
+                colorId
+            );
             if (response.data.type === "SUCCESS") {
                 toastSuccess(response.data.message);
                 fetchCartItems(response.data);
@@ -65,19 +75,20 @@ const Cart = () => {
         setLoading(false);
     };
 
-    const handleDeleteItem = async (productId, sizeId, colorId) => {
+    const handleDeleteItem = async (productId, size, color) => {
         setLoading(true);
         try {
             const response = await cartApi.deleteItemInCart(
                 productId,
-                sizeId,
-                colorId
+                size,
+                color
             );
             if (response.data.type === "SUCCESS") {
-                fetchCartItems();
                 toastSuccess(response.data.message);
+                fetchCartItems();
             }
         } catch (error) {
+            console.log(error);
             toastError(error.response.data.message);
         }
         setLoading(false);
@@ -106,7 +117,9 @@ const Cart = () => {
                             <table className="table-auto w-full">
                                 <thead>
                                     <tr>
-                                        <th className="px-4 py-2 w-32">Image</th>
+                                        <th className="px-4 py-2 w-32">
+                                            Image
+                                        </th>
                                         <th className="px-4 py-2">Name</th>
                                         <th className="px-4 py-2">Size</th>
                                         <th className="px-4 py-2">Color</th>
@@ -130,20 +143,23 @@ const Cart = () => {
                                                     {item.product.name}
                                                 </td>
                                                 <td className="px-4 py-2 text-center">
-                                                    {item.size.size}
+                                                    {item.size.size.toUpperCase()}
                                                 </td>
                                                 <td className="px-4 py-2 text-center">
-                                                    {item.color.color}
+                                                    {convertFirstLetterToUpperCase(item.color.color)}
                                                 </td>
                                                 <td className="pl-4 py-2 text-center">
-                                                    <div className="flex items-center">
+                                                    <div className="w-full flex justify-center items-center">
                                                         <button
                                                             className="px-2 py-1 border border-gray-300 rounded-md"
                                                             onClick={() =>
                                                                 handleDecreaseOne(
-                                                                    item.product._id,
-                                                                    item.size._id,
-                                                                    item.color._id
+                                                                    item.product
+                                                                        ._id,
+                                                                    item.size
+                                                                        ._id,
+                                                                    item.color
+                                                                        ._id
                                                                 )
                                                             }
                                                         >
@@ -158,9 +174,12 @@ const Cart = () => {
                                                             className="px-2 py-1 border border-gray-300 rounded-md"
                                                             onClick={() =>
                                                                 handleIncreaseOne(
-                                                                    item.product._id,
-                                                                    item.size._id,
-                                                                    item.color._id
+                                                                    item.product
+                                                                        ._id,
+                                                                    item.size
+                                                                        ._id,
+                                                                    item.color
+                                                                        ._id
                                                                 )
                                                             }
                                                         >
@@ -169,21 +188,29 @@ const Cart = () => {
                                                     </div>
                                                 </td>
                                                 <td className="px-4 py-2 text-center">
-                                                    ${item.totalProductPrice}
+                                                    {new Intl.NumberFormat().format(
+                                                        item.totalProductPrice
+                                                    )}
+                                                    <span className="text-sm text-red-500 pb-2">
+                                                        đ
+                                                    </span>
                                                 </td>
                                                 <td className="px-4 py-2 text-center">
-                                                    <button
-                                                        className="text-red-500 hover:text-red-700"
+                                                    <Button
+                                                        className=""
                                                         onClick={() => {
                                                             handleDeleteItem(
-                                                                item.product._id,
-                                                                item.size._id,
-                                                                item.color._id
+                                                                item.product
+                                                                    ._id,
+                                                                item.size.size,
+                                                                item.color.color
                                                             );
                                                         }}
+                                                        severity="danger"
+                                                        outlined
                                                     >
                                                         Remove
-                                                    </button>
+                                                    </Button>
                                                 </td>
                                             </tr>
                                         ))}
@@ -191,10 +218,18 @@ const Cart = () => {
                             </table>
                             <div className="flex justify-between items-center mt-4 ml-4">
                                 <span className="text-2xl ml-4">
-                                    Total Price: ${cart.totalPrice}
+                                    Total Price:{" "}
+                                    <span className="text-red-700 font-bold">
+                                        {new Intl.NumberFormat().format(
+                                            cart.totalPrice
+                                        )}
+                                    </span>
+                                    <span className="text-sm text-red-500 pb-2">
+                                        đ
+                                    </span>
                                 </span>
                                 <button
-                                    className="mr-10 px-4 py-4 bg-blue-500 text-white rounded hover:bg-blue-700"
+                                    className="mr-10 px-8 py-4 font-bold bg-blue-500 text-white rounded hover:bg-blue-700"
                                     onClick={handlePlaceOrder}
                                 >
                                     Place Order
