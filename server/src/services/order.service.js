@@ -14,7 +14,13 @@ const statusType = require("../constants/statusType");
  * @returns { object<type|message|statusCode|order> }
  */
 exports.createOrder = async (body, user) => {
-    const { shippingAddress, paymentMethod, phone, discountCode, shippingPrice } = body;
+    const {
+        shippingAddress,
+        paymentMethod,
+        phone,
+        discountCode,
+        shippingPrice,
+    } = body;
     const { address, city, postalCode, country } = shippingAddress;
 
     // 1. Check if missing field
@@ -43,7 +49,7 @@ exports.createOrder = async (body, user) => {
         };
 
     // 3. Init final total order proce
-    let finalPrice = cart.totalPrice;
+    let finalPrice = cart.totalPrice + shippingPrice;
 
     // 4. Check user use discount code
     if (discountCode) {
@@ -56,14 +62,6 @@ exports.createOrder = async (body, user) => {
                 type: statusType.error,
                 message: "No discount code found!",
                 statusCode: 404,
-            };
-
-        // Handle discount code
-        if (!user.discountCodes.includes(discountCode))
-            return {
-                type: statusType.error,
-                message: "Not your discount code!",
-                statusCode: 400,
             };
 
         // Check valid day
@@ -91,13 +89,16 @@ exports.createOrder = async (body, user) => {
                 finalPrice -= discount.discountValue;
             }
         }
+        discount.available -= 1;
+        await discount.save();
     }
 
     // 5. Order detail
     const orderDetail = {
         products: cart.items,
         user: user._id,
-        orderPrice: finalPrice,
+        orderPrice: cart.totalPrice,
+        totalPrice: finalPrice,
         isPaid: true,
         paidAt: moment(),
         shippingAddress,
@@ -135,7 +136,6 @@ exports.createOrder = async (body, user) => {
  * @param   { object } req - Request object
  * @returns { object<type|message|statusCode|orders> }
  */
-
 
 exports.getOrdersByQuery = async (req) => {
     // 1. Set user id in req.query

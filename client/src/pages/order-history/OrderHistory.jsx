@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { toastContext } from "../../contexts/ToastProvider";
+// import { toastContext } from "../../contexts/ToastProvider";
 import { ProgressSpinner } from "primereact/progressspinner";
 import orderApi from "../../api/orderApi";
+import route from "../../constants/route";
 
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
-    const { toastError } = toastContext();
+    // const { toastError } = toastContext();
     const [loading, setLoading] = useState(false);
 
     const formatDate = (dateTimeString) => {
@@ -31,7 +32,7 @@ const OrderHistory = () => {
                     setOrders(response.data.orders);
                 }
             } catch (error) {
-                toastError(error.response.data.message);
+                // toastError(error.response.data.message);
             }
             setLoading(false);
         };
@@ -39,7 +40,7 @@ const OrderHistory = () => {
     }, []);
 
     const handleViewDetail = (orderId) => {
-        navigate(`/order/${orderId}`);
+        navigate(`${route.ORDER}/${orderId}`);
     };
 
     return (

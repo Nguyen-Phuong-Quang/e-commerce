@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
@@ -10,6 +10,7 @@ import discountApi from "../../api/discountApi";
 import { toastContext } from "../../contexts/ToastProvider";
 import { ProgressSpinner } from "primereact/progressspinner";
 import convertFirstLetterToUpperCase from "../../helpers/convertFirstLetterToUpperCase";
+import route from "../../constants/route";
 
 const Order = () => {
     const [shippingAddress, setShippingAddress] = useState({
@@ -18,7 +19,6 @@ const Order = () => {
         postalCode: "",
         country: "",
     });
-    const [discountCode, setDiscountCode] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("");
     const [phone, setPhone] = useState("");
     const [shippingPrice, setShippingPrice] = useState(30000);
@@ -29,7 +29,7 @@ const Order = () => {
     const [cart, setCart] = useState({});
     const [items, setItems] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
-    const [discountSelected, setDiscountSelected] = useState({});
+    const [discountSelected, setDiscountSelected] = useState("");
     const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
     const navigate = useNavigate();
 
@@ -48,7 +48,7 @@ const Order = () => {
         }
         setLoading(false);
     };
-        
+
     const fetchDiscountCode = async (total) => {
         setLoading(true);
         try {
@@ -56,7 +56,6 @@ const Order = () => {
             if (response.data.type === "SUCCESS") {
                 setDiscounts(response.data.discounts);
                 setTotalPrice(response.data.totalPrice);
-                console.log(response.data.discounts);
             }
         } catch (error) {
             toastError(error.response.data.message);
@@ -68,7 +67,6 @@ const Order = () => {
     useEffect(() => {
         fetchCartItems();
         fetchDiscountCode();
-        console.log(total);
     }, []);
 
     const createOrder = async () => {
@@ -76,14 +74,14 @@ const Order = () => {
         try {
             const data = {
                 shippingAddress,
-                discountCode,
                 paymentMethod,
                 phone,
+                discountCode: discountSelected,
+                shippingPrice,
             };
             const response = await orderApi.create(data);
             if (response.data.type === "SUCCESS") {
                 setShippingAddress("");
-                setDiscountCode("");
                 setPaymentMethod("");
                 setPhone("");
                 toastSuccess(response.data.message);
@@ -98,12 +96,30 @@ const Order = () => {
     const handlePlaceOrder = () => {
         createOrder();
         setShowConfirmationDialog(false);
-        toastSuccess("Order placed successfully");
-        navigate("/order-history");
+        navigate(route.ORDER_HISTORY, { replace: true });
     };
 
     const total = totalPrice + shippingPrice;
 
+    const showFinalPrice = (total) => {
+        let finalPrice = total;
+        const discount = discounts.find(
+            (item) => item._id === discountSelected
+        );
+
+        if (discount.discountUnit === "percent") {
+            const reducedAmount = (total * discount.discountValue) / 100;
+
+            if (reducedAmount > discount.maxDiscountAmount) {
+                finalPrice -= discount.maxDiscountAmount;
+            } else {
+                finalPrice -= reducedAmount;
+            }
+        } else {
+            finalPrice -= discount.discountValue;
+        }
+        return Math.floor(finalPrice);
+    };
 
     return (
         <div className="order-container">
@@ -156,20 +172,16 @@ const Order = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {items.map((item, index) => (
+                                {items.map((item) => (
                                     <tr
                                         key={item._id}
-                                        className={`h-24 ${
-                                            index % 2 == 0
-                                                ? "bg-yellow-100/50"
-                                                : ""
-                                        }`}
+                                        className={`h-24 border-t last:border-b`}
                                     >
                                         <td className="flex justify-center pt-2">
                                             <img
                                                 src={item.image}
                                                 alt={item.product.name}
-                                                className="w-20 h-20 rounded-lg"
+                                                className="w-20 h-20 rounded-lg object-cover"
                                             />
                                         </td>
                                         <td className="px-4 h-full text-center ">
@@ -225,12 +237,60 @@ const Order = () => {
                         </h2>
                         <h2 className="m-2 pl-10 text-xl">
                             <span className="font-semibold">Total</span>:{" "}
-                            <span className=" font-bold text-red-700">
+                            <span
+                                className={`font-bold  ${
+                                    discountSelected
+                                        ? "text-gray-400 font-normal line-through"
+                                        : "text-red-700"
+                                }`}
+                            >
                                 {new Intl.NumberFormat().format(total)}
                                 <span className="text-sm text-red-500 pb-2">
                                     đ
                                 </span>
                             </span>
+                            {discountSelected && (
+                                <>
+                                    <i className="pi pi-arrow-right text-gray-700 mx-2" />
+                                    <span className=" font-bold text-red-700">
+                                        {new Intl.NumberFormat().format(
+                                            showFinalPrice(total)
+                                        )}
+                                        <span className="text-sm text-red-500 pb-2">
+                                            đ
+                                        </span>
+                                    </span>
+                                </>
+                            )}
+                        </h2>
+
+                        <h2 className="flex ml-2 my-6 pl-10 text-xl items-center">
+                            <span className="font-semibold">Discount</span>
+                            <div className="p-field ml-[84px]">
+                                <Dropdown
+                                    id="discounts"
+                                    value={discountSelected}
+                                    className="ml-1 w-60"
+                                    options={discounts.map((discount) => {
+                                        return {
+                                            label: `${new Intl.NumberFormat().format(
+                                                discount.discountValue
+                                            )}${
+                                                discount.discountUnit ===
+                                                "percent"
+                                                    ? "%"
+                                                    : "đ"
+                                            }`,
+                                            value: discount._id,
+                                        };
+                                    })}
+                                    onChange={(e) => {
+                                        setDiscountSelected(e.value);
+                                    }}
+                                    placeholder="Choose a discount"
+                                    optionLabel="label"
+                                />
+                            </div>
                         </h2>
 
                         <h2 className="flex m-2 pl-10 text-xl">
@@ -240,30 +300,10 @@ const Order = () => {
                             <div className="p-field ml-3">
                                 <InputText
                                     id="phone"
-                                    className="h-8 w-96 ml-6"
+                                    className="h-10 w-96 ml-6"
                                     value={phone}
                                     required
                                     onChange={(e) => setPhone(e.target.value)}
-                                />
-                            </div>
-                        </h2>
-
-                        <h2 className="flex ml-2 my-6 pl-10 text-xl items-center">
-                            <span className="font-semibold">
-                                Discount
-                            </span>
-                            <div className="p-field ml-2">
-                                <Dropdown
-                                    id="discounts"
-                                    value={discountSelected}
-                                    className="ml-1 w-60"
-                                    options={discounts.map(discount => 
-                                        {return { label: `${discount.discountValue} ${discount.discountUnit}`, value: discount._id }}
-                                        )
-                                    }
-                                    onChange={(e) => setDiscountSelected(e.value)}
-                                    placeholder="Choose a discount"
-                                    optionLabel="label"
                                 />
                             </div>
                         </h2>

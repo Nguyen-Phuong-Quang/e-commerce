@@ -10,8 +10,6 @@ import { Dialog } from "primereact/dialog";
 import DialogAddProduct from "./DialogAddProduct";
 import { useSearchContext } from "../../contexts/SearchProvider";
 import useDebounce from "../../hooks/useDebounce";
-import { userStateContext } from "../../contexts/StateProvider";
-import { toastContext } from "../../contexts/ToastProvider";
 import categoryApi from "../../api/categoryApi";
 import DialogUpdateColorSize from "./DialogUpdateColorSize";
 
@@ -28,8 +26,6 @@ function HomeProductSeller() {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showDialog, setShowDialog] = useState(false);
     const { searchText } = useSearchContext();
-    const [review, setReview] = useState([]);
-    const [category, setCategory] = useState([]);
     const [categoryOptions, setCategoryOptions] = useState([]);
 
     const onProductSelect = (product) => {
@@ -44,33 +40,29 @@ function HomeProductSeller() {
 
     const debouncedValue = useDebounce(searchText, 500);
 
-    useEffect(() => {
-        const fetchApi = async () => {
-            setLoading(true);
-            try {
-                const response = await productApi.getSellerProducts(
-                    debouncedValue
-                );
-                if (response.data.type === "SUCCESS") {
-                    setProducts(response.data.products);
-                }
-
-                if (response.data.products.length < 1) {
-                    console.log("No product founddd!");
-                }
-                // setProducts(dataTrain);
-            } catch (err) {
-                // console.log(err);
-                setProducts([]);
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const response = await productApi.getSellerProducts(debouncedValue);
+            if (response.data.type === "SUCCESS") {
+                setProducts(response.data.products);
             }
-            setLoading(false);
-        };
 
-        fetchApi();
+            if (response.data.products.length < 1) {
+                console.log("No product founddd!");
+            }
+            // setProducts(dataTrain);
+        } catch (err) {
+            // console.log(err);
+            setProducts([]);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        fetchData();
     }, [
-        visibleAddDialog,
-        visibleDeleteDialog,
-        visibleEditDialog,
+
         debouncedValue,
     ]);
 
@@ -79,12 +71,7 @@ function HomeProductSeller() {
             try {
                 const response = await categoryApi.query();
                 if (response.data.type === "SUCCESS") {
-                    // const reponseCategories = response.data.categories;
-                    // setCategoryOptions(reponseCategories.map(({ _id, name }) => ({ _id, name })));
-                    // console.log("category option: ");
-                    // console.log(categoryOptions);
                     const responseCategories = response.data.categories;
-                    //   const newCategoryOptions = responseCategories.map(({ _id, name }) => ({ _id, name }));
                     setCategoryOptions(responseCategories);
                 }
             } catch (err) {
@@ -384,6 +371,7 @@ function HomeProductSeller() {
                         name={productName}
                         visible={visibleDeleteDialog}
                         setVisible={setVisibleDeleteDialog}
+                        fetchData={fetchData}
                     />
                 )}
                 {/* display edit dialog */}
@@ -393,6 +381,7 @@ function HomeProductSeller() {
                         visible={visibleEditDialog}
                         setVisible={setvisibleEditDialog}
                         categoryOptions={categoryOptions}
+                        fetchData={fetchData}
                     />
                 )}
                 {visibleAddDialog && (
@@ -400,6 +389,7 @@ function HomeProductSeller() {
                         visible={visibleAddDialog}
                         setVisible={setvisibleAddDialog}
                         categoryOptions={categoryOptions}
+                        fetchData={fetchData}
                     />
                 )}
 
@@ -417,6 +407,7 @@ function HomeProductSeller() {
                         setVisible={setVisibleUpdateSizeColor}
                         productId={productId}
                         // onHide={onHideDialog}
+                        fetchData={fetchData}
                     />
                 )}
             </div>
