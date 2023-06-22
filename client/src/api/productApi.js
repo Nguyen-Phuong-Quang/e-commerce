@@ -41,12 +41,7 @@ const productApi = {
     },
     updateProductDetail: (productId, data) => {
         const url = `${PREFIX}/update-product-detail/${productId}`;
-        // return axiosClient.patch(url, data);
-        return axiosClient.patch(url, data, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
+        return axiosClient.patch(url, data);
     },
 
     updateProductImages: (productId, data) => {
