@@ -105,8 +105,7 @@ const DialogEditProduct = ({
 
     const handleCategoryChange = (event) => {
         setSelectedCategory(event.value);
-        // setCategory(event.value._id);
-        setCategory(event.value ? event.value._id : null);
+        setCategory(event.value._id);
     };
 
     return (

@@ -164,6 +164,8 @@ export default function Detail() {
                     setData(productData);
                     setColorOptions(productData.colors);
                     setSizeOptions(productData.sizes);
+                    console.log(productData.colors);
+                    console.log(productData.sizes);
 
                     // toastSuccess(response.data.message);
                 }
@@ -359,15 +361,8 @@ export default function Detail() {
 
                     {/* second----------------- */}
                     <div className="w-full mt-8">
-                        <div className="flex flex-col justify-start bg-gray-100 rounded-lg mx-8">
-                            <Rating
-                                value={rating}
-                                onChange={(e) => setRating(e.value)}
-                                stars={5}
-                                cancel={false}
-                                className="text-orange-500 hover:text-orange-800  cursor-pointer ml-16 mt-4"
-                            />
-                            <div className="flex  space-x-4 items-center ml-16 mx-8 my-8 ">
+                        <div className="flex flex-col bg-gray-100 rounded-lg mx-8">
+                            <div className="flex  space-x-4 items-center mr-8 ml-16 mt-8 ">
                                 {/* ///avatar user  */}
                                 <Avatar
                                     image={currentUser?.profileImage}
@@ -392,6 +387,13 @@ export default function Detail() {
                                     </span>
                                 </div>
                             </div>
+                            <Rating
+                                value={rating}
+                                onChange={(e) => setRating(e.value)}
+                                stars={5}
+                                cancel={false}
+                                className="text-orange-500 hover:text-orange-800  cursor-pointer ml-16 mb-8"
+                            />
                         </div>
 
                         {/* //////////review */}
@@ -478,7 +480,7 @@ export default function Detail() {
 
             {visibleCart && (
                 <Dialog
-                    className="w-1/4 h-auto"
+                    className="w-1/2 h-auto"
                     visible={visibleCart}
                     onHide={() => {
                         setVisibleCart(false);
@@ -504,7 +506,9 @@ export default function Detail() {
                     )}
                     {!loadingAddToCart && (
                         <div className="flex flex-col space-y-6">
-                            <div>
+                            {
+                                sizeOptions.length > 0 &&
+                                <div>
                                 <label
                                     htmlFor="sizess"
                                     className=" block text-gray-700 font-bold mb-4 text-left mr-4"
@@ -521,6 +525,7 @@ export default function Detail() {
                                     placeholder="Select Size"
                                 />
                             </div>
+                            }
                             <div>
                                 <label
                                     htmlFor="coloss"

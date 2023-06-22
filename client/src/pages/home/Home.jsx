@@ -226,7 +226,7 @@ function Home() {
 
                 {visibleCart && (
                     <Dialog
-                        className="w-1/4 h-auto"
+                        className="w-1/2 h-auto"
                         visible={visibleCart}
                         onHide={() => {
                             setVisibleCart(false);
