@@ -30,6 +30,4 @@ const DiscountSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-DiscountSchema.index({ code: 1 }, { unique: true });
-
 module.exports = mongoose.model("Discount", DiscountSchema, "discounts");
