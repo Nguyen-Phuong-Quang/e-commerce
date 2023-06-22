@@ -51,6 +51,8 @@ export default function Detail() {
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     };
 
+
+
     const fetchReivew = async () => {
         setLoadingComment(true);
         try {
@@ -298,7 +300,9 @@ export default function Detail() {
                             {/* colorsss  */}
                             <div>
                                 <span className="font-semibold">Colors</span>
-                                <div className="flex space-x-4 mt-4">
+                                {
+                                    (!colorOptions.map(item => item.color.toLowerCase()).includes("default"))&&
+                                    <div className="flex space-x-4 mt-4">
                                     {data.colors &&
                                         data.colors.map((color) => (
                                             <span
@@ -312,12 +316,22 @@ export default function Detail() {
                          }`}
                                             />
                                         ))}
-                                </div>
+                                </div> 
+                                }
+                                {
+                        (colorOptions.map(item => item.color.toLowerCase()).includes("default")) &&
+                                    <div className="ml-4 mt-4">
+                                        <h3 className="text-sm text-gray-400 font-bold">Default</h3>
+                                        </div>
+                                }
                             </div>
                             {/* size   */}
                             <div>
                                 <span className="font-semibold">Sizes</span>
-                                <div className="flex space-x-4 mt-4">
+                                {
+                                    (!sizeOptions.map(item => item.size.toLowerCase()).includes("default"))
+                                     && 
+                                    <div className="flex space-x-4 mt-4">
                                     {data.sizes &&
                                         data.sizes.map((size, index) => (
                                             <span
@@ -329,6 +343,13 @@ export default function Detail() {
                                             </span>
                                         ))}
                                 </div>
+                                }
+                                {
+                                (sizeOptions.map(item => item.size.toLowerCase()).includes("default")) && 
+                                  <div className="ml-4 mt-4">
+                                  <h3 className="text-sm text-gray-400 font-bold">Default</h3>
+                                  </div>
+                                }
                             </div>
                             {/* quantity   */}
                             <div className="flex items-center space-x-2 pt-2 mb-8">
@@ -370,7 +391,7 @@ export default function Detail() {
                                     image={currentUser?.profileImage}
                                     shape="circle"
                                     size="large"
-                                    className="mr-2"
+                                    className="mr-2 mb-4"
                                 />
                                 <div className="w-full">
                                     <div className="relative w-full my-4">
@@ -394,17 +415,17 @@ export default function Detail() {
                                         onChange={(e) => setRating(e.value)}
                                         stars={5}
                                         cancel={false}
-                                        className="text-orange-500 hover:text-orange-800  cursor-pointer mb-2"
+                                        className="text-orange-500 hover:text-orange-800  cursor-pointer mb-4"
                                     />
                                 </div>
                             </div>
-                            <Rating
+                            {/* <Rating
                                 value={rating}
                                 onChange={(e) => setRating(e.value)}
                                 stars={5}
                                 cancel={false}
                                 className="text-orange-500 hover:text-orange-800  cursor-pointer ml-16 mb-8"
-                            />
+                            /> */}
                         </div>
 
                         {/* //////////review */}
@@ -535,7 +556,6 @@ export default function Detail() {
                     {!loadingAddToCart && (
                         <div className="flex flex-col space-y-6">
                             {
-                                sizeOptions.length > 0 &&
                                 <div>
                                 <label
                                     htmlFor="sizess"
@@ -554,23 +574,26 @@ export default function Detail() {
                                 />
                             </div>
                             }
-                            <div>
-                                <label
-                                    htmlFor="coloss"
-                                    className=" block text-gray-700 font-bold mb-4 text-left mr-4"
-                                >
-                                    Color
-                                </label>
-                                <Dropdown
-                                    id="coloss"
-                                    value={selectedColor}
-                                    options={colorOptions}
-                                    onChange={(e) => setSelectedColor(e.value)}
-                                    className="w-full"
-                                    placeholder="Select color"
-                                    optionLabel="color"
-                                />
-                            </div>
+
+                            {
+                                  <div>
+                                  <label
+                                      htmlFor="coloss"
+                                      className=" block text-gray-700 font-bold mb-4 text-left mr-4"
+                                  >
+                                      Color
+                                  </label>
+                                  <Dropdown
+                                      id="coloss"
+                                      value={selectedColor}
+                                      options={colorOptions}
+                                      onChange={(e) => setSelectedColor(e.value)}
+                                      className="w-full"
+                                      placeholder="Select color"
+                                      optionLabel="color"
+                                  />
+                              </div>
+                            }
                             <label
                                 htmlFor="quantity"
                                 className=" block text-gray-700 font-bold mb-4 text-left mr-4"
