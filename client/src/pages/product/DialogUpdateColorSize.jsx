@@ -107,7 +107,7 @@ const DialogUpdateColorSize = ({ visible, setVisible, productId }) => {
     <>
       <Dialog
         visible={visible}
-        className="sm:w-full md:w-10/12 lg:w-3/4 xl:w-2/3 2xl:w-1/3 mx-auto h-auto"
+        className="sm:w-11/12 md:w-10/12 lg:w-3/4 xl:w-2/3 2xl:w-1/3 mx-auto h-auto"
         header="Edit Color and Size Detail"
         onHide={() => {
           setVisible(false);
@@ -159,11 +159,11 @@ const DialogUpdateColorSize = ({ visible, setVisible, productId }) => {
                         className="ml-2 w-1/2 flex flex-row items-center justify-between mb-2  "
                       >
                         {/* <span className="flex-grow-1 mr-2">{size.toUpperCase()}</span> */}
-                        {(!size.toUpperCase() === "DEFAULT") && 
+                        {size.toUpperCase() !== "DEFAULT" && 
                           <span
                             key={index}
-                            className={`flex justify-center items-center h-8 w-8 rounded-full bg-gray-300 border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
-                                                                         }`}
+                            className="flex justify-center items-center h-8 w-8 rounded-full bg-gray-300 border-2 border-gray-300 cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md
+                                                                         "
                           >
                             {size.toUpperCase()}
                           </span>

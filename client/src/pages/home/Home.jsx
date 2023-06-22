@@ -16,6 +16,7 @@ import { InputNumber } from "primereact/inputnumber";
 import cartApi from "../../api/cartApi";
 import convertFirstLetterToUpperCase from "../../helpers/convertFirstLetterToUpperCase";
 import route from "../../constants/route";
+import { Button } from "primereact/button";
 
 function Home() {
   const [loading, setLoading] = useState(false);
@@ -79,7 +80,6 @@ function Home() {
   const handleCallApiCart = async () => {
     setLoadingAddToCart(true);
     try {
-
       const formData = new FormData();
       formData.append("quantity", quantity);
       if (selectedColor) {
@@ -88,7 +88,7 @@ function Home() {
       if (selectedSize) {
         formData.append("sizeId", selectedSize._id);
       }
-    //   formData.append("sizeId", selectedSize._id);
+      //   formData.append("sizeId", selectedSize._id);
       formData.append("productId", productId);
       const response = await cartApi.add(formData);
       if (response.data.type === "SUCCESS") {
@@ -97,7 +97,7 @@ function Home() {
         fetchApi();
       }
     } catch (err) {
-    //   toastError(err.response.data.message);
+      //   toastError(err.response.data.message);
       console.log(err);
     }
     setLoadingAddToCart(false);
@@ -216,7 +216,8 @@ function Home() {
 
         {visibleCart && (
           <Dialog
-            className="w-1/2 h-auto"
+            // className="w-1/2 h-auto"
+            className="w-11/12 max-w-11/12 sm:max-w-lg h-auto"
             visible={visibleCart}
             onHide={() => {
               setVisibleCart(false);
@@ -250,52 +251,70 @@ function Home() {
             )}
             {!loadingAddToCart && (
               <div className="flex flex-col space-y-6">
-                  <div>
-                    <label
-                      htmlFor="sizes"
-                      className=" block text-gray-700 font-bold mb-4 text-left mr-4"
-                    >
-                      Size
-                    </label>
-                    <Dropdown
-                      id="sizes"
-                      value={selectedSize}
-                      options={sizeOptions.map((item) => {
-                        item.size = item.size.toUpperCase();
-                        return item;
-                      })}
-                      onChange={(e) => setSelectedSize(e.value)}
-                      optionLabel="size"
-                      className="w-full"
-                      placeholder="Select Size"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="colors"
-                      className=" block text-gray-700 font-bold mb-4 text-left mr-4"
-                    >
-                      Color
-                    </label>
-                    <Dropdown
-                      id="colors"
-                      value={selectedColor}
-                      options={colorOptions.map((item) => {
-                        item.color = convertFirstLetterToUpperCase(item.color);
-                        return item;
-                      })}
-                      onChange={(e) => setSelectedColor(e.value)}
-                      className="w-full"
-                      placeholder="Select color"
-                      optionLabel="color"
-                    />
-                  </div>
+                <div>
+                  <label
+                    htmlFor="sizes"
+                    className=" block text-gray-700 font-bold mb-4 text-left mr-4"
+                  >
+                    Size
+                  </label>
+                  <Dropdown
+                    id="sizes"
+                    value={selectedSize}
+                    options={sizeOptions.map((item) => {
+                      item.size = item.size.toUpperCase();
+                      return item;
+                    })}
+                    onChange={(e) => setSelectedSize(e.value)}
+                    optionLabel="size"
+                    className="w-full"
+                    placeholder="Select Size"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="colors"
+                    className=" block text-gray-700 font-bold mb-4 text-left mr-4"
+                  >
+                    Color
+                  </label>
+                  <Dropdown
+                    id="colors"
+                    value={selectedColor}
+                    options={colorOptions.map((item) => {
+                      item.color = convertFirstLetterToUpperCase(item.color);
+                      return item;
+                    })}
+                    onChange={(e) => setSelectedColor(e.value)}
+                    className="w-full"
+                    placeholder="Select color"
+                    optionLabel="color"
+                  />
+                </div>
+              
                 <label
                   htmlFor="quantity"
                   className=" block text-gray-700 font-bold mb-4 text-left mr-4"
                 >
                   Quantity
                 </label>
+                <div className="flex items-center space-x-4 justify-center ">
+                  <Button
+                    className="p-button-secondary p-button-rounded p-button-icon-only"
+                    onClick={() => setQuantity(quantity - 1)}
+                    disabled={quantity <= 1}
+                  >
+                    <i className="pi pi-minus"></i>
+                  </Button>
+                  <div className="text-lg font-bold mx-3">{quantity}</div>
+                  <Button
+                    className="p-button-secondary p-button-rounded p-button-icon-only"
+                    onClick={() => setQuantity(quantity + 1)}
+                  >
+                    <i className="pi pi-plus"></i>
+                  </Button>
+                </div>
+                {/* 
                 <InputNumber
                   id="quantity"
                   name="quantity"
@@ -303,7 +322,7 @@ function Home() {
                   value={quantity}
                   onValueChange={(e) => setQuantity(e.target.value)}
                   className=""
-                />
+                /> */}
               </div>
             )}
           </Dialog>
