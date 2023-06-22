@@ -105,7 +105,7 @@ CartSchema.pre(/^delete/, async function (next) {
             product.quantity += item.totalProductQuantity;
         })
     );
-    
+
     next();
 });
 
@@ -116,7 +116,8 @@ CartSchema.pre("save", function (next) {
         0
     );
     this.totalPrice = this.items.reduce(
-        (total, item) => total + item.totalProductPrice,
+        (total, item) =>
+            total + item.totalProductPrice,
         0
     );
 
