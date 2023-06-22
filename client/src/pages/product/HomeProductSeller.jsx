@@ -61,10 +61,7 @@ function HomeProductSeller() {
 
     useEffect(() => {
         fetchData();
-    }, [
-
-        debouncedValue,
-    ]);
+    }, [debouncedValue]);
 
     useEffect(() => {
         const fetchCategoryOptions = async () => {
@@ -144,7 +141,7 @@ function HomeProductSeller() {
                                                             );
                                                         }}
                                                     >
-                                                        <i className="pi pi-pencil" />
+                                                        <i className="pi pi-pencil text-blue-600" />
                                                     </div>
                                                     <div
                                                         className="text-red-500 cursor-pointer px-2 py-1 rounded border border-transparent hover:border-red-500 flex justify-center items-center"
@@ -170,7 +167,7 @@ function HomeProductSeller() {
                                                             );
                                                         }}
                                                     >
-                                                        <i className="pi pi-info-circle" />
+                                                        <i className="pi pi-info-circle text-green-500" />
                                                     </div>
                                                     {/* view update size and color */}
                                                     <div
@@ -187,7 +184,7 @@ function HomeProductSeller() {
                                                             );
                                                         }}
                                                     >
-                                                        <i className="pi pi-info" />
+                                                        <i className="pi pi-info text-gray-600" />
                                                     </div>
                                                     <div
                                                         className="text-red-500 cursor-pointer px-2 py-1 rounded border border-transparent hover:border-red-500 flex justify-center items-center"
@@ -200,7 +197,7 @@ function HomeProductSeller() {
                                                             );
                                                         }}
                                                     >
-                                                        <i className="pi pi-star" />
+                                                        <i className="pi pi-star text-purple-700" />
                                                     </div>
                                                 </span>
                                             </div>,
