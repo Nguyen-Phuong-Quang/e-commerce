@@ -48,7 +48,12 @@ exports.addItemToCart = async (email, productId, quantity, colorId, sizeId) => {
 
     const { priceAfterDiscount, mainImage } = product;
 
-    const cart = await CartSchema.findOne({ email });
+    const data = {
+        product: productId,
+        totalProductQuantity: quantity,
+        totalProductPrice: priceAfterDiscount * quantity,
+        image: mainImage,
+    };
 
     const colorCheck = product.colors.find(
         (cl) => cl._id.toString() === colorId.toString()
@@ -62,6 +67,8 @@ exports.addItemToCart = async (email, productId, quantity, colorId, sizeId) => {
             statusCode: 400,
         };
 
+    data.color = colorCheck._id;
+
     const sizeCheck = product.sizes.find(
         (sz) => sz._id.toString() === sizeId.toString()
     );
@@ -74,20 +81,14 @@ exports.addItemToCart = async (email, productId, quantity, colorId, sizeId) => {
             statusCode: 400,
         };
 
+    data.size = sizeCheck._id;
+
+    const cart = await CartSchema.findOne({ email });
     // If no cart existed
     if (!cart) {
         const cartData = {
             email,
-            items: [
-                {
-                    product: productId,
-                    color: colorCheck._id,
-                    size: sizeCheck._id,
-                    totalProductQuantity: quantity,
-                    totalProductPrice: priceAfterDiscount * quantity,
-                    image: mainImage,
-                },
-            ],
+            items: [data],
         };
 
         const newCart = await CartSchema.create(cartData);
@@ -100,12 +101,13 @@ exports.addItemToCart = async (email, productId, quantity, colorId, sizeId) => {
         };
     }
 
-    const indexFound = cart.items.findIndex(
-        (item) =>
+    const indexFound = cart.items.findIndex((item) => {
+        return (
             item.product._id.toString() === productId.toString() &&
             item.color._id.toString() === colorCheck._id.toString() &&
             item.size._id.toString() === sizeCheck._id.toString()
-    );
+        );
+    });
 
     // If this product not exist in this cart
     if (indexFound !== -1) {
@@ -113,14 +115,7 @@ exports.addItemToCart = async (email, productId, quantity, colorId, sizeId) => {
         cart.items[indexFound].totalProductPrice +=
             priceAfterDiscount * quantity;
     } else {
-        cart.items.push({
-            product: productId,
-            color: colorCheck._id,
-            size: sizeCheck._id,
-            totalProductQuantity: quantity,
-            totalProductPrice: priceAfterDiscount * quantity,
-            image: mainImage,
-        });
+        cart.items.push(data);
     }
     product.quantity -= quantity;
 

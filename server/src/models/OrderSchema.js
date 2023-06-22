@@ -37,6 +37,15 @@ const OrderSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
         },
+        taxPrice: {
+            type: Number,
+            default: 0.0,
+        },
+        shippingPrice: {
+            type: Number,
+            // required: true,
+            default: 30000.0,
+        },
         orderPrice: {
             type: Number,
             required: true,
@@ -73,15 +82,7 @@ const OrderSchema = new mongoose.Schema(
                 "e-banking",
             ],
         },
-        taxPrice: {
-            type: Number,
-            default: 0.0,
-        },
-        shippingPrice: {
-            type: Number,
-            // required: true,
-            default: 30000.0,
-        },
+
         phone: {
             type: String,
             require: [true, "Phone is required"],
@@ -114,10 +115,10 @@ OrderSchema.pre(/^find/, function (next) {
     next();
 });
 
-// Calculate total order price automatically after save
-OrderSchema.pre("save", async function (next) {
-    this.totalPrice = this.orderPrice + this.taxPrice + this.shippingPrice;
-    next();
-});
+// // Calculate total order price automatically after save
+// OrderSchema.pre("save", async function (next) {
+//     this.totalPrice = this.orderPrice + this.taxPrice + this.shippingPrice;
+//     next();
+// });
 
 module.exports = mongoose.model("Order", OrderSchema, "orders");

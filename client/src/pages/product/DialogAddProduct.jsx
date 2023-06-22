@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
-import { MultiSelect } from "primereact/multiselect";
 import { InputNumber } from "primereact/inputnumber";
 import ProductDialogFooter from "./Components/ProductDialogFooter";
-import { useNavigate } from "react-router-dom";
 import { Dialog } from "primereact/dialog";
 import productApi from "./../../api/productApi";
-import categoryApi from "./../../api/categoryApi";
 import { toastContext } from "./../../contexts/ToastProvider";
 import { Dropdown } from "primereact/dropdown";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Button } from "primereact/button";
+import convertFirstLetterToUpperCase from "../../helpers/convertFirstLetterToUpperCase";
 
-const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
+const DialogAddProduct = ({ visible, setVisible, categoryOptions, fetchData }) => {
     const [loading, setLoading] = useState(false);
     const [mainImage, setMainImage] = useState(undefined);
     const [preview, setPreview] = useState(undefined);
@@ -32,7 +30,6 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
         priceAfterDiscount: 0,
         quantity: null,
     });
-    const navigate = useNavigate();
 
     const handleCategoryChange = (event) => {
         setSelectedCategory(event.value);
@@ -40,7 +37,7 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
     };
 
     const handleAddColor = () => {
-        setColors([...colors, newColor]);
+        if (newColor) setColors([...colors, newColor]);
         setNewColor("");
     };
 
@@ -50,7 +47,7 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
         setColors(updatedColor);
     };
     const handleAddSize = () => {
-        setSizes([...sizes, newSize]);
+        if (newSize) setSizes([...sizes, newSize]);
         setNewSize("");
     };
 
@@ -59,22 +56,6 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
         updatedSize.splice(index, 1);
         setSizes(updatedSize);
     };
-
-    // fetch category ---------------------------------
-    // useEffect(() => {
-    //     const fetchCategoryOptions = async () => {
-    //         try {
-    //             const response = await categoryApi.query();
-    //             if (response.data.type === "SUCCESS") {
-    //                 setCategoryOptions(response.data.categories);
-    //             }
-    //         } catch (err) {
-    //             console.log(err);
-    //         }
-    //     };
-
-    //     fetchCategoryOptions();
-    // }, [visible]);
 
     const handelAddProduct = async () => {
         setLoading(true);
@@ -99,7 +80,7 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
             if (response.data.type === "SUCCESS") {
                 toastSuccess(response.data.message);
                 setVisible(false);
-                navigate("/product");
+                fetchData()
             }
         } catch (err) {
             toastError(err.response.data.message);
@@ -237,9 +218,9 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
                                     />
                                     <label
                                         htmlFor="image-input"
-                                        className="font-bold flex justify-center items-center h-12 w-1/4 mx-auto mt-4 mb-2 bg-blue-500 text-white hover:cursor-pointer rounded-md hover:bg-blue-700"
+                                        className="font-bold flex justify-center items-center h-12 w-1/2 mx-auto pt-4 pb-2 bg-blue-500 text-white hover:cursor-pointer rounded-md hover:bg-blue-700"
                                     >
-                                        <div className="flex items-center my-2">
+                                        <div className="flex items-center h-full">
                                             <i className="pi pi-images mr-4" />{" "}
                                             <span>Upload</span>
                                         </div>
@@ -371,7 +352,13 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
                                     Sizes
                                 </label>
                                 <div className="basis-2/3 mr-4 ">
-                                    <div className="flex flex-row mb-4">
+                                    <div
+                                        className="flex flex-row mb-4"
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter")
+                                                handleAddSize();
+                                        }}
+                                    >
                                         <InputText
                                             value={newSize}
                                             id="sizes"
@@ -384,7 +371,7 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
                                         />
                                         <Button
                                             label="Add"
-                                            onClick={newSize && handleAddSize}
+                                            onClick={handleAddSize}
                                             className="p-button-secondary"
                                         />
                                     </div>
@@ -423,7 +410,13 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
                                     Colors
                                 </label>
                                 <div className="basis-2/3 mr-4 ">
-                                    <div className="flex flex-row mb-4">
+                                    <div
+                                        className="flex flex-row mb-4"
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter")
+                                                handleAddColor();
+                                        }}
+                                    >
                                         <InputText
                                             value={newColor}
                                             id="colors"
@@ -436,7 +429,7 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
                                         />
                                         <Button
                                             label="Add"
-                                            onClick={newColor && handleAddColor}
+                                            onClick={handleAddColor}
                                             className="p-button-secondary"
                                         />
                                     </div>
@@ -457,7 +450,7 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions }) => {
                         }`}
                                                 />
                                                 <span className="flex-grow-1 mr-2 text-gray-500 font-semibold">
-                                                    {color.toUpperCase()}
+                                                    {convertFirstLetterToUpperCase(color)}
                                                 </span>
                                                 <span
                                                     className="text-red-400 hover:text-red-600 cursor-pointer"

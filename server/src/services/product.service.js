@@ -109,7 +109,6 @@ exports.createProduct = async (body, files, sellerId) => {
         isOutOfStock,
     } = body;
 
-    console.log(body);
 
     const mainImage = files.find((image) => image.fieldname === "mainImage");
     const images = files.filter((image) => image.fieldname === "images");
@@ -246,7 +245,6 @@ exports.createProduct = async (body, files, sellerId) => {
  * @returns { Object<type|message|statusCode|product> }
  */
 exports.updateProductDetail = async (productId, sellerId, body) => {
-    console.log(body);
     const product = await ProductSchema.findById(productId);
 
     if (!product)

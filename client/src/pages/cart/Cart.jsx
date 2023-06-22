@@ -10,11 +10,8 @@ import route from "../../constants/route";
 const Cart = () => {
     const [cart, setCart] = useState({});
     const [items, setItems] = useState([]);
-    const [totalProductQuantity, setTotalProductQuantity] = useState(0);
-    const [totalProductPrice, setTotalProductPrice] = useState(0);
-    const [totalPrice, setTotalPrice] = useState(0);
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
     const { toastError, toastSuccess } = toastContext();
 
     const fetchCartItems = async () => {
@@ -24,11 +21,6 @@ const Cart = () => {
             if (response.data.type === "SUCCESS") {
                 setCart(response.data.cart);
                 setItems(response.data.cart.items);
-                setTotalProductPrice(response.data.cart.totalProductPrice);
-                setTotalProductQuantity(
-                    response.data.cart.totalProductQuantity
-                );
-                setTotalPrice(response.data.cart.totalPrice);
             }
         } catch (error) {
             // toastError(error.response.data.message);
@@ -147,12 +139,16 @@ const Cart = () => {
                                                     {item.product.name}
                                                 </td>
                                                 <td className="px-4 py-2 text-center">
-                                                    {item.size.size.toUpperCase()}
+                                                    {item.size.size
+                                                        ? item.size.size.toUpperCase()
+                                                        : ""}
                                                 </td>
                                                 <td className="px-4 py-2 text-center">
-                                                    {convertFirstLetterToUpperCase(
-                                                        item.color.color
-                                                    )}
+                                                    {item.color.color
+                                                        ? convertFirstLetterToUpperCase(
+                                                              item.color.color
+                                                          )
+                                                        : ""}
                                                 </td>
                                                 <td className="pl-4 py-2 text-center">
                                                     <div className="w-full flex justify-center items-center">

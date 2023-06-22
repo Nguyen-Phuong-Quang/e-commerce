@@ -165,18 +165,21 @@ function Home() {
                                                             Detail
                                                         </Link>
                                                     </div>
-                                                    <div className="flex justify-between text-[16px]">
-                                                        <span
-                                                            onClick={() =>
-                                                                handleAddCart(
-                                                                    product._id
-                                                                )
-                                                            }
-                                                            className="rounded-lg border-blue-600  px-2 py-2 font-bold  text-blue-600 hover:opacity-60 flex items-center hover:cursor-pointer"
-                                                        >
-                                                            <i className="pi pi-shopping-cart mr-2 text-xl text-red-600" />
-                                                        </span>
-                                                    </div>
+                                                    {currentUser.role ===
+                                                        "CUSTOMER" && (
+                                                        <div className="flex justify-between text-[16px]">
+                                                            <span
+                                                                onClick={() =>
+                                                                    handleAddCart(
+                                                                        product._id
+                                                                    )
+                                                                }
+                                                                className="rounded-lg border-blue-600  px-2 py-2 font-bold  text-blue-600 hover:opacity-60 flex items-center hover:cursor-pointer"
+                                                            >
+                                                                <i className="pi pi-shopping-cart mr-2 text-xl text-red-600" />
+                                                            </span>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </>
                                         }
@@ -284,13 +287,13 @@ function Home() {
                                 </div>
                                 <div>
                                     <label
-                                        htmlFor="coloss"
+                                        htmlFor="colors"
                                         className=" block text-gray-700 font-bold mb-4 text-left mr-4"
                                     >
                                         Color
                                     </label>
                                     <Dropdown
-                                        id="coloss"
+                                        id="colors"
                                         value={selectedColor}
                                         options={colorOptions.map((item) => {
                                             item.color =

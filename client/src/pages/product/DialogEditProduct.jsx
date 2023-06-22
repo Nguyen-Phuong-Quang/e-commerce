@@ -1,41 +1,33 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
-import { FileUpload } from "primereact/fileupload";
-import { MultiSelect } from "primereact/multiselect";
 import { InputNumber } from "primereact/inputnumber";
 import ProductDialogFooter from "./Components/ProductDialogFooter";
 import { Dialog } from "primereact/dialog";
-import { useNavigate } from "react-router-dom";
 import productApi from "./../../api/productApi";
-import categoryApi from "./../../api/categoryApi";
 import { toastContext } from "./../../contexts/ToastProvider";
 import { Dropdown } from "primereact/dropdown";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 const DialogEditProduct = ({
     visible,
     setVisible,
     productId,
     categoryOptions,
+    fetchData,
 }) => {
     const { toastSuccess, toastError } = toastContext();
     const [loading, setLoading] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
-    const [mainImage, setMainImage] = useState(null);
-    const [images, setImages] = useState([]);
-    const [mainImageUpdated, setMainImageUpdated] = useState(false);
-    const [preview, setPreview] = useState(undefined);
     const [category, setCategory] = useState(null);
     const [products, setProducts] = useState({
         name: "",
         description: "",
         price: 0,
         priceAfterDiscount: 0,
-        // colors: [],
-        // sizes: [],
+
         quantity: 0,
     });
-    const navigate = useNavigate();
 
     //get product by id
     useEffect(() => {
@@ -50,6 +42,11 @@ const DialogEditProduct = ({
                         categoryOptions.find(
                             (item) => item._id === productCurrent.category
                         )
+                    );
+                    setCategory(
+                        categoryOptions.find(
+                            (item) => item._id === productCurrent.category
+                        )._id
                     );
                 }
             } catch (err) {
@@ -81,6 +78,7 @@ const DialogEditProduct = ({
             if (response.data.type === "SUCCESS") {
                 toastSuccess("Product detail updated  successfully");
                 setVisible(false);
+                fetchData();
             }
         } catch (err) {
             toastError("error", "Failed to update product");
@@ -105,7 +103,6 @@ const DialogEditProduct = ({
 
     const handleCategoryChange = (event) => {
         setSelectedCategory(event.value);
-        // setCategory(event.value._id);
         setCategory(event.value ? event.value._id : null);
     };
 
@@ -115,10 +112,14 @@ const DialogEditProduct = ({
                 visible={visible} //pass params as addVisible.
                 className="sm:w-full md:w-10/12 lg:w-3/4 xl:w-2/3 2xl:w-1/2 mx-auto"
                 footer={
-                    <ProductDialogFooter
-                        Cancel={handleCancelClick}
-                        Save={handleSaveClick}
-                    />
+                    loading ? (
+                        <></>
+                    ) : (
+                        <ProductDialogFooter
+                            Cancel={handleCancelClick}
+                            Save={handleSaveClick}
+                        />
+                    )
                 }
                 onHide={() => {
                     setVisible(false);
@@ -204,114 +205,120 @@ const DialogEditProduct = ({
             </div>
           </div>  */}
 
-                <div className="w-full  mt-4">
-                    <div className="mb-6 flex flex-row ">
-                        <label
-                            htmlFor="name"
-                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
-                        >
-                            Name
-                        </label>
-                        <InputText
-                            id="name"
-                            name="name"
-                            placeholder="Enter name"
-                            value={products.name}
-                            onChange={handleChange}
-                            className="basis-2/3 mr-4"
-                        />
+                {loading && (
+                    <div className="flex w-full h-[400px] justify-center items-center">
+                        <ProgressSpinner />
                     </div>
-                    <div className="mb-6 flex flex-row">
-                        <label
-                            htmlFor="category"
-                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
-                        >
-                            Category
-                        </label>
-                        <Dropdown
-                            className="basis-2/3 mr-4"
-                            id="category"
-                            name="category"
-                            options={categoryOptions}
-                            value={selectedCategory}
-                            onChange={handleCategoryChange}
-                            optionLabel="name"
-                            // placeholder="Select a category"
-                        />
-                    </div>
+                )}
+                {!loading && (
+                    <div className="w-full  mt-4">
+                        <div className="mb-6 flex flex-row ">
+                            <label
+                                htmlFor="name"
+                                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+                            >
+                                Name
+                            </label>
+                            <InputText
+                                id="name"
+                                name="name"
+                                placeholder="Enter name"
+                                value={products.name}
+                                onChange={handleChange}
+                                className="basis-2/3 mr-4"
+                            />
+                        </div>
+                        <div className="mb-6 flex flex-row">
+                            <label
+                                htmlFor="category"
+                                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+                            >
+                                Category
+                            </label>
+                            <Dropdown
+                                className="basis-2/3 mr-4"
+                                id="category"
+                                name="category"
+                                options={categoryOptions}
+                                value={selectedCategory}
+                                onChange={handleCategoryChange}
+                                optionLabel="name"
+                                // placeholder="Select a category"
+                            />
+                        </div>
 
-                    {/* --------------- --------------------------------------- */}
+                        {/* --------------- --------------------------------------- */}
 
-                    <div className="mb-6 flex flex-row ">
-                        <label
-                            htmlFor="description"
-                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
-                        >
-                            Description
-                        </label>
-                        <InputTextarea
-                            id="description"
-                            name="description"
-                            placeholder="Enter description"
-                            value={products.description}
-                            onChange={handleChange}
-                            className="basis-2/3 mr-4"
-                            rows={3}
-                            cols={30}
-                        />
-                    </div>
-                    <div className="mb-6 flex flex-row ">
-                        <label
-                            htmlFor="price"
-                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
-                        >
-                            Price
-                        </label>
-                        <InputNumber
-                            id="price"
-                            name="price"
-                            placeholder="Enter price"
-                            value={products.price}
-                            onValueChange={handleChange}
-                            className="basis-2/3 mr-4"
-                        />
-                    </div>
-                    <div className="mb-6 flex flex-row ">
-                        <label
-                            htmlFor="priceAfterDiscount "
-                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
-                        >
-                            Price After Discount
-                        </label>
-                        <InputNumber
-                            id="priceAfterDiscount"
-                            name="priceAfterDiscount"
-                            placeholder="Enter price after discount"
-                            value={products.priceAfterDiscount}
-                            onValueChange={handleChange}
-                            className="basis-2/3 mr-4"
-                        />
-                    </div>
+                        <div className="mb-6 flex flex-row ">
+                            <label
+                                htmlFor="description"
+                                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+                            >
+                                Description
+                            </label>
+                            <InputTextarea
+                                id="description"
+                                name="description"
+                                placeholder="Enter description"
+                                value={products.description}
+                                onChange={handleChange}
+                                className="basis-2/3 mr-4"
+                                rows={3}
+                                cols={30}
+                            />
+                        </div>
+                        <div className="mb-6 flex flex-row ">
+                            <label
+                                htmlFor="price"
+                                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+                            >
+                                Price
+                            </label>
+                            <InputNumber
+                                id="price"
+                                name="price"
+                                placeholder="Enter price"
+                                value={products.price}
+                                onValueChange={handleChange}
+                                className="basis-2/3 mr-4"
+                            />
+                        </div>
+                        <div className="mb-6 flex flex-row ">
+                            <label
+                                htmlFor="priceAfterDiscount "
+                                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
+                            >
+                                Price After Discount
+                            </label>
+                            <InputNumber
+                                id="priceAfterDiscount"
+                                name="priceAfterDiscount"
+                                placeholder="Enter price after discount"
+                                value={products.priceAfterDiscount}
+                                onValueChange={handleChange}
+                                className="basis-2/3 mr-4"
+                            />
+                        </div>
 
-                    <div className="mb-6 flex flex-row ">
-                        <label
-                            htmlFor="quantity"
-                            className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
-                        >
-                            Quantity
-                        </label>
-                        <InputNumber
-                            id="quantity"
-                            name="quantity"
-                            placeholder="Enter quantity"
-                            value={products.quantity}
-                            onValueChange={handleChange}
-                            // integerOnly 
-                            className="basis-2/3 mr-4"
-                        />
+                        <div className="mb-6 flex flex-row ">
+                            <label
+                                htmlFor="quantity"
+                                className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4 "
+                            >
+                                Quantity
+                            </label>
+                            <InputNumber
+                                id="quantity"
+                                name="quantity"
+                                placeholder="Enter quantity"
+                                value={products.quantity}
+                                onValueChange={handleChange}
+                                // integerOnly
+                                className="basis-2/3 mr-4"
+                            />
+                        </div>
                     </div>
-                </div>
-                {/* </div> */}
+                )}
             </Dialog>
         </>
     );

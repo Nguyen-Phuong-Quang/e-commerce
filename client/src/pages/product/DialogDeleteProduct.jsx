@@ -5,8 +5,13 @@ import { toastContext } from "./../../contexts/ToastProvider";
 import { useState } from "react";
 import { ProgressSpinner } from "primereact/progressspinner";
 
-export default function DeleteDialog({ id, name, visible, setVisible
- }) {
+export default function DeleteDialog({
+    id,
+    name,
+    visible,
+    setVisible,
+    fetchData,
+}) {
     const { toastError, toastSuccess } = toastContext();
     const [loading, setLoading] = useState(false);
 
@@ -17,6 +22,7 @@ export default function DeleteDialog({ id, name, visible, setVisible
             if (response.data.type === "SUCCESS") {
                 toastSuccess(response.data.message);
                 setVisible(false);
+                fetchData();
             }
         } catch (err) {
             toastError(err.response.data.message);
@@ -49,10 +55,13 @@ export default function DeleteDialog({ id, name, visible, setVisible
                 visible={visible}
                 style={{ width: "50vw", height: "30vh" }}
                 onHide={() => setVisible(false)}
-                footer={footerContent}
+                footer={loading ? <></> : footerContent}
             >
                 {!loading && (
-                    <span>Are you sure to delete <span className="text-red-500">{name}</span>?</span>
+                    <span>
+                        Are you sure to delete{" "}
+                        <span className="text-red-500">{name}</span>?
+                    </span>
                 )}
                 {loading && (
                     <div className="w-full h-full flex justify-center items-center">
