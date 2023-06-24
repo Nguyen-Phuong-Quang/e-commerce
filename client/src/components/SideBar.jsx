@@ -11,6 +11,13 @@ export default function SideBar() {
 
     const adminItems = [
         {
+            label: "User",
+            command: () => {
+                navigate(route.USER);
+            },
+        },
+        { separator: true },
+        {
             label: "Category",
             command: () => {
                 navigate(route.CATEGORY);
