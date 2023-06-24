@@ -4,6 +4,7 @@ const route = {
     SIGNIN: "/sign-in",
     SIGNUP: "/sign-up",
     PROFILE: "/profile",
+    USER: "/user",
     CATEGORY: "/category",
     PRODUCT: "/product",
     CART: "/cart",

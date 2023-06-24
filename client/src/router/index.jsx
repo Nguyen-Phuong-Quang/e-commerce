@@ -6,6 +6,7 @@ import DefaultLayout from "../components/DefaultLayout";
 import Signup from "../pages/sign-up/Signup";
 import Guest from "../components/Guest";
 import Profile from "../pages/profile/Profile";
+import User from "../pages/user/User";
 import Category from "../pages/category/Category";
 import HomeProductSeller from "../pages/product/HomeProductSeller";
 import Cart from "../pages/cart/Cart";
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
             {
                 path: route.PROFILE,
                 element: <Profile />,
+            },
+            {
+                path: route.USER,
+                element: <User />,
             },
             {
                 path: route.CART,
