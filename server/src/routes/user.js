@@ -26,14 +26,6 @@ router.post(
     userController.createUser
 );
 
-// Delete user by id
-router.delete("/:id", restrictedTo("ADMIN"), userController.deleteUserById);
-router.patch(
-    "/:id",
-    restrictedTo("ADMIN"),
-    userController.updateUserDetailById
-);
-
 // Update user details
 router.patch("/update-user-detail", userController.updateUserDetail);
 
@@ -42,6 +34,13 @@ router.patch(
     "/update-user-profile",
     uploadSingleFile("image"),
     userController.updateUserProfileImage
+);
+
+// Delete user by id
+router.delete(
+    "/delete-user/:id",
+    restrictedTo("ADMIN"),
+    userController.deleteUserById
 );
 
 module.exports = router;

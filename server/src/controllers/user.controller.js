@@ -133,24 +133,6 @@ exports.updateUserDetail = async (req, res, next) => {
     }
 };
 
-exports.updateUserDetailById = async (req, res, next) => {
-    try {
-        const { type, message, statusCode, user } =
-            await userService.updateUserDetail(req.params.id, req.body);
-
-        if (type === statusType.error)
-            return next(new CustomErrorHandler(statusCode, message));
-
-        res.status(statusCode).json({
-            type,
-            message,
-            user,
-        });
-    } catch (err) {
-        next(err);
-    }
-};
-
 /**
  * @desc      Update User Profile Image Controller
  * @param     { object } req - Request object

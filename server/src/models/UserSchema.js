@@ -43,7 +43,6 @@ const UserSchema = new mongoose.Schema(
             required: true,
             enum: ["ADMIN", "SELLER", "CUSTOMER"],
             default: "CUSTOMER",
-            uppercase: true,
         },
         passwordChangeAt: Date,
         address: String,
@@ -56,7 +55,7 @@ const UserSchema = new mongoose.Schema(
         profileImageId: {
             type: String,
             required: true,
-        },
+        }
         // discountCodes: [
         //     {
         //         type: String,
