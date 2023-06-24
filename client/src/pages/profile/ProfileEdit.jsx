@@ -20,7 +20,7 @@ export default function ProfileEdit({ visible, setVisible, user }) {
         const submit = async () => {
             setLoading(true);
             try {
-                const response = await userApi.updateUserDetailById({
+                const response = await userApi.updateUserDetail({
                     name,
                     email,
                     phone,
