@@ -245,7 +245,6 @@ exports.createProduct = async (body, files, sellerId) => {
  * @returns { Object<type|message|statusCode|product> }
  */
 exports.updateProductDetail = async (productId, sellerId, body) => {
-    console.log(body);
     const product = await ProductSchema.findById(productId);
 
     if (!product)

@@ -28,14 +28,17 @@ router.post(
 
 // Delete user by id
 router.delete("/:id", restrictedTo("ADMIN"), userController.deleteUserById);
+
 router.patch(
-    "/:id",
+    "/update-user-detail/:id",
     restrictedTo("ADMIN"),
     userController.updateUserDetailById
 );
 
 // Update user details
 router.patch("/update-user-detail", userController.updateUserDetail);
+
+
 
 // Update user profile
 router.patch(

@@ -4,14 +4,17 @@ import { InputText } from "primereact/inputtext";
 import { useState } from "react";
 import authApi from "../api/authApi";
 import { toastContext } from "../contexts/ToastProvider";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 export default function ChangePasswordDialog({ visible, setVisible }) {
     const [password, setPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [loading, setLoading] = useState(false);
     const { toastSuccess, toastError } = toastContext();
 
     const updatePassword = async () => {
+        setLoading(true);
         try {
             const response = await authApi.changePassword({
                 password,
@@ -26,6 +29,7 @@ export default function ChangePasswordDialog({ visible, setVisible }) {
         } catch (err) {
             toastError(err.response.data.message);
         }
+        setLoading(false);
     };
 
     const footerContent = (
@@ -54,44 +58,53 @@ export default function ChangePasswordDialog({ visible, setVisible }) {
                 visible={visible}
                 style={{ width: "30vw" }}
                 onHide={() => setVisible(false)}
-                footer={footerContent}
+                footer={loading ? <></> : footerContent}
             >
-                <div className="w-full p-4">
-                    <div className="w-full p-float-label mt-2">
-                        <InputText
-                            id="password_change-password"
-                            type="password"
-                            className="w-full"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <label htmlFor="password_change-password">
-                            Password
-                        </label>
+                {loading && (
+                    <div className="w-full h-40 flex justify-center items-center">
+                        <ProgressSpinner />
                     </div>
-                    <div className="w-full p-float-label mt-6">
-                        <InputText
-                            type="password"
-                            className="w-full"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                        />
-                        <label htmlFor="password_change-password">
-                            New password
-                        </label>
+                )}
+                {!loading && (
+                    <div className="w-full p-4">
+                        <div className="w-full p-float-label mt-2">
+                            <InputText
+                                id="password_change-password"
+                                type="password"
+                                className="w-full"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <label htmlFor="password_change-password">
+                                Password
+                            </label>
+                        </div>
+                        <div className="w-full p-float-label mt-6">
+                            <InputText
+                                type="password"
+                                className="w-full"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                            />
+                            <label htmlFor="password_change-password">
+                                New password
+                            </label>
+                        </div>
+                        <div className="w-full p-float-label mt-6">
+                            <InputText
+                                type="password"
+                                className="w-full"
+                                value={confirmPassword}
+                                onChange={(e) =>
+                                    setConfirmPassword(e.target.value)
+                                }
+                            />
+                            <label htmlFor="password_change-password">
+                                Confirm new password
+                            </label>
+                        </div>
                     </div>
-                    <div className="w-full p-float-label mt-6">
-                        <InputText
-                            type="password"
-                            className="w-full"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                        />
-                        <label htmlFor="password_change-password">
-                            Confirm new password
-                        </label>
-                    </div>
-                </div>
+                )}
             </Dialog>
         </div>
     );

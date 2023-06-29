@@ -35,7 +35,6 @@ export default function Discountpage() {
         available: 0,
         discountValue: 0,
         discountUnit: "VND",
-        // startDate: null,
         validUntil: new Date(),
         minOrderValue: 0,
         maxDiscountAmount: 0,
@@ -75,7 +74,6 @@ export default function Discountpage() {
             const response = await discountApi.getAllDiscount();
             setDiscountCodes(response.data.discounts);
         } catch (err) {
-            // toastError(err);
             console.log(err);
         }
     };
@@ -98,7 +96,6 @@ export default function Discountpage() {
     const handleCreate = async () => {
         setLoadingAdd(true);
         try {
-            console.log(discount);
             const response = await discountApi.addDiscount({ ...discount });
             if (response.data.type === "SUCCESS") {
                 navigate("/discount");

@@ -34,7 +34,7 @@ const authApi = {
         return axiosClient.patch(url, data);
     },
     updateUserDetailById: (id, data) => {
-        const url = `${PREFIX}/${id}`;
+        const url = `${PREFIX}/update-user-detail/${id}`;
         return axiosClient.patch(url, data);
     },
     updateUserAvatar: (data) => {
