@@ -57,7 +57,6 @@ const OrderDetail = () => {
             const response = await orderApi.getById(id);
             if (response.data.type === "SUCCESS") {
                 setOrder(response.data.order);
-                console.log(response.data.order);
                 setProducts(response.data.order.products);
                 setShippingAddress(response.data.order.shippingAddress);
             }

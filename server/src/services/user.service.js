@@ -136,6 +136,7 @@ exports.createUser = async (body, image) => {
  * @returns { object<type|message|statusCode|user> }
  */
 exports.updateUserDetail = async (userId, body) => {
+    console.log(body);
     const { email } = body;
 
     if (email) {

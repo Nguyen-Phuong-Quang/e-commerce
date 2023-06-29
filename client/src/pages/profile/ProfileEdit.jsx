@@ -14,7 +14,7 @@ export default function ProfileEdit({ visible, setVisible, user }) {
     const [companyName, setCompanyName] = useState(user.companyName);
     const [loading, setLoading] = useState(false);
 
-    const { toastSuccess } = toastContext();
+    const { toastSuccess, toastError } = toastContext();
 
     const handleSubmit = () => {
         const submit = async () => {
@@ -33,6 +33,7 @@ export default function ProfileEdit({ visible, setVisible, user }) {
                 }
             } catch (err) {
                 console.log(err);
+                toastError(err.response.data.message);
             }
             setLoading(false);
         };
@@ -65,7 +66,7 @@ export default function ProfileEdit({ visible, setVisible, user }) {
                 visible={visible}
                 style={{ width: "60vw" }}
                 onHide={() => setVisible(false)}
-                footer={footerContent}
+                footer={loading ? <></> : footerContent}
             >
                 <div className="">
                     {!loading && (
@@ -124,7 +125,11 @@ export default function ProfileEdit({ visible, setVisible, user }) {
                             </div>
                         </>
                     )}
-                    {loading && <ProgressSpinner />}
+                    {loading && (
+                        <div className="flex justify-center items-center w-full h-60">
+                            <ProgressSpinner />
+                        </div>
+                    )}
                 </div>
             </Dialog>
         </div>

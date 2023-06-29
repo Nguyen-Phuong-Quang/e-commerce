@@ -11,7 +11,12 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Button } from "primereact/button";
 import convertFirstLetterToUpperCase from "../../helpers/convertFirstLetterToUpperCase";
 
-const DialogAddProduct = ({ visible, setVisible, categoryOptions, fetchData }) => {
+const DialogAddProduct = ({
+    visible,
+    setVisible,
+    categoryOptions,
+    fetchData,
+}) => {
     const [loading, setLoading] = useState(false);
     const [mainImage, setMainImage] = useState(undefined);
     const [preview, setPreview] = useState(undefined);
@@ -80,7 +85,7 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions, fetchData }) =
             if (response.data.type === "SUCCESS") {
                 toastSuccess(response.data.message);
                 setVisible(false);
-                fetchData()
+                fetchData();
             }
         } catch (err) {
             toastError(err.response.data.message);
@@ -220,7 +225,7 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions, fetchData }) =
                                         htmlFor="image-input"
                                         className="font-bold flex justify-center items-center h-12 w-1/2 mx-auto pt-4 pb-2 bg-blue-500 text-white hover:cursor-pointer rounded-md hover:bg-blue-700"
                                     >
-                                        <div className="flex items-center h-full">
+                                        <div className="flex justify-center items-center h-full">
                                             <i className="pi pi-images mr-4" />{" "}
                                             <span>Upload</span>
                                         </div>
@@ -347,7 +352,7 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions, fetchData }) =
                             <div className="mb-6 flex flex-row ">
                                 <label
                                     htmlFor="sizes"
-                                    className="basis-1/3 block text-gray-700 font-bold mb-2 text-right  mr-4"
+                                    className="basis-1/3 block text-gray-700 font-bold mb-2 text-right mr-4"
                                 >
                                     Sizes
                                 </label>
@@ -450,7 +455,9 @@ const DialogAddProduct = ({ visible, setVisible, categoryOptions, fetchData }) =
                         }`}
                                                 />
                                                 <span className="flex-grow-1 mr-2 text-gray-500 font-semibold">
-                                                    {convertFirstLetterToUpperCase(color)}
+                                                    {convertFirstLetterToUpperCase(
+                                                        color
+                                                    )}
                                                 </span>
                                                 <span
                                                     className="text-red-400 hover:text-red-600 cursor-pointer"
